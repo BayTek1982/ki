@@ -17,14 +17,14 @@
 <style>
 :root{
   --bg:#05080d; --panel:#0b1118; --card:#0f1620; --card2:#0a0f15; --line:#1b2532; --line2:#2a3647; --line3:#36465b; --text:#dfe6ef; --soft:#b9c4d2; --soft2:#c9d2de; --mute:#7f8b9c;
-  --up:#1fcf8f; --down:#f0605d; --gold:#f5c542; --blue:#4c9aff; --purple:#b388ff; --orange:#ff9f43; --aqua:#22d3ee; --pink:#ff6fae; --lime:#a3e635;
+  --up:#1fcf8f; --down:#f0605d; --gold:#f5c542; --blue:#4c9aff; --purple:#b388ff; --orange:#ff9f43; --aqua:#22d3ee; --pink:#ff6fae; --lime:#a3e635; --sky:#38bdf8; --coral:#ff8a65;
   --chart:#020407; --hdr:rgba(5,8,13,.92); --veil:rgba(5,8,13,.75); --on-gold:#1b1505; --on-up:#03140d;
   --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
   --sans:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
 }
 [data-theme="light"]{
   --bg:#f3f5f9; --panel:#eef2f7; --card:#ffffff; --card2:#f7f9fc; --line:#dde3ec; --line2:#c9d2de; --line3:#b7c2d1; --text:#131a26; --soft:#3d4757; --soft2:#2c3646; --mute:#5d6879;
-  --up:#087f5b; --down:#c62f2c; --gold:#946200; --blue:#1a66c9; --purple:#7445cc; --orange:#b45000; --aqua:#00838f; --pink:#c2185b; --lime:#4d7c0f;
+  --up:#087f5b; --down:#c62f2c; --gold:#946200; --blue:#1a66c9; --purple:#7445cc; --orange:#b45000; --aqua:#00838f; --pink:#c2185b; --lime:#4d7c0f; --sky:#0277bd; --coral:#c2410c;
   --chart:#ffffff; --hdr:rgba(243,245,249,.92); --veil:rgba(255,255,255,.85); --on-gold:#ffffff; --on-up:#ffffff;
 }
 *{box-sizing:border-box}
@@ -159,11 +159,11 @@ canvas{display:block;width:100%}
 const VW=400,VH=250;
 const THEMES={
  dark:{bg:'#020407',grid:'#111a24',axis:'#6f7b8c',text:'#e6ecf3',mute:'#7f8b9c',line:'#1b2532',line2:'#2a3647',
-  up:'#1fcf8f',down:'#f0605d',gold:'#f5c542',blue:'#4c9aff',purple:'#b388ff',orange:'#ff9f43',aqua:'#22d3ee',pink:'#ff6fae',lime:'#a3e635',
+  up:'#1fcf8f',down:'#f0605d',gold:'#f5c542',blue:'#4c9aff',purple:'#b388ff',orange:'#ff9f43',aqua:'#22d3ee',pink:'#ff6fae',lime:'#a3e635',sky:'#38bdf8',coral:'#ff8a65',
   pillBg:'rgba(2,4,7,.9)',metal:'#9aa7b8',metal2:'#6b7889',metal3:'#4a5565',metalHi:'#d5dde8',block:'#121a24',blockLine:'#3a4859',head:'#18222e',
   hot:'#f0605d',cold:'#4c9aff',feat:'#2a1d05',steel:'#c3ccd8'},
  light:{bg:'#ffffff',grid:'#eef1f5',axis:'#5d6879',text:'#131a26',mute:'#5d6879',line:'#dde3ec',line2:'#c9d2de',
-  up:'#087f5b',down:'#c62f2c',gold:'#946200',blue:'#1a66c9',purple:'#7445cc',orange:'#b45000',aqua:'#00838f',pink:'#c2185b',lime:'#4d7c0f',
+  up:'#087f5b',down:'#c62f2c',gold:'#946200',blue:'#1a66c9',purple:'#7445cc',orange:'#b45000',aqua:'#00838f',pink:'#c2185b',lime:'#4d7c0f',sky:'#0277bd',coral:'#c2410c',
   pillBg:'rgba(255,255,255,.95)',metal:'#8793a3',metal2:'#5f6b7b',metal3:'#465160',metalHi:'#c4ccd7',block:'#eef2f7',blockLine:'#8a96a8',head:'#e2e8f0',
   hot:'#c62f2c',cold:'#1a66c9',feat:'#ffffff',steel:'#4a5565'}};
 const C=Object.assign({},THEMES.dark);
@@ -903,6 +903,671 @@ les({id:'prompt',cat:'praxis',title:'Gut fragen',sub:'So holst du mehr aus einer
  bedeutung:'Die KI kann deine Gedanken nicht lesen. Je mehr Zusammenhang du gibst, desto genauer passt die Antwort zu dir.',
  tipp:'Bitte die KI, dir Rückfragen zu stellen: „Frag mich erst, was du noch wissen musst.“ So entstehen oft die besten Ergebnisse.'}});
 
+/* ======== PAKET 2 ======== */
+Object.assign(CATS,{medien:'Bilder & Töne',beruf:'KI im Beruf',agenten:'KI-Agenten',sicher:'KI sicher nutzen',geschichte:'Geschichte der KI',technik:'Mehr Technik'});
+function rnd01(i){const x=Math.sin(i*127.1+311.7)*43758.5453;return x-Math.floor(x);}
+function sceneCol(c,r,W,H){const sx=c/W,sy=r/H;if(sy>.68)return C.up;const dx=sx-.75,dy=sy-.25;if(dx*dx+dy*dy<.012)return C.gold;
+ if(sx>.2&&sx<.45&&sy>.42&&sy<=.68)return (sx>.3&&sx<.36&&sy>.54)?C.metal3:C.orange;if(sy>.27&&sy<=.42&&sx>.17&&sx<.48&&Math.abs(sx-.325)<(sy-.27)*1.07)return C.down;return C.blue;}
+function noisePic(g,x0,y0,W,H,cs,k,seed=0){const cols=[C.blue,C.up,C.gold,C.orange,C.down,C.purple,C.pink,C.aqua];
+ for(let r=0;r<H;r++)for(let c=0;c<W;c++){const i=r*W+c;const nz=cols[Math.floor(rnd01(i+seed)*8)];const tg=sceneCol(c,r,W,H);const show=rnd01(i*3.7+seed)<k;g.fillStyle=hexA(show?tg:nz,show?.85:.55);g.fillRect(x0+c*cs,y0+r*cs,cs-1,cs-1);}}
+function wave(g,x0,x1,y,amp,t,col,lw=2,a=1,env=true){if(a<=0)return;g.save();g.globalAlpha*=a;g.strokeStyle=col;g.lineWidth=lw;g.beginPath();for(let x=x0;x<=x1;x+=1.5){const u=(x-x0)/(x1-x0);const e=env?Math.pow(Math.sin(u*Math.PI*3),2)*.8+.2:1;const yy=y+Math.sin(x*.35+t*.01)*amp*e*Math.sin(x*.05+1);x===x0?g.moveTo(x,yy):g.lineTo(x,yy);}g.stroke();g.restore();}
+
+/* ---------- BILDER & TÖNE ---------- */
+les({id:'diffusion',cat:'medien',title:'Bilder aus Rauschen',sub:'So malt eine Bild-KI (Diffusion)',
+ steps:S([[4800,'Bild-KIs wie Midjourney, DALL-E oder Stable Diffusion funktionieren mit einem überraschenden Trick: Sie lernen, Rauschen zu entfernen.'],
+ [5200,'Beim Training nimmt man echte Bilder und mischt Schritt für Schritt immer mehr zufälliges Rauschen dazu, bis nur noch bunter Schnee übrig ist.'],
+ [5200,'Das Modell lernt die Gegenrichtung: Aus einem verrauschten Bild ein kleines Stück Rauschen herauszurechnen.'],
+ [5600,'Zum Erzeugen startet man mit reinem Rauschen. In 20 bis 50 Schritten entfernt das Modell das Rauschen nach und nach – ein Bild taucht auf.'],
+ [5200,'Das Ergebnis ist ein neues Bild, das es so vorher nirgends gab. Jedes neue Rauschen ergibt ein anderes Bild.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);const W=24,H=15,cs=9;
+  if(s<=1){const k=s===0?1:1-ease(a1);noisePic(g,92,40,W,H,cs,k);pill(g,200,26,s===0?'ECHTES BILD':'RAUSCHEN DAZUMISCHEN',s===0?C.blue:C.down,1);
+   if(s===1){const n=Math.round(ease(a1)*100);pill(g,200,196,'RAUSCHEN: '+n+' %',C.down,1);}}
+  else if(s===2){[[.25,22],[.55,152],[.8,282]].forEach(([k,x],i)=>{noisePic(g,x,70,12,8,8,i===2?1:k,7);});
+   arrow(g,122,104,148,104,C.up,2,a2);arrow(g,252,104,278,104,C.up,2,a2);pill(g,200,40,'MODELL LERNT: RAUSCHEN ENTFERNEN',C.up,a2);
+   tA(g,1,70,152,'viel Rauschen',C.mute,9);tA(g,1,330,152,'klares Bild',C.mute,9);}
+  else{const k=s===3?ease(a3):1;noisePic(g,92,40,W,H,cs,k,s===4?99:3);
+   if(s===3){const n=Math.min(30,Math.round(k*30));pill(g,200,196,'SCHRITT '+n+' / 30',C.gold,1);}
+   if(s===4){pill(g,200,196,'NEUES BILD ✓',C.up,a4);}
+   pill(g,200,26,s===3?'ERZEUGEN: RAUSCHEN → BILD':'GANZ NEU ERZEUGT',C.pink,1);}
+ },thumb:3,
+ box:{was:'Ein Diffusionsmodell erzeugt Bilder, indem es Schritt für Schritt Rauschen aus einem zufälligen Startbild entfernt.',h2:'So geht’s',
+ erkennen:['<b>Training:</b> echte Bilder werden verrauscht','<b>Lernen:</b> Rauschen wieder herausrechnen','<b>Erzeugen:</b> von reinem Rauschen zum Bild','Anderes Startrauschen = anderes Bild'],
+ bedeutung:'Die KI klebt keine Bildteile zusammen. Sie hat gelernt, wie Bilder typischerweise aussehen, und baut daraus etwas Neues.',
+ tipp:'Mit demselben „Seed“ (Startwert für das Rauschen) und demselben Text bekommst du wieder dasselbe Bild – praktisch für kleine Änderungen.'}});
+
+les({id:'textbild',cat:'medien',title:'Text zu Bild',sub:'Wie der Prompt das Bild lenkt',
+ steps:S([[4800,'Du schreibst einen Text, zum Beispiel: „Rotes Haus auf grüner Wiese, Sonne, blauer Himmel“.'],
+ [5000,'Ein Text-Modell übersetzt den Satz in Zahlen – genau wie bei Sprachmodellen in Wortvektoren.'],
+ [5400,'Diese Zahlen lenken bei jedem Entrauschungs-Schritt, in welche Richtung das Bild entsteht.'],
+ [5200,'Jedes Wort beeinflusst einen Teil des Bildes: „rotes Haus“, „Wiese“, „Sonne“, „Himmel“.'],
+ [5400,'Je genauer der Text, desto genauer das Bild. Stil-Wörter wie „Foto“, „Ölgemälde“ oder „Comic“ ändern den ganzen Look.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  const words=[['rotes Haus',C.down],['Wiese',C.up],['Sonne',C.gold],['Himmel',C.blue]];let x=20;
+  words.forEach(([w,col],i)=>{const ww=chipT(g,x,26,w,col,1,11,s>=3?.3:.12);x+=ww+8;});
+  if(a1){g.save();g.globalAlpha*=a1;for(let i=0;i<4;i++){const y=60+i*8;for(let k=0;k<10;k++)circ(g,30+k*9,y,2.4,hexA(words[i][1],.3+.6*Math.abs(Math.sin(i*3+k))));}g.restore();pill(g,72,104,'TEXT → ZAHLEN',C.purple,a1);}
+  const k=s<2?0:(s===2?ease(a2)*.7:1);noisePic(g,190,60,20,13,9,k,5);
+  if(a2&&s>=2){arrow(g,120,84,186,110,C.purple,2,a2);if(s===2)flow(g,[[120,84],[186,110]],t,C.purple,{gap:10,speed:.05});}
+  if(s>=3){const L=[[0,232,150,'rotes Haus'],[1,300,174,'Wiese'],[2,330,84,'Sonne'],[3,260,70,'Himmel']];
+   L.forEach(([i,px,py],j)=>{const b=s===3?clamp(a3*4-j):1;const wx=20+[0,1,2,3].slice(0,i).reduce((a,q)=>a+tw(g,words[q][0])+8,0)+tw(g,words[i][0])/2;
+    g.save();g.globalAlpha*=b*.8;g.strokeStyle=words[i][1];g.lineWidth=1.3;g.setLineDash([3,3]);g.beginPath();g.moveTo(wx,38);g.quadraticCurveTo(wx,py-10,px,py);g.stroke();g.restore();circ(g,px,py,3,words[i][1]);});}
+  if(s===4){const st2=['FOTO','ÖLGEMÄLDE','COMIC'];const k2=Math.floor(t/1200)%3;pill(g,280,206,'STIL: '+st2[k2],C.pink,a4);}
+ },thumb:3,
+ box:{was:'Bei Text-zu-Bild wandelt ein Text-Modell deinen Prompt in Zahlen um. Diese Zahlen steuern das Diffusionsmodell beim Entrauschen.',h2:'So geht’s',
+ erkennen:['<b>Motiv:</b> Was soll zu sehen sein?','<b>Details:</b> Farben, Ort, Tageszeit','<b>Stil:</b> Foto, Zeichnung, Gemälde, 3D','<b>Format:</b> Hochformat, Querformat, quadratisch'],
+ bedeutung:'Die KI nimmt deine Wörter sehr wörtlich. Was du nicht schreibst, ergänzt sie selbst – oft anders, als du es dir vorstellst.',
+ tipp:'Schreib Wichtiges zuerst und sei konkret: „Rotes Backsteinhaus, Abendsonne, Foto“ wirkt besser als „schönes Haus“.'}});
+
+les({id:'stt',cat:'medien',title:'Sprache zu Text',sub:'Wie dein Handy dich versteht',
+ steps:S([[4600,'Du sprichst ins Mikrofon. Das Mikrofon misst Luftdruck-Schwankungen – eine Schallwelle.'],
+ [5200,'Die Welle wird in ein Spektrogramm verwandelt: ein Bild, das zeigt, welche Tonhöhen wann wie laut sind.'],
+ [5000,'Ein neuronales Netz liest dieses Bild wie ein Bild-Netz und erkennt darin Laute.'],
+ [5200,'Ein Sprachmodell setzt die Laute zu Wörtern zusammen und wählt die sinnvollste Schreibweise.'],
+ [5200,'Heraus kommt Text: „Hallo, wie wird das Wetter morgen?“ – in Sekundenbruchteilen.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  circ(g,34,60,14,C.block,C.pink,1.8);box(g,29,48,10,18,hexA(C.pink,.4),C.pink,5,1.2);line(g,34,74,34,82,C.pink,1.8);line(g,26,82,42,82,C.pink,1.8);
+  wave(g,60,380,60,22,s===0?t:0,C.pink,2,1);pill(g,220,22,'SCHALLWELLE',C.pink,s===0?1:.5);
+  if(a1){for(let c=0;c<40;c++)for(let r=0;r<10;r++){const v=Math.pow(Math.sin(c*.5+r*.3),2)*Math.exp(-r*.22)*(Math.sin(c*.18)>-.3?1:.15);g.fillStyle=hexA(C.gold,.08+.85*v*a1);g.fillRect(60+c*8,100+(9-r)*8,7,7);}
+   pill(g,26,140,'TONHÖHE',C.gold,a1,'left');}
+  if(a2){const L=['H','A','L','O','V','I','V','E','A'];L.forEach((l,i)=>{const b=s===2?clamp(a2*9-i):1;box(g,60+i*36,190,26,22,hexA(C.purple,.2*b),hexA(C.purple,b),5,1.2);tA(g,b,73+i*36,201,l,C.purple,11,'center',800);});}
+  if(s>=3){g.save();g.globalAlpha=.9;g.fillStyle=C.bg;g.fillRect(44,180,356,44);g.restore();
+   const txtS='Hallo, wie wird das Wetter morgen?';const n=s===3?Math.floor(a3*txtS.length):txtS.length;box(g,50,186,330,32,s===4?hexA(C.up,.12):C.block,s===4?C.up:C.line2,8,1.4);txt(g,62,202,txtS.slice(0,n),C.text,12.5,'left',700,SANS);
+   if(s===4)pill(g,330,236,'FERTIG ✓',C.up,a4);}
+ },thumb:3,
+ box:{was:'Spracherkennung (englisch Speech-to-Text) wandelt gesprochene Sprache mit neuronalen Netzen in geschriebenen Text um.',h2:'So geht’s',
+ erkennen:['Mikrofon nimmt die Schallwelle auf','Spektrogramm zeigt Tonhöhen über die Zeit','Netz erkennt Laute','Sprachmodell macht daraus sinnvolle Wörter'],
+ bedeutung:'Darum versteht die KI auch Dialekt oder Nuscheln oft gut: Sie nutzt den Zusammenhang, um das wahrscheinlichste Wort zu wählen.',
+ tipp:'Bei Fachwörtern hilft es, langsam und deutlich zu sprechen. Satzzeichen kannst du oft mitsprechen: „Komma“, „Punkt“, „neue Zeile“.'}});
+
+les({id:'tts',cat:'medien',title:'Text zu Sprache',sub:'Wie eine KI-Stimme entsteht',
+ steps:S([[4600,'Jetzt der umgekehrte Weg: Ein Text soll vorgelesen werden – mit natürlicher Stimme.'],
+ [5000,'Zuerst wird der Text in Laute zerlegt. Dabei klärt die KI auch Aussprache und Betonung, zum Beispiel bei Zahlen und Abkürzungen.'],
+ [5200,'Ein neuronales Netz plant daraus Tonhöhe, Lautstärke und Tempo – die Sprachmelodie.'],
+ [5000,'Ein zweites Netz erzeugt daraus die eigentliche Schallwelle, Zehntausende Werte pro Sekunde.'],
+ [5600,'Moderne Systeme können mit wenigen Sekunden Aufnahme eine Stimme nachahmen. Das ist praktisch – aber auch ein Risiko für Betrug.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  box(g,20,20,360,34,C.block,C.line2,8,1.2);txt(g,32,37,'Am 3.12. um 8 Uhr ist Treffen.',C.text,12.5,'left',700,SANS);
+  if(a1&&s<4){const ph=['am','DRIT·TEN','ZWÖLF·TEN','um','ACHT','Uhr'];let x=20;ph.forEach((p,i)=>{const w=chipT(g,x,78,p,i===1||i===2||i===4?C.gold:C.blue,s===1?clamp(a1*6-i):1,10);x+=w+5;});}
+  if(a2&&s<4){g.save();g.globalAlpha*=a2;g.strokeStyle=C.purple;g.lineWidth=2.4;g.beginPath();for(let x=20;x<=380;x+=2){const y=130-Math.sin(x*.03)*14-Math.sin(x*.011+1)*10;x===20?g.moveTo(x,y):g.lineTo(x,y);}g.stroke();g.restore();pill(g,60,108,'MELODIE',C.purple,a2);}
+  if(a3&&s<4){wave(g,20,380,190,24,t,C.pink,1.6,a3);pill(g,330,160,'SCHALLWELLE',C.pink,a3);}
+  if(s===4){g.save();g.globalAlpha=.85;g.fillStyle=C.bg;g.fillRect(0,60,400,190);g.restore();
+   box(g,40,110,120,70,hexA(C.blue,.1),C.blue,10,1.6);txt(g,100,134,'3 SEKUNDEN',C.blue,10,'center',800);wave(g,52,148,158,8,t,C.blue,1.4,1,false);
+   arrow(g,166,145,226,145,C.text,2,a4);box(g,232,110,130,70,hexA(C.down,.1),C.down,10,1.6);txt(g,297,134,'NACHGEMACHTE',C.down,9.5,'center',800);txt(g,297,152,'STIMME',C.down,9.5,'center',800);
+   pill(g,200,212,'VORSICHT BEI ANRUFEN!',C.down,a4);}
+ },thumb:3,
+ box:{was:'Sprachsynthese (englisch Text-to-Speech) erzeugt aus geschriebenem Text eine künstliche, natürlich klingende Stimme.',h2:'So geht’s',
+ erkennen:['Text in Laute und Betonung zerlegen','Sprachmelodie planen (Tonhöhe, Tempo)','Schallwelle erzeugen','Stimme kann geklont werden'],
+ bedeutung:'KI-Stimmen helfen beim Vorlesen, in Navis und für Menschen mit Sehschwäche. Gleichzeitig nutzen Betrüger sie für gefälschte Anrufe.',
+ tipp:'Vereinbare in der Familie ein Codewort. Ruft „ein Kind“ in Not an und will Geld, frag nach dem Codewort.'}});
+
+les({id:'musik',cat:'medien',title:'Musik-KI',sub:'Wie Suno & Co. ganze Lieder machen',
+ steps:S([[4800,'Musik-KIs wie Suno erzeugen aus einem kurzen Text ein ganzes Lied – mit Gesang, Instrumenten und Text.'],
+ [5000,'Musik wird dafür in kleine Klang-Tokens zerlegt, ähnlich wie Text in Wort-Tokens. Jedes Token steht für einen winzigen Klangschnipsel.'],
+ [5200,'Das Modell hat aus sehr vielen Liedern gelernt, welcher Klang-Token wahrscheinlich als Nächstes kommt.'],
+ [5200,'So entsteht Stück für Stück eine Melodie mit Takt, Akkorden und Rhythmus.'],
+ [5400,'Dazu kommt die Liedform: Strophe, Refrain, Strophe, Refrain. Deine Stil-Angaben wie „fröhlich, Gitarre“ steuern das Ergebnis.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  box(g,20,18,360,30,C.block,C.line2,8,1.2);txt(g,32,33,'Kinderlied, fröhlich, Gitarre',C.text,12,'left',700,SANS);
+  if(s>=1&&s<3){for(let i=0;i<20;i++){const b=s===1?clamp(a1*20-i):1;g.save();g.globalAlpha*=b;box(g,22+i*18,70,14,22,hexA(i%3?C.pink:C.purple,.3),i%3?C.pink:C.purple,3,1);g.restore();}pill(g,200,108,'KLANG-TOKENS',C.pink,a1);}
+  if(s===2){hbars(g,140,140,[['Ton A',.48,C.pink],['Ton C',.27,C.mute],['Ton E',.16,C.mute],['Pause',.09,C.mute]],160,a2,0,22);}
+  if(s>=3){const n=s===3?Math.floor(ease(a3)*32):32;for(let i=0;i<8;i++)line(g,22,64+i*14,378,64+i*14,C.grid,1);
+   for(let i=0;i<n;i++){const r=Math.round(3.5+3*Math.sin(i*.6)+Math.sin(i*1.7));box(g,22+i*11,64+(7-r)*14-5,9,10,hexA(C.pink,.7),C.pink,2,1);}
+   const ph=(t*.05)%356;if(s===3)line(g,22+ph*(n/32),58,22+ph*(n/32),172,C.gold,1.6);}
+  if(s===4){const parts=[['STROPHE',C.blue],['REFRAIN',C.pink],['STROPHE',C.blue],['REFRAIN',C.pink]];parts.forEach(([l,col],i)=>{const b=clamp(a4*4-i);g.save();g.globalAlpha*=b;box(g,22+i*90,190,82,30,hexA(col,.18),col,6,1.4);g.restore();tA(g,b,63+i*90,205,l,col,9.5,'center',800);});}
+ },thumb:3,
+ box:{was:'Musik-KIs erzeugen Lieder, indem sie Klang-Tokens nacheinander vorhersagen – ganz ähnlich, wie Sprachmodelle Wörter vorhersagen.',h2:'So erkennst du es',
+ erkennen:['<b>Stil:</b> Genre, Stimmung, Instrumente','<b>Text:</b> eigener Liedtext oder automatisch','<b>Form:</b> Strophe, Refrain, Bridge','<b>Länge:</b> wird in Abschnitten verlängert'],
+ bedeutung:'Ohne Musikkenntnisse kann man so eigene Lieder erstellen. Die Rechte an den Liedern regeln die Nutzungsbedingungen des Anbieters.',
+ tipp:'Strukturiere deinen Liedtext mit Markierungen wie [Strophe] und [Refrain] – dann hält sich die KI besser an den Aufbau.'}});
+
+/* ---------- KI IM BERUF ---------- */
+les({id:'pruefung',cat:'beruf',title:'Prüfen mit Kamera & CT',sub:'KI in der Qualitätskontrolle',
+ steps:S([[4800,'In der Fabrik laufen Tausende Bauteile am Tag über das Band. Jedes soll geprüft werden.'],
+ [5000,'Kameras oder CT-Anlagen machen von jedem Teil Bilder. Ein Bild-Netz schaut sich jedes Bild an.'],
+ [5000,'Gelernt hat es vorher aus vielen Beispielen: Bilder von guten Teilen und von Teilen mit Fehlern wie Poren oder Rissen.'],
+ [5200,'Teile mit Auffälligkeit werden markiert und aussortiert. Gute Teile laufen weiter.'],
+ [5400,'Bei Grenzfällen entscheidet der Mensch. Die KI ist schnell und wird nie müde – der Fachmann kennt die Ausnahmen.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  box(g,10,150,380,16,C.block,C.line2,8,1.4);for(let i=0;i<20;i++){const x=((i*24+t*.04)%400);line(g,x,152,x+6,164,C.line2,1.4);}
+  for(let i=0;i<5;i++){const x=((i*85+t*.04)%460)-40;const bad=i===1||i===3;const past=x>210;
+   const col=s>=3&&past?(bad?C.down:C.up):C.metal;box(g,x,118,48,32,hexA(col,.3),col,5,1.6);circ(g,x+16,134,4,C.bg,col,1.2);if(bad&&s>=2)circ(g,x+33,128,2.4,C.bg);
+   if(s>=3&&past)tA(g,1,x+24,108,bad?'✗ FEHLER':'✓ OK',col,9,'center',800);}
+  if(a1){g.save();g.globalAlpha*=a1;box(g,190,20,40,30,C.block,C.lime,5,1.6);circ(g,210,35,8,null,C.lime,1.6);poly(g,[[200,50],[220,50],[240,112],[180,112]],hexA(C.lime,.08));g.restore();pill(g,280,30,'KAMERA / CT',C.lime,a1,'left');}
+  if(s===2){[0,1,2,3].forEach(i=>{const bad=i%2;g.save();g.globalAlpha*=a2;box(g,20+i*40,186,32,24,C.block,bad?C.down:C.up,4,1.2);circ(g,30+i*40,198,3,C.bg,bad?C.down:C.up,1);if(bad)circ(g,42+i*40,194,2,C.down);g.restore();});pill(g,280,198,'LERNBEISPIELE',C.gold,a2);}
+  if(s===4){pill(g,120,206,'KI: SCHNELL, 24/7',C.lime,a4);pill(g,290,206,'MENSCH: GRENZFÄLLE',C.blue,a4);}
+ },thumb:3,
+ box:{was:'Bei der KI-gestützten Qualitätsprüfung erkennt ein Bild-Netz Fehler auf Kamera-, Röntgen- oder CT-Bildern automatisch.',h2:'So erkennst du es',
+ erkennen:['Kamera oder CT liefert Bilder von jedem Teil','Netz markiert Poren, Risse, fehlende Teile','Gut/Schlecht-Entscheidung in Sekunden','Grenzfälle gehen an den Prüfer'],
+ bedeutung:'KI kann jedes Teil prüfen statt nur Stichproben. Sie braucht aber viele gute Beispielbilder – auch von seltenen Fehlern.',
+ tipp:'Gute Trainingsdaten aus der Praxis sind Gold wert: Jeder sauber beurteilte Grenzfall macht eine Prüf-KI besser.'}});
+
+les({id:'wartung',cat:'beruf',title:'Ausfälle vorhersagen',sub:'Vorausschauende Wartung',
+ steps:S([[4800,'Maschinen gehen selten plötzlich kaputt. Oft kündigt sich ein Schaden vorher leise an.'],
+ [5000,'Sensoren messen ständig: Vibration, Temperatur, Stromaufnahme, Geräusche.'],
+ [5200,'Eine KI hat gelernt, wie die Messwerte einer gesunden Maschine aussehen – und welche Muster vor einem Ausfall auftreten.'],
+ [5200,'Steigen die Werte auf eine verdächtige Art, schlägt die KI Alarm – Tage oder Wochen vor dem Ausfall.'],
+ [5400,'So kann man die Reparatur planen, statt mitten in der Schicht stillzustehen. Das nennt man vorausschauende Wartung.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  box(g,20,80,90,70,C.block,C.metal,8,1.8);fan(g,65,115,22,t*.01*(s===4?1:1),C.lime,1);
+  if(a1){[[110,90,'VIBRATION'],[110,140,'TEMPERATUR']].forEach(([x,y,l])=>{circ(g,x,y,5,C.gold);});pill(g,65,62,'SENSOREN',C.gold,a1);}
+  const X=x=>140+x*240,Y=y=>200-y*150;axes(g,135,40,385,200,'Zeit','Vibration');
+  const f=x=>.18+.04*Math.sin(x*60)+(x>.55?Math.pow((x-.55)/.45,2)*.65:0);
+  const upto=s<1?0:(s===1?ease(a1)*.5:(s===2?.55:(s===3?.55+.45*ease(a3):1)));plotFn(g,f,0,1,X,Y,C.lime,1.8,1,upto);
+  if(a2){g.save();g.globalAlpha*=a2*.5;box(g,X(0),Y(.27),240,Y(.1)-Y(.27),hexA(C.up,.15),null,2);g.restore();pill(g,X(.25),Y(.36),'NORMAL',C.up,a2);}
+  if(s>=3){line(g,X(0),Y(.45),X(1),Y(.45),C.down,1.4,[5,4]);if(upto>.82){circ(g,X(.82),Y(f(.82)),6,null,C.down,2);pill(g,X(.6),Y(.68),'⚠ ALARM',C.down,1);}}
+  if(s===4)pill(g,X(.5),238,'REPARATUR PLANEN STATT STILLSTAND',C.up,a4);
+ },thumb:3,
+ box:{was:'Vorausschauende Wartung (Predictive Maintenance) nutzt Sensordaten und KI, um Maschinenausfälle vorherzusagen, bevor sie passieren.',h2:'So erkennst du es',
+ erkennen:['Sensoren für Vibration, Temperatur, Strom','KI kennt das „gesunde“ Muster','Abweichung → Warnung','Wartung wird geplant statt Notfall-Reparatur'],
+ bedeutung:'Ungeplante Stillstände sind teuer. Schon ein vermiedener Ausfall kann die Kosten für Sensoren und Software wieder einspielen.',
+ tipp:'Das Prinzip kennst du vom Auto: Ungewöhnliche Geräusche oder Vibrationen sind oft die erste Warnung – die KI hört nur genauer hin.'}});
+
+les({id:'autonom',cat:'beruf',title:'Selbstfahrende Autos',sub:'Sehen, verstehen, planen, fahren',
+ steps:S([[4800,'Ein selbstfahrendes Auto muss vier Dinge können: sehen, verstehen, planen und fahren.'],
+ [5200,'Sehen: Kameras, Radar und Lidar (Laser) erfassen ständig die Umgebung rundum.'],
+ [5000,'Verstehen: Neuronale Netze erkennen darin Autos, Fußgänger, Radfahrer, Schilder und Fahrspuren.'],
+ [5200,'Planen: Die Software berechnet, wohin sich alles bewegt, und plant einen sicheren Weg.'],
+ [5600,'Es gibt Stufen von 0 bis 5. Die meisten Autos heute helfen nur (Stufe 2) – der Fahrer bleibt verantwortlich.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  if(s<4){box(g,0,40,400,170,hexA(C.metal3,.15),null,0);for(let i=0;i<10;i++)line(g,i*44-((t*.05)%44),125,i*44+22-((t*.05)%44),125,C.metal,2);
+   line(g,0,40,400,40,C.metal,2);line(g,0,210,400,210,C.metal,2);
+   const cx=80,cy=150;
+   if(a1){g.save();g.globalAlpha*=a1*.25;g.fillStyle=C.lime;g.beginPath();g.moveTo(cx+30,cy);g.arc(cx+30,cy,200,-.5,.5);g.closePath();g.fill();g.globalAlpha=a1*.12;g.beginPath();g.arc(cx,cy,70,0,TAU);g.fill();g.restore();}
+   box(g,cx-24,cy-13,54,26,hexA(C.lime,.4),C.lime,6,1.8);
+   const objs=[[240,95,'AUTO',C.blue,54,26],[300,192,'RAD',C.orange,24,16],[360,60,'MENSCH',C.pink,12,18]];
+   objs.forEach(([x,y,l,col,w,h])=>{box(g,x-w/2,y-h/2,w,h,hexA(col,.3),col,4,1.4);if(a2){g.save();g.globalAlpha*=a2;box(g,x-w/2-5,y-h/2-5,w+10,h+10,null,col,2,1.6);g.restore();tA(g,a2,x,y-h/2-13,l,col,9,'center',800);}});
+   if(a3){g.save();g.globalAlpha*=a3;g.strokeStyle=C.gold;g.lineWidth=3;g.setLineDash([6,4]);g.beginPath();g.moveTo(cx+30,cy);g.bezierCurveTo(200,150,250,150,390,150);g.stroke();g.restore();arrow(g,240,95,280,95,C.blue,1.6,a3);pill(g,200,226,'SICHERER WEG',C.gold,a3);}
+   if(s===1){pill(g,80,190,'360°',C.lime,a1);pill(g,250,24,'KAMERA · RADAR · LIDAR',C.lime,a1);}}
+  else{const L=['0','1','2','3','4','5'];L.forEach((l,i)=>{const h=30+i*24,x=30+i*60;const b=clamp(a4*6-i);g.save();g.globalAlpha*=b;box(g,x,210-h,46,h,hexA(i===2?C.gold:C.lime,i===2?.5:.2),i===2?C.gold:C.lime,5,1.4);g.restore();tA(g,b,x+23,200-h+18,l,i===2?C.gold:C.lime,14,'center',800);});
+   tA(g,1,53,226,'nur Fahrer',C.mute,9);tA(g,1,353,226,'ganz allein',C.mute,9);pill(g,180,40,'HEUTE MEIST: STUFE 2',C.gold,a4);}
+ },thumb:3,
+ box:{was:'Autonome Fahrzeuge verbinden Sensoren, Bilderkennung und Planung, um ohne oder mit wenig menschlichem Eingriff zu fahren.',h2:'So erkennst du es',
+ erkennen:['<b>Kamera:</b> Farben, Schilder, Spuren','<b>Radar:</b> Abstand und Tempo, auch bei Nebel','<b>Lidar:</b> genaue 3D-Punktwolke per Laser','<b>Stufen 0–5:</b> von „nur Fahrer“ bis „ganz allein“'],
+ bedeutung:'Schwierig sind seltene Situationen: Baustellen, Handzeichen von Polizisten, Schnee auf den Markierungen.',
+ tipp:'Spurhalte- und Abstandsassistent (Stufe 2) entlasten, aber du musst die Hände am Lenkrad und den Blick auf der Straße haben.'}});
+
+les({id:'medizin',cat:'beruf',title:'KI in der Medizin',sub:'Bilder lesen und Forschung beschleunigen',
+ steps:S([[4600,'In der Medizin hilft KI vor allem dort, wo viele Bilder und Daten anfallen.'],
+ [5200,'Bild-Netze prüfen Röntgen-, CT- und MRT-Bilder und markieren verdächtige Stellen für die Ärztin oder den Arzt.'],
+ [5000,'Die Entscheidung trifft immer der Mensch. Die KI ist eine zweite Meinung, die nichts übersieht, weil sie müde ist.'],
+ [5400,'In der Forschung sagt KI voraus, wie Eiweiße (Proteine) gefaltet sind. Dafür gab es 2024 den Chemie-Nobelpreis (AlphaFold).'],
+ [5200,'So können neue Medikamente schneller gefunden werden. Getestet werden müssen sie aber weiterhin gründlich.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  if(s<3){box(g,40,30,170,190,C.block,C.line2,10,1.4);g.save();g.globalAlpha=.8;
+   [[95,125],[155,125]].forEach(([x,y])=>{g.fillStyle=hexA(C.metal,.35);g.beginPath();g.ellipse(x,y,34,62,0,0,TAU);g.fill();});
+   for(let i=0;i<6;i++){g.strokeStyle=hexA(C.metalHi,.5);g.lineWidth=2;g.beginPath();g.ellipse(125,80+i*18,70,8,0,Math.PI*.05,Math.PI*.95);g.stroke();}g.restore();
+   line(g,125,50,125,200,hexA(C.metalHi,.6),3);
+   if(a1){circ(g,160,150,7,hexA(C.down,.4));g.save();g.globalAlpha*=a1;box(g,145,135,30,30,null,C.down,3,2);g.restore();pill(g,290,150,'AUFFÄLLIG: BITTE PRÜFEN',C.down,a1);}
+   if(s===2){pill(g,290,80,'ARZT ENTSCHEIDET',C.blue,a2);pill(g,290,115,'KI = ZWEITE MEINUNG',C.lime,a2);}}
+  else{const n=40;const k=s===3?ease(a3):1;g.save();g.strokeStyle=C.lime;g.lineWidth=3;g.lineJoin='round';g.beginPath();
+   for(let i=0;i<n;i++){const u=i/(n-1);const lx=40+u*320,ly=125;const fx=200+Math.cos(u*11)*60*(1-u*.3)+Math.sin(u*23)*12,fy=125+Math.sin(u*9)*55+Math.cos(u*17)*12;const x=lerp(lx,fx,k),y=lerp(ly,fy,k);i?g.lineTo(x,y):g.moveTo(x,y);}g.stroke();g.restore();
+   pill(g,200,22,s===3?'EIWEISS FALTET SICH':'NEUES MEDIKAMENT SUCHEN',C.lime,1);
+   if(s===4){g.save();g.globalAlpha*=a4;poly(g,[[300,180],[330,160],[350,190],[320,205]],hexA(C.gold,.5),C.gold,1.6);g.restore();pill(g,330,226,'WIRKSTOFF PASST',C.gold,a4);}}
+ },thumb:1,
+ box:{was:'Medizinische KI wertet Bilder und Daten aus und unterstützt Forschung – zum Beispiel bei der Vorhersage von Proteinstrukturen.',h2:'So erkennst du es',
+ erkennen:['Markiert Auffälligkeiten auf Röntgen-, CT- und MRT-Bildern','Sortiert dringende Fälle nach vorne','AlphaFold sagt Proteinformen voraus','Medizin-KI braucht eine Zulassung'],
+ bedeutung:'KI ersetzt keine Ärztin und keinen Arzt, kann aber Zeit sparen und helfen, weniger zu übersehen.',
+ tipp:'Für eigene Gesundheitsfragen ist ein Chatbot kein Arzt: Er kann erklären und Fragen vorbereiten – die Diagnose gehört in die Praxis.'}});
+
+les({id:'roboter',cat:'beruf',title:'Roboter in der Fabrik',sub:'Sehen, greifen und lernen',
+ steps:S([[4600,'Klassische Industrieroboter fahren immer exakt dieselbe programmierte Bahn – schnell und genau, aber starr.'],
+ [5000,'Mit KI bekommt der Roboter Augen: Eine Kamera erkennt, wo und wie ein Teil liegt – auch wenn es verdreht ist.'],
+ [5200,'Der Greifarm berechnet daraus den richtigen Griff und nimmt das Teil sicher auf.'],
+ [5200,'Neue Aufgaben kann man ihm vormachen: Der Mensch führt den Arm, die KI lernt die Bewegung.'],
+ [5400,'Kollaborative Roboter (Cobots) arbeiten direkt neben Menschen und stoppen sofort, wenn sie jemanden berühren.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  line(g,10,215,390,215,C.line2,2);box(g,60,200,60,15,C.block,C.metal,3,1.4);
+  const ph=s===0?(Math.sin(t*.002)+1)/2:(s===2?ease(a2):(s>=3?(Math.sin(t*.0018)+1)/2:0));
+  const tx=lerp(150,232,ph),ty=lerp(95,190,ph);const L1=90,L2=80;const dx=tx-90,dy=ty-200;const d=Math.min(L1+L2-1,Math.hypot(dx,dy));
+  const ca=clamp((L1*L1+d*d-L2*L2)/(2*L1*d),-1,1);const base=Math.atan2(dy,dx)-Math.acos(ca);const x1=90+Math.cos(base)*L1,y1=200+Math.sin(base)*L1;const x2=tx,y2=ty;
+  pipe(g,[[90,200],[x1,y1],[x2,y2]],C.lime,9);circ(g,90,200,9,C.block,C.lime,2);circ(g,x1,y1,7,C.block,C.lime,2);line(g,x2-8,y2,x2-8,y2+12,C.lime,3);line(g,x2+8,y2,x2+8,y2+12,C.lime,3);
+  const part=[232,207];g.save();g.translate(part[0],part[1]);g.rotate(.5);box(g,-18,-8,36,16,hexA(C.orange,.5),C.orange,3,1.4);g.restore();
+  if(a1){g.save();g.globalAlpha*=a1;box(g,300,30,36,24,C.block,C.aqua,4,1.4);circ(g,318,42,6,null,C.aqua,1.4);poly(g,[[308,54],[328,54],[262,186],[220,186]],hexA(C.aqua,.08));box(g,208,186,48,40,null,C.aqua,3,1.6);g.restore();pill(g,340,120,'LAGE: 29°',C.aqua,a1);}
+  if(s===3){pill(g,200,30,'VORMACHEN → NACHMACHEN',C.gold,a3);circ(g,x2,y2-20,10,hexA(C.gold,.3),C.gold,1.4);}
+  if(s===4){g.save();g.globalAlpha*=a4*.3;g.strokeStyle=C.up;g.lineWidth=2;g.setLineDash([5,5]);g.beginPath();g.arc(90,200,175,Math.PI*1.1,Math.PI*1.95);g.stroke();g.restore();pill(g,200,30,'COBOT: STOPPT BEI BERÜHRUNG',C.up,a4);}
+ },thumb:2,
+ box:{was:'KI-gestützte Roboter erkennen Teile mit Kameras, planen Griffe selbst und können neue Bewegungen durch Vormachen lernen.',h2:'So erkennst du es',
+ erkennen:['<b>Klassisch:</b> feste Bahn, Schutzzaun','<b>Mit Kamera:</b> greift auch ungeordnete Teile („Griff in die Kiste“)','<b>Cobot:</b> arbeitet ohne Zaun neben Menschen','<b>Lernen:</b> per Vormachen statt Programmieren'],
+ bedeutung:'Roboter übernehmen schwere, gefährliche oder eintönige Arbeit. Menschen werden für Überwachung, Einrichten und Problemlösen gebraucht.',
+ tipp:'Der „Griff in die Kiste“ galt lange als sehr schwer für Roboter. Erst Bild-KI hat ihn zuverlässig möglich gemacht.'}});
+
+/* ---------- KI-AGENTEN ---------- */
+les({id:'agent',cat:'agenten',title:'Was ist ein KI-Agent?',sub:'Von der Antwort zur erledigten Aufgabe',
+ steps:S([[4800,'Ein normaler Chatbot beantwortet eine Frage und ist fertig. Ein Agent erledigt eine ganze Aufgabe.'],
+ [5000,'Er bekommt ein Ziel, zum Beispiel: „Finde drei Angebote für Winterreifen und vergleiche die Preise.“'],
+ [5400,'Dann arbeitet er in einer Schleife: Überlegen, was als Nächstes zu tun ist – Handeln mit einem Werkzeug – Ergebnis anschauen.'],
+ [5000,'Diese Schleife läuft so lange, bis das Ziel erreicht ist. Manchmal sind das 3 Runden, manchmal 50.'],
+ [5400,'Bei wichtigen Schritten wie Bezahlen oder Löschen fragt ein guter Agent vorher dich.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  if(s===0){box(g,30,60,150,90,C.block,C.mute,10,1.4);txt(g,105,90,'CHATBOT',C.mute,11,'center',800);txt(g,105,115,'Frage → Antwort',C.text,10,'center',600);
+   box(g,220,60,150,90,hexA(C.gold,.1),C.gold,10,1.8);txt(g,295,90,'AGENT',C.gold,11,'center',800);txt(g,295,115,'Ziel → erledigt',C.text,10,'center',600);return;}
+  box(g,20,22,360,30,C.block,C.gold,8,1.4);txt(g,32,37,'🎯 3 Angebote Winterreifen vergleichen',C.text,11.5,'left',700,SANS);
+  const cx=200,cy=150,R=58;const nodes=[[-90,'ÜBERLEGEN',C.purple],[30,'HANDELN',C.gold],[150,'ANSCHAUEN',C.aqua]];
+  if(s===1)pill(g,200,140,'ZIEL STATT EINZELNER FRAGE',C.gold,a1);
+  if(a2){g.save();g.globalAlpha*=a2;g.strokeStyle=C.line2;g.lineWidth=2;g.beginPath();g.arc(cx,cy,R,0,TAU);g.stroke();g.restore();
+   const ang=(t*.0016)%TAU;const px=cx+Math.cos(ang)*R,py=cy+Math.sin(ang)*R;circ(g,px,py,5,C.gold);
+   nodes.forEach(([d,l,col])=>{const r=d*Math.PI/180;const x=cx+Math.cos(r)*R,y=cy+Math.sin(r)*R;circ(g,x,y,14,C.block,col,2);pill(g,x+(Math.cos(r)>.2?66:Math.cos(r)<-.2?-66:0),y+(Math.sin(r)<-.5?-24:0),l,col,1);});}
+  if(s>=3){const n=Math.floor(t/1000)%9+1;pill(g,cx,cy,'RUNDE '+n,C.text,a3);}
+  if(s===4){pill(g,330,226,'💳 ERST FRAGEN',C.down,a4);}
+ },thumb:2,
+ box:{was:'Ein KI-Agent ist ein Sprachmodell, das selbstständig mehrere Schritte plant und Werkzeuge benutzt, um ein Ziel zu erreichen.',h2:'So erkennst du es',
+ erkennen:['Bekommt ein Ziel statt nur einer Frage','Arbeitet in einer Schleife: überlegen → handeln → prüfen','Benutzt Werkzeuge (Suche, Browser, Programme)','Fragt bei wichtigen Schritten nach'],
+ bedeutung:'Agenten können viel Arbeit abnehmen, machen aber auch Fehler. Je mehr sie dürfen, desto wichtiger ist die Kontrolle.',
+ tipp:'Gib einem Agenten ein klares Ziel und sag, wann er stoppen und dich fragen soll – zum Beispiel vor jedem Kauf.'}});
+
+les({id:'websuche',cat:'agenten',title:'Die Websuche',sub:'Aktuelles Wissen mit Quellen',
+ steps:S([[4800,'Ein Modell kennt nur Wissen bis zu seinem Trainingsstichtag. Für Aktuelles braucht es eine Websuche.'],
+ [5000,'Aus deiner Frage macht es kurze Suchbegriffe und schickt sie an eine Suchmaschine.'],
+ [5000,'Es bekommt eine Liste von Treffern und öffnet die vielversprechendsten Seiten.'],
+ [5200,'Die gefundenen Texte landen im Kontextfenster. Das Modell liest sie und fasst das Wichtige zusammen.'],
+ [5200,'In der Antwort stehen Quellen. So kannst du selbst nachprüfen, woher die Information kommt.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  box(g,20,20,360,30,C.block,C.line2,8,1.2);txt(g,32,35,'Wie wird das Wetter morgen in Landshut?',C.text,11.5,'left',700,SANS);
+  if(s===0){box(g,140,90,120,70,hexA(C.purple,.1),C.purple,12,2);txt(g,200,118,'MODELL',C.purple,11,'center',800);txt(g,200,138,'Stichtag: früher',C.mute,9);pill(g,200,190,'KENNT NICHTS VON MORGEN',C.down,1);}
+  if(a1){chipT(g,20,72,'🔎 wetter landshut morgen',C.gold,a1,11);}
+  if(a2){for(let i=0;i<3;i++){const b=s===2?clamp(a2*3-i):1;g.save();g.globalAlpha*=b;box(g,20,96+i*28,170,22,i<2&&s>=2?hexA(C.blue,.15):C.block,i<2?C.blue:C.line2,5,1.2);line(g,28,103+i*28,120,103+i*28,C.blue,2);line(g,28,111+i*28,170,111+i*28,C.mute,1.4);g.restore();}}
+  if(a3){arrow(g,194,120,234,120,C.blue,2,a3);box(g,240,90,140,70,hexA(C.purple,.1),C.purple,10,1.6);txt(g,310,112,'KONTEXT',C.purple,10,'center',800);txt(g,310,132,'2 Seiten gelesen',C.text,9.5,'center',600);}
+  if(a4){box(g,20,200,360,40,hexA(C.up,.08),C.up,8,1.4);txt(g,32,214,'Morgen bewölkt, 6 °C, ab Mittag Regen.',C.text,11.5,'left',600,SANS);chipT(g,32,230,'Quelle 1',C.blue,a4,8.5);chipT(g,90,230,'Quelle 2',C.blue,a4,8.5);}
+ },thumb:4,
+ box:{was:'Mit der Websuche holt sich ein Sprachmodell aktuelle Informationen aus dem Internet und gibt die Quellen an.',h2:'So geht’s',
+ erkennen:['Suchbegriffe aus deiner Frage bilden','Treffer anschauen, passende Seiten öffnen','Inhalte lesen und zusammenfassen','Antwort mit Quellenangaben'],
+ bedeutung:'Die Websuche macht Antworten aktueller und überprüfbarer. Sie ist aber nur so gut wie die gefundenen Seiten.',
+ tipp:'Klick bei wichtigen Dingen auf die Quellen. Steht dort wirklich, was die KI zusammengefasst hat?'}});
+
+les({id:'werkzeuge',cat:'agenten',title:'Werkzeuge benutzen',sub:'Wenn die KI einen Rechner oder Kalender braucht',
+ steps:S([[4800,'Ein Sprachmodell kann nur Text schreiben. Aber dieser Text kann ein Befehl an ein Werkzeug sein.'],
+ [5200,'Das Modell weiß, welche Werkzeuge es gibt: zum Beispiel Rechner, Kalender, Wetter, E-Mail, Dateien.'],
+ [5200,'Braucht es eines, schreibt es einen Werkzeug-Aufruf, etwa: wetter(ort: „Ergoldsbach“).'],
+ [5000,'Das Programm drumherum führt den Aufruf aus und gibt das Ergebnis zurück: „6 °C, bewölkt“.'],
+ [5200,'Mit dem Ergebnis schreibt das Modell seine Antwort. So kann es genau rechnen und echte Daten nutzen.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  box(g,140,62,120,56,hexA(C.purple,.1),C.purple,12,2);txt(g,200,90,'MODELL',C.purple,11,'center',800);
+  const tools=[['🧮 RECHNER',62,40],['📅 KALENDER',338,40],['⛅ WETTER',62,140],['✉ E-MAIL',338,140]];
+  tools.forEach(([l,x,y],i)=>{const hi=i===2&&s>=2;if(a1)line(g,x+(x<200?44:-44),y,x<200?140:260,y<100?74:106,hexA(hi?C.gold:C.line2,.8),1.2,[3,3]);pill(g,x,y,l,hi?C.gold:C.mute,Math.max(.35,a1),'center',11);});
+  if(a2){box(g,90,162,220,26,C.block,C.gold,6,1.4);txt(g,200,175,'wetter(ort: "Ergoldsbach")',C.gold,10.5,'center',700);if(s===2)flow(g,[[200,120],[200,160]],t,C.gold,{gap:8,speed:.04});}
+  if(a3){chipT(g,20,214,'→ 6 °C, bewölkt',C.aqua,a3,10);}
+  if(a4){box(g,200,202,190,26,hexA(C.up,.1),C.up,6,1.2);txt(g,295,215,'„Morgen 6 °C, bewölkt.“',C.text,10,'center',600,SANS);}
+  if(s===0)pill(g,200,140,'TEXT KANN EIN BEFEHL SEIN',C.text,1);
+ },thumb:3,
+ box:{was:'Beim Werkzeug-Gebrauch (Tool Use) schreibt das Modell einen strukturierten Aufruf, ein Programm führt ihn aus und liefert das Ergebnis zurück.',h2:'So geht’s',
+ erkennen:['Modell kennt Liste der Werkzeuge','Schreibt Aufruf mit Name und Angaben','Programm führt aus, Ergebnis kommt zurück','Modell formuliert die Antwort'],
+ bedeutung:'Werkzeuge gleichen Schwächen aus: Ein Rechner rechnet exakt, eine Datenbank liefert echte Zahlen statt Vermutungen.',
+ tipp:'Wenn du in Claude eine App verbindest (z. B. Kalender oder Mail), bekommt das Modell genau solche Werkzeuge dazu.'}});
+
+les({id:'codeschreiben',cat:'agenten',title:'Code schreiben',sub:'Programmieren, testen, verbessern',
+ steps:S([[4800,'Sprachmodelle haben im Training sehr viel Programmcode gelesen. Darum können sie auch programmieren.'],
+ [5000,'Aus deiner Beschreibung schreibt das Modell Zeile für Zeile ein Programm.'],
+ [5000,'Ein Coding-Agent führt das Programm direkt aus. Oft gibt es zuerst einen Fehler.'],
+ [5200,'Der Agent liest die Fehlermeldung, versteht das Problem und verbessert seinen Code.'],
+ [5400,'Er wiederholt das, bis alle Tests grün sind. So entstehen ganze Apps – wie deine Lern-Apps.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  box(g,20,20,250,190,C.block,C.line2,10,1.4);for(let i=0;i<3;i++)circ(g,34+i*12,32,3.5,[C.down,C.gold,C.up][i]);
+  const code=['function summe(a, b) {','  return a + c;','}','summe(2, 3);'];const fixed='  return a + b;';
+  const n=s===0?0:(s===1?Math.floor(a1*code.length*1.2):code.length);
+  code.slice(0,n).forEach((l,i)=>{const isBug=i===1;const show=isBug&&s>=3?fixed:l;txt(g,32,58+i*20,show,isBug&&s===2?C.down:(isBug&&s>=3?C.up:C.text),11,'left',600);});
+  if(s===0){pill(g,145,110,'VIEL CODE GELESEN',C.gold,1);}
+  box(g,280,20,104,190,C.bg,C.line2,10,1.4);txt(g,332,36,'TERMINAL',C.mute,9,'center',800);
+  if(s===2){txt(g,288,64,'✗ Fehler:',C.down,10,'left',800);txt(g,288,82,'c ist nicht',C.down,9.5,'left',600);txt(g,288,98,'definiert',C.down,9.5,'left',600);}
+  if(s===3){txt(g,288,64,'Fehler gelesen',C.gold,9.5,'left',600);txt(g,288,82,'c → b',C.gold,10,'left',800);}
+  if(s===4){['✓ Test 1','✓ Test 2','✓ Test 3'].forEach((x,i)=>tA(g,clamp(a4*3-i),288,64+i*20,x,C.up,10,'left',800));txt(g,288,140,'= 5',C.up,14,'left',800);}
+  pill(g,200,232,['','SCHREIBEN','AUSFÜHREN','VERBESSERN','ALLE TESTS GRÜN ✓'][s]||'KI PROGRAMMIERT',[C.gold,C.blue,C.down,C.gold,C.up][s],1);
+ },thumb:2,
+ box:{was:'Coding-Agenten schreiben Programme, führen sie aus, lesen Fehlermeldungen und verbessern den Code selbstständig.',h2:'So geht’s',
+ erkennen:['Beschreibung → Code','Code ausführen','Fehler lesen und beheben','Tests prüfen, ob alles stimmt'],
+ bedeutung:'Auch ohne Programmierkenntnisse kann man so eigene Apps bauen. Verstehen, was die App tun soll, bleibt deine Aufgabe.',
+ tipp:'Beschreib Fehler genau: „Wenn ich auf X tippe, passiert Y, ich erwarte Z.“ Dann findet die KI das Problem viel schneller.'}});
+
+les({id:'planen',cat:'agenten',title:'Aufgaben planen',sub:'Große Ziele in kleine Schritte zerlegen',
+ steps:S([[4800,'Große Aufgaben schafft auch eine KI nicht in einem Rutsch. Sie braucht einen Plan.'],
+ [5000,'Zuerst zerlegt der Agent das Ziel in kleine, überprüfbare Schritte – wie eine Checkliste.'],
+ [5200,'Dann arbeitet er die Schritte nacheinander ab und hakt erledigte ab.'],
+ [5000,'Geht etwas schief, passt er den Plan an, statt einfach weiterzumachen.'],
+ [5400,'Vor Schritten, die man nicht rückgängig machen kann, holt er deine Freigabe ein.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  box(g,20,18,360,30,hexA(C.gold,.1),C.gold,8,1.4);txt(g,32,33,'🎯 Lern-App bauen und veröffentlichen',C.text,11.5,'left',700,SANS);
+  const L=['Themen festlegen','Lektionen schreiben','App bauen','Im Handy testen','Veröffentlichen'];
+  const done=s<2?0:(s===2?Math.floor(a2*3):(s===3?3:4));
+  L.forEach((l,i)=>{const b=s===0?0:(s===1?clamp(a1*5-i):1);if(b<=0)return;const y=70+i*30;const fail=s===3&&i===3;const ok=i<done;
+   g.save();g.globalAlpha*=b;box(g,40,y-11,22,22,ok?hexA(C.up,.4):C.block,fail?C.down:(ok?C.up:C.line2),5,1.4);if(ok)txt(g,51,y+1,'✓',C.up,13,'center',800);if(fail)txt(g,51,y+1,'!',C.down,13,'center',800);
+   txt(g,74,y,l,ok?C.mute:C.text,12,'left',600,SANS);g.restore();});
+  if(s===3){pill(g,300,196,'TEXT ÜBERLAPPT → ZURÜCK',C.down,a3);arrow(g,236,190,180,168,C.down,1.8,a3);}
+  if(s===4){box(g,230,176,150,46,hexA(C.down,.1),C.down,10,1.6);txt(g,305,192,'Jetzt veröffentlichen?',C.text,10,'center',700,SANS);chipT(g,250,210,'Ja',C.up,a4,9);chipT(g,300,210,'Nein',C.down,a4,9);}
+  if(s===0)pill(g,200,140,'ERST PLANEN, DANN HANDELN',C.gold,1);
+ },thumb:4,
+ box:{was:'Planende Agenten zerlegen große Ziele in kleine Schritte, arbeiten sie ab und passen den Plan an, wenn etwas schiefgeht.',h2:'So geht’s',
+ erkennen:['Ziel in Teilschritte zerlegen','Schritt für Schritt abarbeiten','Ergebnis jedes Schritts prüfen','Bei wichtigen Schritten nachfragen'],
+ bedeutung:'Ein sichtbarer Plan macht die Arbeit der KI nachvollziehbar: Du siehst, was erledigt ist und was noch kommt.',
+ tipp:'Bitte die KI bei großen Aufgaben: „Mach erst einen Plan und zeig ihn mir.“ Dann kannst du früh eingreifen.'}});
+
+/* ---------- KI SICHER NUTZEN ---------- */
+les({id:'datenschutz',cat:'sicher',title:'Datenschutz',sub:'Was du einer KI besser nicht verrätst',
+ steps:S([[4800,'Alles, was du in einen Chat schreibst, wird an die Server des Anbieters geschickt und dort verarbeitet.'],
+ [5200,'Je nach Anbieter und Einstellung werden Chats gespeichert und manchmal zum Verbessern künftiger Modelle genutzt.'],
+ [5200,'Darum gehören diese Dinge nicht in einen Chat: Passwörter, PINs, vollständige Kontonummern, Ausweisnummern.'],
+ [5000,'Bei Dokumenten mit fremden Daten hilft Anonymisieren: Namen, Adressen und Nummern vorher schwärzen oder ersetzen.'],
+ [5200,'Schau in die Einstellungen: Dort kannst du oft festlegen, ob deine Chats fürs Training verwendet werden dürfen.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  if(s<2){box(g,20,90,90,70,C.block,C.blue,10,1.6);txt(g,65,125,'DU',C.blue,13,'center',800);
+   box(g,290,80,90,90,C.block,C.down,10,1.6);for(let i=0;i<3;i++){box(g,302,94+i*24,66,18,C.bg,C.line2,3,1);circ(g,312,103+i*24,2.5,C.up);}txt(g,335,182,'SERVER',C.down,9.5,'center',800);
+   flow(g,[[112,125],[288,125]],t,C.blue,{gap:16,speed:.06});pill(g,200,105,'DEIN TEXT',C.blue,1);
+   if(a1){pill(g,335,62,'GESPEICHERT?',C.gold,a1);pill(g,200,206,'TRAINING? → EINSTELLUNG PRÜFEN',C.gold,a1);}}
+  else if(s===2){const L=[['🔑 Passwort / PIN',C.down],['💳 Kontonummer',C.down],['🪪 Ausweisnummer',C.down],['🏥 Gesundheitsdaten anderer',C.down]];L.forEach(([l,col],i)=>{const b=clamp(a2*4-i);pill(g,200,50+i*40,l+'  ✗',col,b,'center',12);});}
+  else if(s===3){box(g,30,40,340,140,C.block,C.line2,10,1.4);
+   const lines=[['Kunde: ','Max Mustermann','Kunde A'],['Straße: ','Hauptstr. 12','[Adresse]'],['Tel.: ','0871 123456','[Telefon]']];
+   lines.forEach(([k,v,r],i)=>{txt(g,48,70+i*34,k,C.mute,12,'left',600,SANS);g.font=`600 12px ${SANS}`;const w=g.measureText(v).width;const x0=48+g.measureText(k).width;
+    if(a3>.4){box(g,x0-2,62+i*34,w+4,18,C.text,null,2);txt(g,x0+w+14,70+i*34,'→ '+r,C.up,11,'left',700);}else txt(g,x0,70+i*34,v,C.text,12,'left',600,SANS);});
+   pill(g,200,208,'ERST SCHWÄRZEN, DANN HOCHLADEN',C.up,a3);}
+  else{box(g,90,60,220,120,C.block,C.line2,12,1.4);txt(g,110,90,'⚙ Einstellungen',C.text,12,'left',700,SANS);txt(g,110,130,'Chats fürs Training',C.text,11,'left',600,SANS);txt(g,110,146,'verwenden',C.text,11,'left',600,SANS);
+   const on=a4<.5;box(g,250,126,40,22,on?hexA(C.up,.5):C.block,on?C.up:C.mute,11,1.4);circ(g,on?279:261,137,8,on?C.up:C.mute);pill(g,200,206,'SELBST ENTSCHEIDEN',C.gold,a4);}
+ },thumb:2,
+ box:{was:'Datenschutz bei KI heißt: bewusst entscheiden, welche Informationen du in einen Chat eingibst und was der Anbieter damit tun darf.',h2:'So erkennst du es',
+ erkennen:['<b>Nie:</b> Passwörter, PINs, Kontonummern','<b>Vorsicht:</b> Daten anderer Menschen','<b>Schwärzen:</b> Namen, Adressen, Nummern','<b>Einstellungen:</b> Training an/aus prüfen'],
+ bedeutung:'In der Firma gelten oft eigene Regeln, welche KI-Dienste mit Firmendaten genutzt werden dürfen. Frag im Zweifel nach.',
+ tipp:'Statt echter Daten kannst du Beispiele nehmen: „Kunde A, Bauteil B, 12 Stück“ – die KI hilft genauso gut.'}});
+
+les({id:'deepfakes',cat:'sicher',title:'Deepfakes erkennen',sub:'Gefälschte Bilder, Videos und Stimmen',
+ steps:S([[4800,'Deepfakes sind mit KI gefälschte Bilder, Videos oder Stimmen. Sie zeigen Menschen bei Dingen, die nie passiert sind.'],
+ [5200,'Mögliche Hinweise in Bildern: komische Hände und Finger, verschwommene Ohren oder Schmuck, unlogisches Licht, verzerrte Schrift im Hintergrund.'],
+ [5000,'Hinweise in Videos: seltsames Blinzeln, Lippen passen nicht genau zum Ton, Ränder um das Gesicht flimmern.'],
+ [5200,'Aber Achtung: Gute Fälschungen haben diese Fehler oft nicht mehr. Wichtiger ist die Frage: Woher kommt das?'],
+ [5400,'Darum: Quelle prüfen, bei großen Neuigkeiten seriöse Nachrichtenseiten vergleichen, bei Geldforderungen zurückrufen.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  if(s<3){box(g,110,30,180,190,C.block,C.line2,12,1.4);
+   g.save();g.fillStyle=hexA(C.metal,.3);g.beginPath();g.ellipse(200,105,46,58,0,0,TAU);g.fill();g.restore();circ(g,182,96,5,C.text);circ(g,218,96,5,C.text);g.save();g.strokeStyle=C.text;g.lineWidth=2;g.beginPath();g.arc(200,125,14,.2,Math.PI-.2);g.stroke();g.restore();
+   poly(g,[[140,220],[150,178],[250,178],[260,220]],hexA(C.metal,.25));
+   if(s===0){pill(g,200,22,'ECHT ODER FALSCH?',C.down,1);}
+   if(s===1){[[148,92,'OHR'],[262,200,'HAND: 6 FINGER?'],[200,40,'SCHRIFT VERZERRT']].forEach(([x,y,l],i)=>{const b=clamp(a1*3-i);circ(g,x,y,14,null,hexA(C.down,b),2);pill(g,x<200?60:x>220?330:200,y<60?16:y,l,C.down,b);});}
+   if(s===2){const bl=Math.floor(t/300)%7===0;if(bl){line(g,176,96,188,96,C.text,3);line(g,212,96,224,96,C.text,3);}circ(g,200,128,22,null,hexA(C.down,a2),2);pill(g,330,128,'LIPPEN ≠ TON',C.down,a2);pill(g,70,96,'BLINZELN?',C.down,a2);}}
+  else if(s===3){box(g,60,50,120,150,C.block,C.up,12,1.6);box(g,220,50,120,150,C.block,C.down,12,1.6);txt(g,120,125,'ECHT',C.up,12,'center',800);txt(g,280,125,'FAKE',C.down,12,'center',800);txt(g,200,125,'=',C.text,20,'center',800);pill(g,200,226,'SIEHT GLEICH AUS → QUELLE PRÜFEN',C.gold,a3);}
+  else{const L=[['🔍 QUELLE PRÜFEN',C.blue],['📰 SERIÖSE SEITEN VERGLEICHEN',C.aqua],['📞 ZURÜCKRUFEN BEI GELD',C.up]];L.forEach(([l,col],i)=>pill(g,200,70+i*46,l,col,clamp(a4*3-i),'center',12));}
+ },thumb:1,
+ box:{was:'Ein Deepfake ist ein mit KI gefälschtes oder verändertes Bild, Video oder Tondokument, das echt wirken soll.',h2:'So erkennst du es',
+ erkennen:['Ungewöhnliche Hände, Ohren, Zähne, Schmuck','Licht und Schatten passen nicht','Lippen nicht synchron, seltsames Blinzeln','Die Quelle ist unbekannt oder unseriös'],
+ bedeutung:'Ab Dezember 2026 müssen KI-erzeugte Inhalte in der EU maschinenlesbar gekennzeichnet sein. Verlassen solltest du dich darauf trotzdem nicht.',
+ tipp:'Ruft „die Bank“ oder „ein Verwandter“ mit einer dringenden Geldbitte an: auflegen und selbst unter der bekannten Nummer zurückrufen.'}});
+
+les({id:'vorurteile',cat:'sicher',title:'Vorurteile in Daten',sub:'Wenn die KI unfair wird',
+ steps:S([[4800,'Eine KI lernt aus Daten, die Menschen gesammelt haben. Sind die Daten einseitig, wird auch die KI einseitig.'],
+ [5200,'Beispiel: Eine Gesichtserkennung wurde zu 90 % mit Fotos von hellhäutigen Menschen trainiert.'],
+ [5000,'Das Ergebnis: Bei dunkelhäutigen Menschen macht sie deutlich mehr Fehler – nicht aus Absicht, sondern aus fehlenden Beispielen.'],
+ [5200,'Ähnliches passiert bei Bewerbungen: Wurden früher vor allem Männer eingestellt, lernt eine KI dieses Muster mit.'],
+ [5400,'Gegenmittel: ausgewogene Daten sammeln, Ergebnisse für verschiedene Gruppen getrennt prüfen und Menschen entscheiden lassen.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  const person=(x,y,col,a=1)=>{if(a<=0)return;g.save();g.globalAlpha*=a;circ(g,x,y-7,5,col);box(g,x-6,y-1,12,12,col,null,5);g.restore();};
+  if(s<=2){const k=s===0?.5:(s===1?lerp(.5,.9,ease(a1)):.9);for(let i=0;i<40;i++){const x=40+(i%10)*20,y=50+Math.floor(i/10)*34;person(x,y,i<Math.round(k*40)?C.gold:C.purple);}
+   pill(g,140,206,s===0?'TRAININGSDATEN':'90 % : 10 %',s===0?C.text:C.down,1);
+   if(s===2){hbars(g,310,90,[['Gruppe A',.97,C.up],['Gruppe B',.71,C.down]],50,a2,1,40);pill(g,330,40,'TREFFER',C.mute,a2);}}
+  else if(s===3){for(let i=0;i<10;i++)person(50+i*30,90,i<8?C.blue:C.pink);pill(g,200,50,'FRÜHER EINGESTELLT',C.mute,a3);arrow(g,200,110,200,140,C.text,2,a3);box(g,140,144,120,40,hexA(C.down,.1),C.down,8,1.6);txt(g,200,164,'KI KOPIERT MUSTER',C.down,10,'center',800);}
+  else{for(let i=0;i<40;i++){const x=40+(i%10)*20,y=50+Math.floor(i/10)*34;person(x,y,i%2?C.gold:C.purple);}pill(g,140,206,'50 % : 50 %',C.up,1);
+   hbars(g,310,90,[['Gruppe A',.96,C.up],['Gruppe B',.95,C.up]],50,a4,-1,40);pill(g,330,40,'FAIR ✓',C.up,a4);}
+ },thumb:2,
+ box:{was:'Vorurteile (englisch Bias) in KI entstehen, wenn Trainingsdaten bestimmte Gruppen über- oder unterrepräsentieren oder alte Ungerechtigkeiten enthalten.',h2:'So erkennst du es',
+ erkennen:['KI funktioniert für manche Gruppen schlechter','Ergebnisse spiegeln alte Muster wider','Daten stammen nur aus einer Quelle oder Region','Niemand hat getrennt nach Gruppen geprüft'],
+ bedeutung:'Bei wichtigen Entscheidungen über Menschen (Job, Kredit) gelten nach dem EU-KI-Gesetz strengere Regeln.',
+ tipp:'Das Gleiche gilt für Prüf-KI in der Fabrik: Hat sie nur Teile von einer Gießform gesehen, erkennt sie Fehler an einer anderen Form schlechter.'}});
+
+les({id:'urheberrecht',cat:'sicher',title:'Urheberrecht & KI',sub:'Wem gehört, was die KI macht?',
+ steps:S([[4800,'KI-Modelle werden mit Texten, Bildern und Musik trainiert, die Menschen geschaffen haben. Darüber wird gerade viel gestritten und vor Gericht verhandelt.'],
+ [5200,'Bei KI-Ergebnissen gilt in Deutschland: Ein Werk, das ganz ohne menschliche kreative Leistung entsteht, ist meist nicht urheberrechtlich geschützt.'],
+ [5000,'Je mehr du selbst gestaltest – eigener Text, Auswahl, Bearbeitung – desto eher ist das Ergebnis auch dein Werk.'],
+ [5200,'Die Nutzungsbedingungen des Anbieters regeln, ob du Ergebnisse privat oder auch geschäftlich verwenden darfst.'],
+ [5400,'Vorsicht bei Nachahmungen: Bekannte Figuren, Logos oder echte Personen darfst du nicht einfach nachmachen lassen und veröffentlichen.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  if(s===0){[['📚',60],['🖼',130],['🎵',200]].forEach(([e,x])=>{box(g,x-28,60,56,56,C.block,C.blue,8,1.4);txt(g,x,88,e,C.blue,22);flow(g,[[x,118],[310,150]],t,C.blue,{gap:16,speed:.05});});
+   box(g,270,130,90,60,hexA(C.purple,.1),C.purple,10,1.6);txt(g,315,160,'MODELL',C.purple,10,'center',800);pill(g,200,220,'⚖ WIRD VOR GERICHT GEKLÄRT',C.gold,1);}
+  else if(s<=2){const k=s===1?0:ease(a2);const W=300;box(g,50,100,W,30,C.block,C.line2,8,1.2);box(g,50,100,W*(.1+.8*k),30,hexA(C.up,.4),C.up,8,1.2);
+   tA(g,1,50,150,'nur Prompt',C.mute,9.5,'left');tA(g,1,350,150,'viel eigene Arbeit',C.mute,9.5,'right');
+   pill(g,200,60,s===1?'NUR KI: MEIST KEIN SCHUTZ':'MEHR EIGENES = MEHR DEIN WERK',s===1?C.down:C.up,1);}
+  else if(s===3){box(g,110,40,180,170,C.block,C.line2,10,1.4);txt(g,200,62,'NUTZUNGSBEDINGUNGEN',C.text,9.5,'center',800);for(let i=0;i<6;i++)line(g,126,84+i*16,274-(i%2)*30,84+i*16,C.mute,1.6);
+   pill(g,200,196,'PRIVAT ✓  GESCHÄFTLICH ?',C.gold,a3);}
+  else{[['FIGUR',C.down],['LOGO',C.down],['ECHTE PERSON',C.down]].forEach(([l,col],i)=>{const x=80+i*120;const b=clamp(a4*3-i);g.save();g.globalAlpha*=b;box(g,x-46,70,92,80,hexA(col,.08),col,10,1.6);line(g,x-30,86,x+30,134,col,3);line(g,x+30,86,x-30,134,col,3);g.restore();tA(g,b,x,166,l,col,10,'center',800);});pill(g,200,214,'NICHT NACHMACHEN & VERÖFFENTLICHEN',C.down,a4);}
+ },thumb:4,
+ box:{was:'Beim Urheberrecht und KI geht es um zwei Fragen: Darf mit fremden Werken trainiert werden – und wem gehören die Ergebnisse?',h2:'So erkennst du es',
+ erkennen:['Training mit fremden Werken: rechtlich umstritten','Reines KI-Ergebnis: meist kein Urheberrecht','Eigene kreative Leistung zählt','Anbieter-Bedingungen lesen'],
+ bedeutung:'Für private Nutzung ist meist alles unproblematisch. Bei Veröffentlichung oder Verkauf solltest du genauer hinschauen. (Keine Rechtsberatung.)',
+ tipp:'Für YouTube-Videos: Prüfe bei Musik-KIs, ob dein Abo die kommerzielle Nutzung erlaubt – oft gilt das nur für bezahlte Tarife.'}});
+
+les({id:'aiact',cat:'sicher',title:'Das EU-KI-Gesetz',sub:'Der AI Act und seine Risikostufen',
+ steps:S([[4800,'Die EU hat als erste große Region ein eigenes KI-Gesetz: die KI-Verordnung, englisch AI Act. Sie gilt seit August 2024 und wird schrittweise wirksam.'],
+ [5200,'Ganz oben: verbotene KI. Zum Beispiel Sozialpunkte-Systeme oder Manipulation, die Menschen schadet. Diese Verbote gelten seit Februar 2025.'],
+ [5200,'Hohes Risiko: KI bei Bewerbungen, Krediten, Medizinprodukten oder Maschinen. Dafür gelten strenge Pflichten – ab Dezember 2027 bzw. August 2028.'],
+ [5000,'Begrenztes Risiko: Chatbots und KI-Bilder. Hier gilt vor allem Transparenz – man muss erkennen können, dass KI im Spiel ist.'],
+ [5200,'Minimales Risiko: Spamfilter, Spiele-KI. Dafür gibt es kaum Pflichten. Die meisten KI-Anwendungen gehören hierher.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  const lv=[['VERBOTEN',C.down],['HOHES RISIKO',C.orange],['BEGRENZT',C.gold],['MINIMAL',C.up]];
+  const cx=124,top=30,h=48;
+  lv.forEach(([l,col],i)=>{const a=s===0?.35:(i+1<=s?1:(i+1===s+1?0:.25));const y=top+i*h;const w0=16+i*26,w1=16+(i+1)*26;
+   const act=s===i+1;g.save();g.globalAlpha*=Math.max(.25,i+1<=s?1:.25);poly(g,[[cx-w0,y],[cx+w0,y],[cx+w1,y+h-4],[cx-w1,y+h-4]],hexA(col,act?.45:.18),col,act?2.2:1.2);g.restore();
+   txt(g,cx,y+h/2-2,l,col,10.5,'center',800);});
+  const info=[null,['Sozialpunkte','seit 02/2025'],['Bewerbung, Kredit','ab 12/2027 bzw. 08/2028'],['Chatbots, KI-Bilder','Kennzeichnung'],['Spamfilter, Spiele','kaum Pflichten']];
+  if(s===0){pill(g,322,60,'IN KRAFT: 08/2024',C.blue,1);pill(g,322,100,'STUFENWEISE',C.blue,1);}
+  else{const [a,b]=info[s];const y=top+(s-1)*h+h/2-2;line(g,cx+16+(s-.5)*26+6,y,250,y,lv[s-1][1],1.2,[3,3]);pill(g,322,y-9,a,lv[s-1][1],ap(st,s),'center',10.5);tA(g,ap(st,s),322,y+12,b,C.mute,9.5);}
+ },thumb:2,
+ box:{was:'Die KI-Verordnung der EU (AI Act) teilt KI-Anwendungen nach ihrem Risiko ein und legt je nach Stufe Verbote oder Pflichten fest.',h2:'So erkennst du es',
+ erkennen:['<b>Verboten:</b> z. B. Sozialpunkte, schädliche Manipulation','<b>Hoch:</b> Personal, Kredit, Medizin, Maschinen','<b>Begrenzt:</b> Chatbots, Deepfakes → Kennzeichnung','<b>Minimal:</b> Spamfilter, Spiele'],
+ bedeutung:'Seit Februar 2025 müssen Firmen, die KI einsetzen, außerdem für ausreichende KI-Kompetenz ihrer Mitarbeiter sorgen. Die Hochrisiko-Fristen wurden 2026 verschoben (Stand: November 2026).',
+ tipp:'Als privater Nutzer hast du kaum Pflichten. Als Firma lohnt ein Blick, in welche Stufe die eigene KI-Anwendung fällt.'}});
+
+/* ---------- GESCHICHTE DER KI ---------- */
+function timeline(g,items,hi,a=1){line(g,20,200,380,200,C.line2,2);items.forEach(([yr,x,col],i)=>{const on=i<=hi;circ(g,x,200,i===hi?7:5,on?col:C.block,on?col:C.line2,1.6);tA(g,1,x,220,yr,on?col:C.mute,10,'center',800);});}
+const TL=[['1950',40,C.sky],['1956',90,C.sky],['1997',160,C.sky],['2016',220,C.sky],['2017',270,C.sky],['2022',330,C.sky],['HEUTE',372,C.gold]];
+les({id:'turing',cat:'geschichte',title:'Die Anfänge',sub:'Turing-Test und der Name „KI“',
+ steps:S([[4800,'1950 stellte der britische Mathematiker Alan Turing die Frage: „Können Maschinen denken?“'],
+ [5400,'Er schlug einen Test vor: Ein Mensch chattet mit zwei Partnern – einem Menschen und einer Maschine. Kann er nicht sagen, wer wer ist, hat die Maschine bestanden.'],
+ [5000,'1956 trafen sich Forscher in Dartmouth (USA) zu einer Sommer-Konferenz. Dort wurde der Begriff „Künstliche Intelligenz“ bekannt.'],
+ [5200,'Danach folgten Jahrzehnte mit großen Hoffnungen – und „KI-Wintern“, in denen das Geld ausging, weil die Computer zu schwach waren.'],
+ [5000,'Die Grundideen von damals, wie das künstliche Neuron, stecken bis heute in jeder modernen KI.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  timeline(g,TL,s>=2?1:0);
+  if(s<=1){box(g,150,30,100,60,C.block,C.sky,8,1.6);txt(g,200,60,'RICHTER',C.sky,10,'center',800);
+   if(a1){box(g,40,110,90,56,C.block,C.blue,8,1.4);txt(g,85,138,'MENSCH',C.blue,10,'center',800);box(g,270,110,90,56,C.block,C.purple,8,1.4);txt(g,315,138,'MASCHINE',C.purple,10,'center',800);
+    arrow(g,170,92,110,108,C.text,1.6,a1,true);arrow(g,230,92,290,108,C.text,1.6,a1,true);pill(g,200,160,'WER IST WER?',C.gold,a1);}
+   if(s===0)pill(g,200,130,'„KÖNNEN MASCHINEN DENKEN?“',C.sky,1);}
+  if(s===2){pill(g,200,80,'DARTMOUTH 1956',C.sky,a2,'center',13);pill(g,200,120,'„ARTIFICIAL INTELLIGENCE“',C.gold,a2);}
+  if(s===3){g.save();g.strokeStyle=C.sky;g.lineWidth=2.4;g.beginPath();for(let x=30;x<=370;x+=3){const y=110-Math.sin((x-30)*.03)*40*((x<200)?1:.7)-(x>300?(x-300)*.6:0);x===30?g.moveTo(x,y):g.lineTo(x,y);}g.stroke();g.restore();
+   pill(g,130,170,'❄ KI-WINTER',C.blue,a3);pill(g,250,40,'HOFFNUNG',C.up,a3);}
+  if(s===4){fbox(g,a4,150,70,100,70,C.gold,'Σ','NEURON');pill(g,200,170,'GRUNDIDEE BIS HEUTE',C.gold,a4);}
+ },thumb:1,
+ box:{was:'Der Turing-Test (1950) prüft, ob man eine Maschine im Gespräch von einem Menschen unterscheiden kann. 1956 wurde der Begriff „Künstliche Intelligenz“ geprägt.',h2:'So erkennst du es',
+ erkennen:['<b>1950:</b> Alan Turing – „Können Maschinen denken?“','<b>1956:</b> Dartmouth-Konferenz','<b>1970er/80er:</b> KI-Winter','Erste Neuronen-Modelle schon in den 1940er/50er Jahren'],
+ bedeutung:'Viele Ideen der KI sind alt. Erst schnelle Computer und riesige Datenmengen haben sie wirklich nutzbar gemacht.',
+ tipp:'Heutige Chatbots würden den Turing-Test oft bestehen – trotzdem streiten Forscher, ob das wirklich „Denken“ ist.'}});
+
+les({id:'deepblue',cat:'geschichte',title:'Deep Blue schlägt Kasparow',sub:'1997: Der Schachcomputer gewinnt',
+ steps:S([[4800,'1997 trat der Schachweltmeister Garri Kasparow gegen den IBM-Computer Deep Blue an.'],
+ [5000,'Deep Blue gewann das Match mit 3,5 zu 2,5 Punkten. Zum ersten Mal verlor ein amtierender Weltmeister ein Match gegen einen Computer.'],
+ [5400,'Aber Deep Blue „lernte“ nicht im heutigen Sinn: Er rechnete rund 200 Millionen Stellungen pro Sekunde durch und bewertete sie nach Regeln von Menschen.'],
+ [5000,'Das ist klassische KI: viel Rechenkraft plus von Experten programmiertes Wissen.'],
+ [5200,'Heutige Schachprogramme lernen dagegen durch Spielen gegen sich selbst – und sind viel stärker als jeder Mensch.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  timeline(g,TL,2);const bx=130,by=24,cs=17;
+  for(let r=0;r<8;r++)for(let c=0;c<8;c++){g.fillStyle=(r+c)%2?hexA(C.sky,.35):hexA(C.sky,.08);g.fillRect(bx+c*cs,by+r*cs,cs,cs);}
+  const pcs=[[4,7,'♔',C.text],[3,0,'♚',C.sky],[2,5,'♕',C.text],[6,1,'♜',C.sky],[5,4,'♞',C.text]];pcs.forEach(([c,r,p,col])=>txt(g,bx+c*cs+cs/2,by+r*cs+cs/2+1,p,col,14,'center',400,SANS));
+  if(s===0){pill(g,60,60,'KASPAROW',C.text,1);pill(g,340,60,'DEEP BLUE',C.sky,1);}
+  if(s===1){pill(g,60,90,'2,5',C.mute,a1,'center',14);pill(g,340,90,'3,5 ✓',C.sky,a1,'center',14);}
+  if(s===2){const n=Math.floor(t*.2)%1000;pill(g,340,60,'200 MIO.',C.gold,a2);pill(g,340,86,'STELLUNGEN/S',C.gold,a2);for(let i=0;i<12;i++){const ang=i*.52+t*.003;line(g,bx+68,by+68,bx+68+Math.cos(ang)*90,by+68+Math.sin(ang)*70,hexA(C.gold,.25*a2),1);}}
+  if(s===3){pill(g,60,70,'RECHENKRAFT',C.gold,a3);pill(g,60,110,'+ REGELN',C.blue,a3);pill(g,340,90,'KLASSISCHE KI',C.sky,a3);}
+  if(s===4){pill(g,340,70,'HEUTE: LERNT',C.up,a4);pill(g,340,100,'GEGEN SICH SELBST',C.up,a4);}
+ },thumb:1,
+ box:{was:'Deep Blue war ein Schachcomputer von IBM, der 1997 Weltmeister Garri Kasparow in einem Match über sechs Partien besiegte.',h2:'So erkennst du es',
+ erkennen:['Spezialcomputer nur für Schach','Rechnete ca. 200 Mio. Stellungen pro Sekunde','Bewertung nach Regeln von Schach-Experten','Ergebnis: 3,5 : 2,5 für Deep Blue'],
+ bedeutung:'Deep Blue zeigte, was rohe Rechenkraft kann – aber nur für genau eine Aufgabe. Moderne KI lernt allgemeiner.',
+ tipp:'Kostenlose Schach-Apps sind heute auf dem Handy stärker als Deep Blue damals im ganzen Rechenschrank.'}});
+
+les({id:'alphago',cat:'geschichte',title:'AlphaGo',sub:'2016: Die KI meistert Go',
+ steps:S([[4800,'Go ist ein uraltes Brettspiel aus China. Es hat viel mehr mögliche Stellungen als Schach – reines Durchrechnen ist unmöglich.'],
+ [5000,'2016 trat AlphaGo von Google DeepMind gegen Lee Sedol an, einen der besten Go-Spieler der Welt.'],
+ [5000,'AlphaGo gewann 4 zu 1. Experten hatten damit erst in 10 Jahren gerechnet.'],
+ [5400,'Das Besondere: AlphaGo nutzte neuronale Netze, die aus Millionen Partien gelernt hatten – und spielte dann gegen sich selbst, um besser zu werden.'],
+ [5200,'Berühmt wurde Zug 37 in Partie 2: ein Zug, den kein Mensch gespielt hätte – und der sich als genial herausstellte.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  timeline(g,TL,3);const bx=120,by=20,n=9,cs=18;
+  box(g,bx-8,by-8,n*cs-cs+16,n*cs-cs+16,hexA(C.gold,.18),null,4);for(let i=0;i<n;i++){line(g,bx,by+i*cs,bx+(n-1)*cs,by+i*cs,C.mute,1);line(g,bx+i*cs,by,bx+i*cs,by+(n-1)*cs,C.mute,1);}
+  const stones=[[2,2,1],[3,2,0],[2,3,0],[6,6,1],[5,6,0],[6,5,1],[4,4,1],[3,5,0],[5,3,0],[6,2,1],[2,6,1]];
+  const k=s===0?stones.length:Math.min(stones.length,Math.floor(t/250)%(stones.length+4));
+  stones.slice(0,k).forEach(([c,r,w])=>circ(g,bx+c*cs,by+r*cs,7.5,w?C.text:C.bg,w?C.mute:C.text,1.2));
+  if(s===0)pill(g,340,60,'MEHR STELLUNGEN',C.sky,1),pill(g,340,86,'ALS ATOME IM ALL',C.sky,1);
+  if(s===1){pill(g,50,80,'LEE SEDOL',C.text,a1);pill(g,345,80,'ALPHAGO',C.sky,a1);}
+  if(s===2){pill(g,50,80,'1',C.mute,a2,'center',14);pill(g,345,80,'4 ✓',C.sky,a2,'center',14);}
+  if(s===3){pill(g,345,60,'NETZE + ÜBEN',C.up,a3);pill(g,345,90,'GEGEN SICH SELBST',C.up,a3);}
+  if(s===4){circ(g,bx+7*cs,by+3*cs,9,hexA(C.gold,.6),C.gold,2);circ(g,bx+7*cs,by+3*cs,14+Math.sin(t*.01)*3,null,C.gold,1.6);pill(g,345,100,'ZUG 37',C.gold,a4);}
+ },thumb:3,
+ box:{was:'AlphaGo war die erste KI, die einen Go-Weltklasse-Spieler in einem offiziellen Match besiegte – 2016 mit 4 : 1 gegen Lee Sedol.',h2:'So erkennst du es',
+ erkennen:['Go: 19 × 19 Felder, unvorstellbar viele Stellungen','Neuronale Netze bewerten Stellungen','Lernen aus Partien und Spiel gegen sich selbst','Nachfolger AlphaZero lernte ganz ohne menschliche Partien'],
+ bedeutung:'AlphaGo zeigte, dass gelernte „Intuition“ reines Durchrechnen schlagen kann. Das war ein Wendepunkt für Deep Learning.',
+ tipp:'Das Team hinter AlphaGo (DeepMind) entwickelte später AlphaFold – dafür gab es 2024 den Chemie-Nobelpreis.'}});
+
+les({id:'transformer2017',cat:'geschichte',title:'Der Transformer',sub:'2017: Die Erfindung hinter ChatGPT und Claude',
+ steps:S([[4800,'2017 veröffentlichten Forscher von Google einen Fachartikel mit dem Titel „Attention Is All You Need“.'],
+ [5200,'Darin stellten sie den Transformer vor. Vorher lasen Sprach-Netze Texte Wort für Wort nacheinander – langsam und vergesslich.'],
+ [5200,'Der Transformer schaut mit Attention auf alle Wörter gleichzeitig. Das lässt sich perfekt auf Grafikkarten parallel rechnen.'],
+ [5200,'Dadurch konnte man plötzlich riesige Modelle mit riesigen Textmengen trainieren: GPT-1 (2018), GPT-2 (2019), GPT-3 (2020).'],
+ [5200,'Fast alle heutigen Sprachmodelle – auch Claude – bauen auf dieser Idee auf.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  timeline(g,TL,4);
+  if(s===0){box(g,130,30,140,150,C.block,C.line2,6,1.4);txt(g,200,60,'Attention Is',C.text,12,'center',700,SANS);txt(g,200,78,'All You Need',C.text,12,'center',700,SANS);for(let i=0;i<6;i++)line(g,148,100+i*12,252-(i%2)*20,100+i*12,C.mute,1.4);}
+  if(s===1||s===2){const W=['Der','Hund','bellt','laut'];W.forEach((w,i)=>chipT(g,40+i*85,s===1?60:60,w,C.sky,1,11));
+   if(s===1){const k=Math.floor(t/600)%4;circ(g,62+k*85,100,7,C.gold);pill(g,200,140,'FRÜHER: EINS NACH DEM ANDEREN',C.mute,a1);}
+   else{for(let i=0;i<4;i++)for(let j=0;j<4;j++)if(i!==j){g.save();g.globalAlpha=.4*a2;g.strokeStyle=C.purple;g.lineWidth=1.4;g.beginPath();g.moveTo(62+i*85,75);g.quadraticCurveTo((124+i*85+j*85)/2,130,62+j*85,75);g.stroke();g.restore();}pill(g,200,160,'TRANSFORMER: ALLE GLEICHZEITIG',C.purple,a2);}}
+  if(s===3){[['GPT-1',2018,.08],['GPT-2',2019,.2],['GPT-3',2020,.75]].forEach(([l,y,h],i)=>{const b=clamp(a3*3-i);const H=140*h*b;box(g,90+i*90,175-H,50,H,hexA(C.sky,.4),C.sky,4,1.4);tA(g,b,115+i*90,175-H-12,l,C.sky,10,'center',800);});pill(g,200,30,'IMMER GRÖSSER',C.gold,a3);}
+  if(s===4){fbox(g,a4,140,50,120,80,C.purple,'T','TRANSFORMER');pill(g,200,160,'GRUNDLAGE VON CLAUDE & CO.',C.gold,a4);}
+ },thumb:2,
+ box:{was:'Der Transformer ist eine Netz-Architektur aus dem Jahr 2017, die mit Attention alle Wörter eines Textes gleichzeitig verarbeitet.',h2:'So erkennst du es',
+ erkennen:['<b>2017:</b> „Attention Is All You Need“','Parallel statt Wort für Wort','Passt perfekt zu Grafikkarten','Grundlage für GPT, Claude, Gemini und Co.'],
+ bedeutung:'Ohne den Transformer gäbe es die heutigen Sprachmodelle nicht. Er machte das Training riesiger Modelle erst möglich.',
+ tipp:'Mehr dazu, wie Attention genau funktioniert, findest du in der Lektion „Aufmerksamkeit“ im Bereich Sprachmodelle.'}});
+
+les({id:'chatgpt',cat:'geschichte',title:'ChatGPT, Claude & Co.',sub:'Ab 2022: KI für alle',
+ steps:S([[4800,'Ende November 2022 veröffentlichte OpenAI ChatGPT – einen Chat, den jeder kostenlos im Browser ausprobieren konnte.'],
+ [5000,'Innerhalb von rund zwei Monaten hatte ChatGPT schätzungsweise 100 Millionen Nutzer – so schnell wuchs vorher kaum ein Dienst.'],
+ [5200,'2023 folgten weitere Assistenten, darunter Claude von Anthropic im März 2023 und Gemini von Google.'],
+ [5200,'Seitdem kamen dazu: Bilder verstehen, Dateien lesen, Websuche, Programmieren und Agenten, die selbstständig Aufgaben erledigen.'],
+ [5400,'Die Entwicklung geht sehr schnell weiter. Was heute neu ist, ist in einem Jahr oft schon Alltag.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  timeline(g,TL,s>=4?6:5);
+  if(s===0){box(g,90,40,220,120,C.block,C.line2,10,1.4);box(g,104,60,140,24,hexA(C.blue,.15),C.blue,8,1.2);txt(g,112,72,'Hallo! Was kannst du?',C.text,10,'left',600,SANS);box(g,150,96,146,40,hexA(C.up,.12),C.up,8,1.2);txt(g,160,110,'Ich kann Fragen beant-',C.text,9.5,'left',600,SANS);txt(g,160,124,'worten, Texte schreiben …',C.text,9.5,'left',600,SANS);pill(g,200,176,'30.11.2022',C.sky,1);}
+  if(s===1){const X=x=>60+x*290,Y=y=>170-y*130;axes(g,50,30,360,170,'Monate','Nutzer');plotFn(g,x=>Math.pow(x,1.6),0,1,X,Y,C.sky,2.6,1,ease(a1));pill(g,180,60,'≈ 100 MIO. IN ≈ 2 MONATEN',C.gold,a1);}
+  if(s===2){[['CHATGPT','11/2022',C.up],['CLAUDE','03/2023',C.orange],['GEMINI','12/2023',C.blue]].forEach(([l,d,col],i)=>{const b=clamp(a2*3-i);g.save();g.globalAlpha*=b;box(g,30+i*120,60,100,80,hexA(col,.12),col,10,1.6);g.restore();tA(g,b,80+i*120,90,l,col,11,'center',800);tA(g,b,80+i*120,112,d,C.mute,9.5);});}
+  if(s===3){const L=[['🖼 BILDER',C.pink],['📄 DATEIEN',C.aqua],['🔎 SUCHE',C.blue],['💻 CODE',C.up],['🤖 AGENTEN',C.gold]];L.forEach(([l,col],i)=>pill(g,i%2?280:120,40+i*28,l,col,clamp(a3*5-i),'center',11));}
+  if(s===4){pill(g,200,80,'HEUTE NEU →',C.gold,a4,'center',13);pill(g,200,120,'MORGEN ALLTAG',C.up,a4,'center',13);}
+ },thumb:3,
+ box:{was:'Mit ChatGPT (2022) wurden große Sprachmodelle für alle zugänglich. Es folgten viele weitere Assistenten wie Claude und Gemini.',h2:'So erkennst du es',
+ erkennen:['<b>11/2022:</b> ChatGPT von OpenAI','<b>03/2023:</b> Claude von Anthropic','<b>Ab 2023:</b> Bilder, Dateien, Websuche','<b>Heute:</b> Agenten und Coding-Assistenten'],
+ bedeutung:'KI wurde in wenigen Jahren von einem Forschungsthema zu einem Werkzeug für Millionen Menschen in Beruf und Alltag.',
+ tipp:'Die Zahl der Nutzer nach zwei Monaten ist eine Schätzung von Marktforschern – genaue offizielle Zahlen gab es damals nicht.'}});
+
+/* ---------- MEHR TECHNIK ---------- */
+const FIMG=['000000000','001111100','010000010','010000010','010000010','001111100','000000000'];
+les({id:'cnn',cat:'technik',title:'Faltung (CNN) genauer',sub:'Wie ein Filter über das Bild wandert',
+ steps:S([[4800,'Ein Faltungsnetz (CNN) nutzt kleine Filter, zum Beispiel 3 × 3 Felder groß.'],
+ [5200,'Der Filter wird auf eine Stelle im Bild gelegt. Jedes Pixel wird mit der passenden Filterzahl malgenommen, dann wird alles addiert.'],
+ [5400,'Dann rutscht der Filter ein Feld weiter – und so weiter, über das ganze Bild. Das nennt man Faltung.'],
+ [5200,'Heraus kommt eine Merkmalskarte: Sie leuchtet dort, wo der Filter sein Muster gefunden hat – hier senkrechte Kanten.'],
+ [5200,'Ein CNN hat viele solcher Filter. Ihre Zahlen werden nicht programmiert, sondern beim Training gelernt.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  const cs=18,ox=20,oy=40,R=FIMG.length,Cn=FIMG[0].length;
+  for(let r=0;r<R;r++)for(let c=0;c<Cn;c++){const v=+FIMG[r][c];box(g,ox+c*cs,oy+r*cs,cs-2,cs-2,v?hexA(C.text,.75):C.block,C.line2,2,1);}
+  tA(g,1,ox+Cn*cs/2,oy-12,'BILD',C.mute,9);
+  const F=[[-1,0,1],[-1,0,1],[-1,0,1]];
+  if(s===0||s===4){box(g,ox+Cn*cs+20,60,3*cs,3*cs,null,C.coral,3,1.6);F.forEach((row,r)=>row.forEach((v,c)=>txt(g,ox+Cn*cs+29+c*cs,69+r*cs,String(v).replace('-','−'),C.coral,10,'center',800)));tA(g,1,ox+Cn*cs+47,50,'FILTER',C.coral,9);}
+  const pos=[];for(let r=0;r<R-2;r++)for(let c=0;c<Cn-2;c++)pos.push([r,c]);
+  let idx=s===1?8:(s===2?Math.floor(ease(a2)*(pos.length-1)):(s===3?pos.length-1:-1));
+  const conv=(r,c)=>{let sum=0;for(let i=0;i<3;i++)for(let j=0;j<3;j++)sum+=(+FIMG[r+i][c+j])*F[i][j];return sum;};
+  if(idx>=0&&s<=2){const[r,c]=pos[idx];box(g,ox+c*cs-2,oy+r*cs-2,3*cs+2,3*cs+2,hexA(C.coral,.15),C.coral,3,2.2);if(s===1){pill(g,250,190,'SUMME = '+String(conv(r,c)).replace('-','−'),C.gold,a1);}}
+  if(s>=2&&s<4){const mx=230,my=40,mc=18;for(let k=0;k<=idx;k++){const[r,c]=pos[k];const v=conv(r,c);box(g,mx+c*mc,my+r*mc,mc-2,mc-2,v>0?hexA(C.up,.25+.25*v):v<0?hexA(C.down,.25-.25*v):C.block,C.line2,2,1);}
+   tA(g,1,mx+(Cn-2)*mc/2,my-12,'MERKMALSKARTE',C.up,9);if(s===3)pill(g,280,200,'SENKRECHTE KANTEN GEFUNDEN',C.up,a3);}
+  if(s===4)pill(g,290,190,'FILTERZAHLEN = GELERNT',C.coral,a4);
+ },thumb:2,
+ box:{was:'Bei der Faltung (Convolution) wandert ein kleiner Zahlenfilter über das Bild und berechnet an jeder Stelle eine Summe aus Pixel × Filterwert.',h2:'So geht’s',
+ erkennen:['Filter z. B. 3 × 3 auf eine Stelle legen','Pixel × Filterzahl, dann addieren','Filter weiterschieben','Ergebnis: Merkmalskarte'],
+ bedeutung:'So erkennt ein Netz Muster überall im Bild – egal ob die Kante links oben oder rechts unten ist.',
+ tipp:'Bildbearbeitungs-Programme nutzen dieselbe Rechnung für Schärfen und Weichzeichnen – nur mit festen statt gelernten Filtern.'}});
+
+les({id:'moe',cat:'technik',title:'Mixture of Experts',sub:'Nicht alle Neuronen müssen immer arbeiten',
+ steps:S([[4800,'Große Modelle sind teuer: Bei jedem Token müssten alle Milliarden Parameter rechnen.'],
+ [5000,'Die Idee „Mixture of Experts“ (MoE): Das Netz wird in viele kleinere Teil-Netze aufgeteilt – die Experten.'],
+ [5200,'Ein Verteiler (Router) schaut sich jedes Token an und schickt es nur zu den 2 passendsten Experten.'],
+ [5000,'Die anderen Experten ruhen. So rechnet pro Token nur ein kleiner Teil des Modells.'],
+ [5400,'Ergebnis: Das Modell hat sehr viel Wissen gespeichert, ist aber trotzdem schnell. Viele große Modelle nutzen heute diese Technik.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  if(s===0){box(g,120,60,160,120,hexA(C.down,.12),C.down,12,2);for(let i=0;i<48;i++)circ(g,138+(i%8)*18,78+Math.floor(i/8)*16,3,hexA(C.down,.5+.5*Math.abs(Math.sin(i+t*.01))));pill(g,200,206,'ALLES RECHNET – TEUER',C.down,1);return;}
+  const toks=['Katze','2+3','Code'];const k=Math.floor(t/1300)%3;
+  chipT(g,20,125,toks[k],C.blue,1,11);
+  box(g,100,105,60,40,hexA(C.gold,.12),C.gold,8,a2?2:1.2);txt(g,130,125,'ROUTER',C.gold,9,'center',800);
+  const E=8;const pick=[[1,4],[2,6],[0,7]][k];
+  for(let i=0;i<E;i++){const y=30+i*26;const on=a2&&pick.includes(i);const b=s===1?clamp(a1*8-i):1;g.save();g.globalAlpha*=b;box(g,240,y,70,20,on?hexA(C.coral,.45):C.block,on?C.coral:C.line2,5,on?2:1);g.restore();tA(g,b,275,y+10,'EXPERTE '+(i+1),on?C.coral:C.mute,8.5,'center',800);
+   if(on){line(g,160,125,238,y+10,C.coral,2);flow(g,[[160,125],[238,y+10]],t,C.coral,{gap:12,speed:.06});}else if(a2)line(g,160,125,238,y+10,hexA(C.line2,.4),1,[2,4]);}
+  if(s===3)pill(g,20,206,'6 VON 8 RUHEN',C.mute,a3,'left');
+  if(s===4)pill(g,20,206,'VIEL WISSEN, WENIG RECHNEN',C.up,a4,'left');
+ },thumb:2,
+ box:{was:'Mixture of Experts (MoE) teilt ein Modell in viele Experten-Netze auf. Ein Router aktiviert für jedes Token nur wenige davon.',h2:'So erkennst du es',
+ erkennen:['Viele Experten-Teilnetze','Router wählt pro Token z. B. 2 Experten','Gesamt-Parameter groß, aktive Parameter klein','Schneller und günstiger pro Antwort'],
+ bedeutung:'Darum liest man bei manchen Modellen zwei Zahlen: z. B. „400 Mrd. Parameter, davon 17 Mrd. aktiv“.',
+ tipp:'Die Experten sind keine echten Fachgebiete wie „Mathe“ oder „Kochen“ – welcher Experte was übernimmt, lernt das Modell selbst.'}});
+
+les({id:'klein',cat:'technik',title:'Kleine Modelle am Handy',sub:'Quantisierung und Destillation',
+ steps:S([[4800,'Große Modelle laufen in Rechenzentren. Kleine Modelle können direkt auf dem PC oder sogar dem Handy laufen – ohne Internet.'],
+ [5200,'Trick 1, Quantisierung: Jede Zahl wird mit weniger Bits gespeichert – zum Beispiel 4 Bit statt 16 Bit.'],
+ [5400,'Rechnung: 8 Milliarden Parameter × 0,5 Byte (4 Bit) = 4 GB. Mit 16 Bit wären es 16 GB.'],
+ [5200,'Trick 2, Destillation: Ein großes „Lehrer-Modell“ bringt einem kleinen „Schüler-Modell“ bei, ähnliche Antworten zu geben.'],
+ [5200,'Vorteile: schnell, privat und offline. Nachteil: Kleine Modelle wissen weniger und machen mehr Fehler.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  if(s===0){box(g,40,60,140,110,C.block,C.purple,10,1.6);for(let i=0;i<3;i++)box(g,56,76+i*28,108,20,C.bg,C.line2,3,1);txt(g,110,186,'RECHENZENTRUM',C.purple,9.5,'center',800);
+   box(g,260,50,70,130,C.block,C.coral,14,2);box(g,268,66,54,94,hexA(C.coral,.1),null,4);circ(g,295,170,4,C.coral);txt(g,295,196,'HANDY',C.coral,9.5,'center',800);pill(g,295,110,'OFFLINE',C.up,1);return;}
+  if(s<=2){const bits16='0100001011010110',bits4='0101';
+   for(let i=0;i<16;i++){box(g,40+i*20,60,18,24,C.block,C.purple,3,1);txt(g,49+i*20,72,bits16[i],C.purple,10,'center',800);}tA(g,1,40,46,'16 BIT = 2 BYTE',C.purple,9.5,'left',800);
+   if(a1){for(let i=0;i<4;i++){box(g,40+i*20,120,18,24,hexA(C.coral,.2),C.coral,3,1);txt(g,49+i*20,132,bits4[i],C.coral,10,'center',800);}tA(g,a1,40,106,'4 BIT = 0,5 BYTE',C.coral,9.5,'left',800);arrow(g,200,88,140,116,C.coral,1.8,a1);}
+   if(s===2){box(g,40,170,320*(16/16),18,hexA(C.purple,.3),C.purple,4,1);txt(g,200,179,'16 GB',C.purple,10,'center',800);box(g,40,196,320*(4/16),18,hexA(C.coral,.4),C.coral,4,1);txt(g,128,205,'4 GB',C.coral,10,'left',800);pill(g,280,205,'8 MRD. × 0,5 B',C.gold,a2);}}
+  else if(s===3){box(g,30,60,140,110,hexA(C.purple,.12),C.purple,12,2);txt(g,100,115,'LEHRER',C.purple,12,'center',800);box(g,260,85,90,70,hexA(C.coral,.12),C.coral,10,2);txt(g,305,120,'SCHÜLER',C.coral,11,'center',800);
+   flow(g,[[172,115],[258,118]],t,C.gold,{gap:12,speed:.05});arrow(g,172,115,256,118,C.gold,2,a3);pill(g,214,90,'ANTWORTEN',C.gold,a3);}
+  else{pill(g,110,70,'⚡ SCHNELL',C.up,a4);pill(g,110,110,'🔒 PRIVAT',C.up,a4);pill(g,110,150,'✈ OFFLINE',C.up,a4);pill(g,300,90,'WENIGER WISSEN',C.down,a4);pill(g,300,130,'MEHR FEHLER',C.down,a4);}
+ },thumb:2,
+ box:{was:'Mit Quantisierung (weniger Bits pro Zahl) und Destillation (Lehrer bringt Schüler bei) werden Modelle klein genug für PC und Handy.',h2:'So geht’s',
+ erkennen:['<b>Quantisierung:</b> 16 → 8 → 4 Bit','<b>Speicher:</b> Parameter × Bytes pro Zahl','<b>Destillation:</b> großes Modell als Lehrer','Läuft lokal ohne Internet'],
+ bedeutung:'Lokale Modelle schützen deine Daten, weil nichts den Rechner verlässt. Für schwierige Aufgaben sind große Modelle aber klar besser.',
+ tipp:'Für einen PC mit 16 GB Arbeitsspeicher passen gut Modelle mit 7 bis 8 Milliarden Parametern in 4-Bit-Fassung.'}});
+
+les({id:'rag',cat:'technik',title:'KI mit eigenen Dokumenten',sub:'Retrieval (RAG): erst suchen, dann antworten',
+ steps:S([[4800,'Ein Modell kennt deine Firmen-Handbücher oder Prüfanweisungen nicht. Trotzdem soll es Fragen dazu beantworten.'],
+ [5200,'Lösung: Die Dokumente werden in kleine Abschnitte zerlegt und jeder Abschnitt bekommt einen Bedeutungs-Vektor.'],
+ [5200,'Stellst du eine Frage, sucht das System die Abschnitte, deren Bedeutung am besten zur Frage passt.'],
+ [5000,'Nur diese passenden Abschnitte kommen zusammen mit der Frage ins Kontextfenster.'],
+ [5400,'Das Modell antwortet auf dieser Grundlage – mit Angabe der Quelle. Das nennt man RAG: Retrieval-Augmented Generation.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  for(let d=0;d<3;d++){box(g,20+d*8,40+d*8,70,90,C.block,C.blue,6,1.4);}txt(g,63,162,'HANDBÜCHER',C.blue,9,'center',800);
+  if(a1){for(let i=0;i<12;i++){const x=120+(i%4)*36,y=40+Math.floor(i/4)*34;const hit=(i===5||i===10)&&s>=2;const b=s===1?clamp(a1*12-i):1;g.save();g.globalAlpha*=b;box(g,x,y,30,26,hit?hexA(C.gold,.4):C.block,hit?C.gold:C.line2,4,hit?2:1);line(g,x+5,y+9,x+25,y+9,C.mute,1.4);line(g,x+5,y+16,x+20,y+16,C.mute,1.4);g.restore();}
+   pill(g,190,152,'ABSCHNITTE + VEKTOREN',C.blue,a1);}
+  if(a2){box(g,20,184,190,30,C.block,C.purple,8,1.4);txt(g,30,199,'Wie tief darf eine Pore sein?',C.text,10.5,'left',700,SANS);pill(g,290,30,'2 TREFFER',C.gold,a2);}
+  if(a3){box(g,290,70,100,80,hexA(C.purple,.1),C.purple,10,1.6);txt(g,340,90,'KONTEXT',C.purple,9.5,'center',800);chipT(g,300,112,'Frage',C.purple,1,8.5);chipT(g,300,132,'§ 4.2',C.gold,1,8.5);chipT(g,346,132,'§ 7.1',C.gold,1,8.5);
+   arrow(g,262,95,288,105,C.gold,1.8,a3);}
+  if(a4){box(g,220,170,170,52,hexA(C.up,.1),C.up,8,1.4);txt(g,230,186,'Max. 0,5 mm in Zone A.',C.text,10,'left',700,SANS);chipT(g,230,206,'Quelle: § 4.2',C.blue,a4,8.5);}
+ },thumb:4,
+ box:{was:'Bei RAG (Retrieval-Augmented Generation) sucht ein System zuerst passende Abschnitte in deinen Dokumenten und gibt sie dem Modell zum Antworten.',h2:'So geht’s',
+ erkennen:['Dokumente in Abschnitte zerlegen','Jeder Abschnitt bekommt einen Vektor','Frage → ähnlichste Abschnitte suchen','Antwort mit Quellenangabe'],
+ bedeutung:'So beantwortet KI Fragen zu Wissen, das sie nie trainiert hat – aktuell und überprüfbar. Firmen nutzen das für interne Wissens-Chats.',
+ tipp:'Einfache Variante ohne Technik: Lade ein PDF in den Chat und frag gezielt danach. Bei vielen Dokumenten braucht es RAG.'}});
+
+les({id:'multimodal',cat:'technik',title:'Multimodal',sub:'Ein Modell für Text und Bild',
+ steps:S([[4800,'Moderne Modelle können nicht nur lesen, sondern auch Bilder ansehen. Das nennt man multimodal.'],
+ [5200,'Ein Bild wird dafür in kleine Kacheln zerschnitten, zum Beispiel 16 × 16 Pixel groß.'],
+ [5000,'Jede Kachel wird – wie ein Wort – in einen Vektor übersetzt. Aus dem Bild werden so Bild-Tokens.'],
+ [5200,'Bild-Tokens und Text-Tokens landen gemeinsam im selben Transformer. Attention verbindet Wörter mit Bildteilen.'],
+ [5200,'So kann das Modell Fragen zu Fotos beantworten, Diagramme lesen oder Text aus einem Bild abschreiben.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  const ox=30,oy=40,cs=20,n=5;
+  if(s<=2){noisePic(g,ox,oy,10,10,10,1,0);
+   if(a1){for(let i=1;i<n;i++){line(g,ox+i*cs,oy,ox+i*cs,oy+n*cs,C.bg,2*a1);line(g,ox,oy+i*cs,ox+n*cs,oy+i*cs,C.bg,2*a1);}pill(g,ox+50,oy-16,'KACHELN',C.coral,a1);}
+   if(a2){for(let i=0;i<10;i++){const b=clamp(a2*10-i);g.save();g.globalAlpha*=b;box(g,170+(i%5)*44,60+Math.floor(i/5)*40,36,28,hexA(C.coral,.2),C.coral,5,1.3);g.restore();tA(g,b,188+(i%5)*44,74+Math.floor(i/5)*40,'B'+(i+1),C.coral,9,'center',800);}pill(g,280,160,'BILD-TOKENS',C.coral,a2);}}
+  else{for(let i=0;i<5;i++)chipT(g,20+i*36,40,'B'+(i+1),C.coral,1,9);const W=['Was','ist','das','?'];let x=210;W.forEach(w=>{x+=chipT(g,x,40,w,C.purple,1,9)+4;});
+   box(g,100,90,200,60,hexA(C.purple,.1),C.purple,12,2);txt(g,200,120,'TRANSFORMER',C.purple,11,'center',800);
+   arrow(g,100,56,140,88,C.coral,1.6,1);arrow(g,290,56,260,88,C.purple,1.6,1);
+   if(s===3){for(let i=0;i<4;i++){g.save();g.globalAlpha=.4*a3;g.strokeStyle=C.gold;g.lineWidth=1.4;g.beginPath();g.moveTo(38+i*36,52);g.quadraticCurveTo(150,20,226+i*20,52);g.stroke();g.restore();}pill(g,200,180,'WÖRTER ↔ BILDTEILE',C.gold,a3);}
+   if(s===4){arrow(g,200,152,200,176,C.up,2,a4);box(g,90,180,220,34,hexA(C.up,.1),C.up,8,1.4);txt(g,200,197,'„Ein rotes Haus auf einer Wiese.“',C.text,10.5,'center',700,SANS);}}
+ },thumb:3,
+ box:{was:'Multimodale Modelle verarbeiten mehrere Arten von Daten – zum Beispiel Text und Bilder – in einem gemeinsamen Netz.',h2:'So erkennst du es',
+ erkennen:['Bild → Kacheln → Bild-Tokens','Bild- und Text-Tokens im selben Modell','Kann Fotos, Diagramme, Screenshots lesen','Manche Modelle auch Audio und Video'],
+ bedeutung:'Du kannst einer KI einfach ein Foto zeigen – eine Fehlermeldung, ein Typenschild, eine Rechnung – statt alles abzutippen.',
+ tipp:'Bei Fotos von Dokumenten: gerade und scharf fotografieren. Je besser lesbar, desto weniger Fehler beim Abschreiben.'}});
+
 /* ============ Reihenfolge nach Bereichen ============ */
 {const ord=Object.keys(CATS);LESSONS.sort((a,b)=>ord.indexOf(a.cat)-ord.indexOf(b.cat));}
 /* ============ Player ============ */
@@ -933,6 +1598,20 @@ const SVGI={
  training:'<polyline points="8,14 8,54 58,54" fill="none" stroke="currentColor" stroke-width="3"/><path d="M12 18 C 20 40, 30 46, 54 48" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/><circle cx="30" cy="42" r="5" fill="currentColor"/>',
  sprache:'<path d="M8 12 H56 V42 H30 L18 54 V42 H8 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><rect x="15" y="21" width="10" height="9" rx="2" fill="currentColor"/><rect x="28" y="21" width="8" height="9" rx="2" fill="currentColor" opacity=".7"/><rect x="39" y="21" width="10" height="9" rx="2" fill="currentColor" opacity=".45"/>',
  praxis:'<rect x="6" y="10" width="52" height="38" rx="6" fill="none" stroke="currentColor" stroke-width="3"/><rect x="13" y="18" width="24" height="7" rx="3" fill="currentColor" opacity=".55"/><rect x="27" y="31" width="24" height="7" rx="3" fill="currentColor"/><line x1="24" y1="56" x2="40" y2="56" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>'};
+Object.assign(CATINFO,{
+ medien:{d:'Bilder aus Rauschen, Text zu Bild, Sprache zu Text, KI-Stimmen und Musik-KI.',acc:'var(--pink)',hex:'#ff6fae'},
+ beruf:{d:'Prüfen mit Kamera und CT, Ausfälle vorhersagen, autonome Autos, Medizin und Roboter.',acc:'var(--lime)',hex:'#a3e635'},
+ agenten:{d:'Was ein Agent ist, Websuche, Werkzeuge, Code schreiben und Aufgaben planen.',acc:'var(--gold)',hex:'#f5c542'},
+ sicher:{d:'Datenschutz, Deepfakes erkennen, Vorurteile in Daten, Urheberrecht und das EU-KI-Gesetz.',acc:'var(--down)',hex:'#f0605d'},
+ geschichte:{d:'Turing-Test, Deep Blue, AlphaGo, der Transformer und ChatGPT, Claude & Co.',acc:'var(--sky)',hex:'#38bdf8'},
+ technik:{d:'Faltung (CNN), Mixture of Experts, kleine Modelle, RAG und multimodale Modelle.',acc:'var(--coral)',hex:'#ff8a65'}});
+Object.assign(SVGI,{
+ medien:'<rect x="6" y="10" width="34" height="28" rx="4" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="16" cy="20" r="4" fill="currentColor"/><path d="M8 36 L20 26 L30 34" fill="none" stroke="currentColor" stroke-width="3"/><path d="M46 20 V46 M46 46 a6 5 0 1 1 -1 -1 M46 20 L58 16 V40 M58 40 a6 5 0 1 1 -1 -1" fill="none" stroke="currentColor" stroke-width="3"/>',
+ beruf:'<circle cx="32" cy="32" r="10" fill="none" stroke="currentColor" stroke-width="3"/><g stroke="currentColor" stroke-width="6" stroke-linecap="round"><line x1="32" y1="8" x2="32" y2="14"/><line x1="32" y1="50" x2="32" y2="56"/><line x1="8" y1="32" x2="14" y2="32"/><line x1="50" y1="32" x2="56" y2="32"/><line x1="15" y1="15" x2="19" y2="19"/><line x1="45" y1="45" x2="49" y2="49"/><line x1="15" y1="49" x2="19" y2="45"/><line x1="45" y1="19" x2="49" y2="15"/></g>',
+ agenten:'<circle cx="32" cy="32" r="22" fill="none" stroke="currentColor" stroke-width="3"/><path d="M32 10 A22 22 0 0 1 54 32" fill="none" stroke="currentColor" stroke-width="5"/><polygon points="50,30 58,30 54,37" fill="currentColor"/><circle cx="32" cy="32" r="7" fill="currentColor"/>',
+ sicher:'<path d="M32 6 L54 14 V30 C54 44 44 54 32 58 C20 54 10 44 10 30 V14 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M22 32 L29 39 L43 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>',
+ geschichte:'<circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width="3"/><path d="M32 16 V32 L42 40" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M6 32 H2 M8 20 L4 18" stroke="currentColor" stroke-width="3"/>',
+ technik:'<rect x="14" y="14" width="36" height="36" rx="4" fill="none" stroke="currentColor" stroke-width="3"/><rect x="22" y="22" width="20" height="20" fill="currentColor" opacity=".35"/><rect x="22" y="22" width="10" height="10" fill="currentColor"/><g stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="24" y1="6" x2="24" y2="12"/><line x1="40" y1="6" x2="40" y2="12"/><line x1="24" y1="52" x2="24" y2="58"/><line x1="40" y1="52" x2="40" y2="58"/></g>'});
 const catIcon=(ck,s=58)=>`<svg width="${s}" height="${s}" viewBox="0 0 64 64" style="color:${CATINFO[ck].acc}">${SVGI[ck]}</svg>`;
 
 /* ============ Liste (Seitenleiste) ============ */
@@ -999,7 +1678,7 @@ function showHome(){
   return `<button class="big" data-h="kat-${ck}" style="--acc:${ci.acc};--glow:${hexA(ci.hex,.16)}"><div class="bi">${catIcon(ck)}</div><h2>${CATS[ck]}</h2><p>${ci.d}</p><div class="ft"><span>${n} LEKTIONEN</span><div class="pb"><i style="width:${sn/n*100}%"></i></div><span>${sn}/${n}</span><span class="go">›</span></div></button>`;}).join('');
  const quiz=`<button class="big" data-h="quiz" style="--acc:var(--gold);--glow:rgba(245,197,66,.14)"><div class="bi" style="font-size:46px;line-height:1">🎯</div><h2>Quiz</h2><p>Teste dein Wissen: 10 zufällige Fragen mit Bildern und Rechenaufgaben.</p><div class="ft"><span>${best?`BESTWERT ${best}/10`:'NOCH NICHT GESPIELT'}</span><span style="flex:1"></span><span class="go">›</span></div></button>`;
  view.innerHTML=`<div class="home"><div class="kicker">Willkommen</div><h1>So funktioniert ein KI-Modell</h1>
- <p class="lead">Jede Lektion ist ein kleines Video: Neuronen, Netze, Training, Tokens und Transformer bauen sich Schritt für Schritt auf und werden erklärt – vom ersten Neuron bis zum Chat-Assistenten.</p>
+ <p class="lead">Jede Lektion ist ein kleines Video: Neuronen, Netze, Training, Tokens und Transformer bauen sich Schritt für Schritt auf und werden erklärt – vom ersten Neuron bis zum Chat-Assistenten. Dazu: Bild- und Musik-KI, KI im Beruf, Agenten, Sicherheit, Geschichte und mehr Technik.</p>
  <div class="bigtiles">${tiles}${quiz}</div></div>`;
  view.querySelectorAll('.big').forEach(t=>t.onclick=()=>location.hash=t.dataset.h);
  renderList();window.scrollTo(0,0);
@@ -1099,6 +1778,51 @@ function genCalc(){const out=[];
   ()=>{const v=rnd([-4,-2,-1,1,2,5]);const an=Math.max(0,v);const w=[...new Set([-v,v*2,v+3,10,-1].filter(x=>x!==an))].slice(0,3).map(x=>deN(x));return{q:`ReLU bekommt den Wert ${deN(v)}. Was gibt sie aus?`,ans:deN(an),w,e:`ReLU: negativ → 0, positiv bleibt → ${deN(an)}`,l:'aktivierung'};},
   ()=>{const n=rnd([1000,2000,5000]);const tr=n*.8;return{q:`Du hast ${deN(n)} Beispiele und teilst 80 % / 20 %. Wie viele sind Trainingsdaten?`,ans:deN(tr),w:[deN(n*.2),deN(n),deN(n*.5)],e:`${deN(n)} × 0,8 = ${deN(tr)}`,l:'daten'};}];
  const k=rnd(kinds)();out.push({q:k.q,opts:shuffle([k.ans,...k.w]),ans:k.ans,e:k.e,l:k.l});return out;}
+
+TQ.push(
+ {q:'Wie erzeugt ein Diffusionsmodell ein Bild?',a:['Es entfernt Schritt für Schritt Rauschen','Es klebt Teile echter Fotos zusammen','Es sucht ein passendes Bild im Internet','Es malt Pixel von links nach rechts'],e:'Start mit reinem Rauschen, dann 20–50 Entrauschungs-Schritte.',l:'diffusion'},
+ {q:'Was passiert mit demselben Seed und demselben Prompt?',a:['Es entsteht wieder dasselbe Bild','Es entsteht immer ein anderes Bild','Das Bild wird schwarz-weiß','Die KI verweigert die Antwort'],e:'Der Seed legt das Startrauschen fest.',l:'diffusion'},
+ {q:'Was lenkt bei Text-zu-Bild, welches Bild entsteht?',a:['Der in Zahlen übersetzte Prompt','Die Bildschirmhelligkeit','Die Uhrzeit','Der Dateiname'],e:'Die Text-Vektoren steuern jeden Entrauschungs-Schritt.',l:'textbild'},
+ {q:'Was zeigt ein Spektrogramm?',a:['Welche Tonhöhen wann wie laut sind','Die Farben eines Fotos','Den Akkustand','Die Internetgeschwindigkeit'],e:'Spracherkennung liest dieses „Ton-Bild“.',l:'stt'},
+ {q:'Wie schützt du dich vor Betrug mit geklonten Stimmen?',a:['Familien-Codewort und selbst zurückrufen','Lauter sprechen','Nur abends telefonieren','Das Handy ausschalten'],e:'Bei Geldforderungen immer über die bekannte Nummer zurückrufen.',l:'tts'},
+ {q:'Womit arbeitet eine Musik-KI ähnlich wie ein Sprachmodell?',a:['Mit Klang-Tokens, die nacheinander vorhergesagt werden','Mit echten Instrumenten','Mit Noten aus dem Internet','Mit einer Gitarre'],e:'Statt Wort-Tokens sagt sie Klangschnipsel voraus.',l:'musik'},
+ {q:'Was macht eine Prüf-KI an der Fertigungslinie?',a:['Sie markiert Teile mit Auffälligkeiten auf Bildern','Sie schweißt die Teile','Sie kühlt die Maschine','Sie bestellt neues Material'],e:'Grenzfälle entscheidet weiterhin der Mensch.',l:'pruefung'},
+ {q:'Was ist vorausschauende Wartung?',a:['Ausfälle anhand von Sensordaten vorhersagen','Maschinen nur reparieren, wenn sie kaputt sind','Jeden Tag alles austauschen','Maschinen nachts ausschalten'],e:'Vibration, Temperatur & Co. verraten Schäden früh.',l:'wartung'},
+ {q:'Welcher Sensor misst mit Laser eine 3D-Punktwolke?',a:['Lidar','Radar','Kamera','Ultraschall'],e:'Lidar = Light Detection and Ranging.',l:'autonom'},
+ {q:'Auf welcher Stufe fahren die meisten Autos mit Assistenten heute?',a:['Stufe 2 – der Fahrer bleibt verantwortlich','Stufe 5 – ganz allein','Stufe 0','Stufe 4'],e:'Spur- und Abstandsassistent sind Stufe 2.',l:'autonom'},
+ {q:'Wofür gab es 2024 einen Nobelpreis im Bereich KI?',a:['Für die Vorhersage von Proteinstrukturen (AlphaFold)','Für selbstfahrende Autos','Für Schachcomputer','Für Sprachassistenten'],e:'Chemie-Nobelpreis 2024, u. a. für Demis Hassabis und John Jumper.',l:'medizin'},
+ {q:'Was zeichnet einen Cobot aus?',a:['Er arbeitet ohne Schutzzaun neben Menschen','Er ist besonders groß','Er fährt Auto','Er arbeitet nur nachts'],e:'Er stoppt sofort bei Berührung.',l:'roboter'},
+ {q:'Was unterscheidet einen KI-Agenten von einem einfachen Chatbot?',a:['Er erledigt in mehreren Schritten eine ganze Aufgabe','Er antwortet nur mit Ja oder Nein','Er braucht kein Modell','Er kann nur Bilder malen'],e:'Schleife: überlegen → handeln → Ergebnis prüfen.',l:'agent'},
+ {q:'Warum braucht ein Modell für das Wetter von morgen eine Websuche?',a:['Sein Wissen endet am Trainingsstichtag','Es kann nicht rechnen','Es kennt keine Städte','Es ist zu langsam'],e:'Aktuelles kommt über die Suche ins Kontextfenster.',l:'websuche'},
+ {q:'Was ist ein Werkzeug-Aufruf (Tool Use)?',a:['Ein strukturierter Befehl, den ein Programm ausführt','Ein Anruf beim Hersteller','Ein Hammer für die Grafikkarte','Ein Update des Modells'],e:'Z. B. wetter(ort: "Ergoldsbach").',l:'werkzeuge'},
+ {q:'Was macht ein Coding-Agent, wenn sein Programm einen Fehler hat?',a:['Er liest die Fehlermeldung und verbessert den Code','Er gibt sofort auf','Er löscht den Computer','Er ignoriert den Fehler'],e:'Schreiben → ausführen → verbessern, bis die Tests grün sind.',l:'codeschreiben'},
+ {q:'Wann sollte ein guter Agent dich vorher fragen?',a:['Vor Schritten, die man nicht rückgängig machen kann','Vor jedem einzelnen Wort','Nie','Nur am Wochenende'],e:'Zum Beispiel vor Käufen, Löschen oder Veröffentlichen.',l:'planen'},
+ {q:'Was gehört NICHT in einen KI-Chat?',a:['Passwörter und PINs','Eine Frage zum Kochen','Ein Gedicht über den Herbst','Eine Matheaufgabe'],e:'Sensible Zugangsdaten nie eingeben.',l:'datenschutz'},
+ {q:'Was ist der beste Schutz vor Deepfakes?',a:['Die Quelle prüfen und im Zweifel zurückrufen','Nur auf das Blinzeln achten','Videos schneller abspielen','Allen Videos glauben'],e:'Gute Fälschungen haben oft keine sichtbaren Fehler mehr.',l:'deepfakes'},
+ {q:'Woher kommen Vorurteile in einer KI meistens?',a:['Aus einseitigen Trainingsdaten','Aus einem Virus','Aus der Bildschirmfarbe','Aus dem Stromnetz'],e:'Fehlen Beispiele für eine Gruppe, wird die KI dort schlechter.',l:'vorurteile'},
+ {q:'Ist ein reines KI-Bild ohne eigene kreative Leistung in Deutschland urheberrechtlich geschützt?',a:['Meist nein','Immer ja','Nur sonntags','Nur in Farbe'],e:'Urheberrecht setzt eine menschliche Schöpfung voraus. (Keine Rechtsberatung.)',l:'urheberrecht'},
+ {q:'Welche KI ist nach dem EU-KI-Gesetz verboten?',a:['Sozialpunkte-Systeme','Spamfilter','Rechtschreibhilfe','Schach-KI'],e:'Diese Verbote gelten seit Februar 2025.',l:'aiact'},
+ {q:'In welche Risikostufe fallen Chatbots nach dem EU-KI-Gesetz?',a:['Begrenztes Risiko – Transparenzpflicht','Verboten','Hohes Risiko','Gar keine Stufe'],e:'Man muss erkennen können, dass man mit einer KI spricht.',l:'aiact'},
+ {q:'Wer schlug 1950 einen Test für denkende Maschinen vor?',a:['Alan Turing','Albert Einstein','Bill Gates','Konrad Zuse'],e:'Der Turing-Test: Mensch oder Maschine?',l:'turing'},
+ {q:'Gegen wen gewann Deep Blue 1997?',a:['Garri Kasparow','Magnus Carlsen','Lee Sedol','Bobby Fischer'],e:'Das Match endete 3,5 : 2,5 für Deep Blue.',l:'deepblue'},
+ {q:'Wie ging das Match AlphaGo gegen Lee Sedol 2016 aus?',a:['4 : 1 für AlphaGo','5 : 0 für Lee Sedol','3 : 2 für Lee Sedol','Unentschieden'],e:'Experten hatten das erst Jahre später erwartet.',l:'alphago'},
+ {q:'Wie hieß der Fachartikel, der 2017 den Transformer vorstellte?',a:['„Attention Is All You Need“','„Deep Blue Wins“','„Hello World“','„The Turing Test“'],e:'Geschrieben von Forschern bei Google.',l:'transformer2017'},
+ {q:'Wann wurde ChatGPT veröffentlicht?',a:['Ende November 2022','Im Jahr 1997','Im Jahr 2016','Im Jahr 2010'],e:'Am 30. November 2022.',l:'chatgpt'},
+ {q:'Was macht ein Filter in einem Faltungsnetz?',a:['Er wandert über das Bild und findet Muster wie Kanten','Er macht das Bild bunter','Er löscht Pixel','Er speichert das Bild'],e:'Pixel × Filterzahl, addieren, weiterschieben.',l:'cnn'},
+ {q:'Was macht der Router bei Mixture of Experts?',a:['Er schickt jedes Token nur zu wenigen passenden Experten','Er verbindet das WLAN','Er löscht unnötige Experten','Er übersetzt in Englisch'],e:'Die übrigen Experten ruhen – das spart Rechenzeit.',l:'moe'},
+ {q:'Was bedeutet Quantisierung?',a:['Zahlen mit weniger Bits speichern','Das Modell vergrößern','Mehr Daten sammeln','Das Modell in Teile schneiden'],e:'Z. B. 4 statt 16 Bit pro Parameter.',l:'klein'},
+ {q:'Was macht RAG?',a:['Erst passende Abschnitte in Dokumenten suchen, dann antworten','Bilder malen','Das Modell neu trainieren','Musik erzeugen'],e:'Retrieval-Augmented Generation – mit Quellenangabe.',l:'rag'},
+ {q:'Was bedeutet multimodal?',a:['Das Modell versteht z. B. Text und Bilder','Das Modell hat viele Farben','Das Modell läuft auf vielen Handys','Das Modell spricht viele Sprachen'],e:'Bild-Kacheln werden zu Tokens wie Wörter.',l:'multimodal'}
+);
+PQ.push(
+ {l:'diffusion',s:3,p:.4,q:'Was passiert hier?',a:['Ein Bild entsteht aus Rauschen','Ein Foto wird gelöscht','Ein Video wird geschnitten','Ein Bildschirm ist kaputt'],e:'Diffusion: Schritt für Schritt wird Rauschen entfernt.'},
+ {l:'aiact',s:4,p:.9,q:'Was zeigt diese Pyramide?',a:['Die Risikostufen des EU-KI-Gesetzes','Die Speicherhierarchie','Die Schichten eines Netzes','Die Lernarten'],e:'Verboten, hoch, begrenzt, minimal.'},
+ {l:'moe',s:3,p:.5,q:'Was passiert hier?',a:['Ein Router schickt ein Token zu 2 von 8 Experten','Ein Netzwerkkabel wird verlegt','Daten werden gelöscht','Ein Bild wird gemalt'],e:'Mixture of Experts: Nur wenige Experten rechnen.'},
+ {l:'cnn',s:2,p:.6,q:'Was wandert hier über das Bild?',a:['Ein Filter (Faltung)','Ein Mauszeiger','Ein Datenpaket','Ein Virus'],e:'Der 3 × 3-Filter erzeugt eine Merkmalskarte.'},
+ {l:'agent',s:3,p:.5,q:'Was zeigt dieser Kreislauf?',a:['Die Arbeitsschleife eines KI-Agenten','Den Wasserkreislauf','Einen Motor','Einen Bootvorgang'],e:'Überlegen → handeln → anschauen, bis das Ziel erreicht ist.'},
+ {l:'wartung',s:3,p:.95,q:'Warum schlägt das System hier Alarm?',a:['Die Vibration steigt ungewöhnlich an','Die Maschine ist aus','Der Strom ist billig','Es ist Feierabend'],e:'Vorausschauende Wartung erkennt Schäden vor dem Ausfall.'}
+);
+
 let Q=null;
 function startQuiz(){
  current=null;P.L=null;P.cv=null;
