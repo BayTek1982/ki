@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bayazit KI-Schule</title>
+<meta name="theme-color" content="#05080d">
+<meta name="description" content="Lern-App: So funktioniert ein KI-Modell – Neuronen, neuronale Netze, Training, Tokens, Transformer und Chat-Assistenten als kleine Videos.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="KI-Schule">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script>(function(){var m='dark';try{m=localStorage.getItem('kompass-theme')||'dark'}catch(e){}var t=m==='auto'?(window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'):m;document.documentElement.setAttribute('data-theme',t);})();</script>
+<style>
+:root{
+  --bg:#05080d; --panel:#0b1118; --card:#0f1620; --card2:#0a0f15; --line:#1b2532; --line2:#2a3647; --line3:#36465b; --text:#dfe6ef; --soft:#b9c4d2; --soft2:#c9d2de; --mute:#7f8b9c;
+  --up:#1fcf8f; --down:#f0605d; --gold:#f5c542; --blue:#4c9aff; --purple:#b388ff; --orange:#ff9f43; --aqua:#22d3ee; --pink:#ff6fae; --lime:#a3e635;
+  --chart:#020407; --hdr:rgba(5,8,13,.92); --veil:rgba(5,8,13,.75); --on-gold:#1b1505; --on-up:#03140d;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  --sans:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+}
+[data-theme="light"]{
+  --bg:#f3f5f9; --panel:#eef2f7; --card:#ffffff; --card2:#f7f9fc; --line:#dde3ec; --line2:#c9d2de; --line3:#b7c2d1; --text:#131a26; --soft:#3d4757; --soft2:#2c3646; --mute:#5d6879;
+  --up:#087f5b; --down:#c62f2c; --gold:#946200; --blue:#1a66c9; --purple:#7445cc; --orange:#b45000; --aqua:#00838f; --pink:#c2185b; --lime:#4d7c0f;
+  --chart:#ffffff; --hdr:rgba(243,245,249,.92); --veil:rgba(255,255,255,.85); --on-gold:#ffffff; --on-up:#ffffff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit;cursor:pointer}
+header{position:sticky;top:0;z-index:5;background:var(--hdr);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:12px 16px;display:flex;align-items:center;gap:12px}
+.logo{width:34px;height:34px;flex:none}
+.brand{white-space:nowrap;font-family:var(--mono);font-weight:800;letter-spacing:.06em;font-size:15px;line-height:1.15}
+.brand small{display:block;color:var(--mute);font-weight:500;font-size:11px;letter-spacing:.12em}
+.theme{margin-left:auto;display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px;flex:none}
+.theme button{border:0;background:none;color:var(--mute);font-family:var(--mono);font-size:12px;font-weight:700;border-radius:999px;padding:6px 10px;min-height:32px}
+.theme button[aria-pressed="true"]{background:var(--gold);color:var(--on-gold)}
+.theme button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.prog{margin-left:12px;font-family:var(--mono);font-size:11px;color:var(--mute);text-align:right}
+.bar{width:110px;height:5px;background:var(--line);border-radius:9px;margin-top:5px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--up),var(--gold));width:0;transition:width .4s}
+main{display:grid;grid-template-columns:330px 1fr;max-width:1280px;margin:0 auto;min-height:calc(100vh - 60px)}
+#nav{border-right:1px solid var(--line);padding:14px 12px 40px;height:calc(100vh - 60px);overflow:auto;position:sticky;top:60px}
+#search{width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;font-size:15px;outline:none}
+#search:focus{border-color:var(--gold)}
+.cat{margin:18px 4px 8px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--mute);text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.cat::after{content:"";flex:1;height:1px;background:var(--line)}
+.item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:10px;padding:9px 8px;margin:2px 0}
+.item:hover{background:var(--card)}
+.item.on{background:var(--card);border-color:var(--line2)}
+.item .ic{width:36px;height:36px;flex:none;border-radius:8px;background:var(--panel);border:1px solid var(--line);display:grid;place-items:center}
+.box b{color:var(--text)}
+.item b{display:block;font-size:14.5px;font-weight:600}
+.item span{display:block;font-size:12px;color:var(--mute);margin-top:1px}
+.item .ok{margin-left:auto;color:var(--up);font-size:14px;opacity:0}
+.item.seen .ok{opacity:1}
+#view{padding:18px 22px 60px;min-width:0}
+.back{display:inline-block;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:7px 12px;font-size:14px;margin-bottom:12px}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--mute);text-transform:uppercase}
+h1{font-family:var(--mono);font-weight:800;letter-spacing:.03em;font-size:clamp(24px,4.4vw,36px);margin:4px 0 4px;text-transform:uppercase}
+.lead{color:var(--soft);margin:0 0 14px;font-size:15.5px;line-height:1.5;max-width:760px}
+.player{background:var(--chart);border:1px solid var(--line);border-radius:16px;overflow:hidden;max-width:900px}
+.cwrap{position:relative;cursor:pointer}
+canvas{display:block;width:100%}
+.overlay{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;opacity:0;transition:opacity .25s}
+.overlay.show{opacity:1}
+.overlay div{background:var(--veil);border:1px solid var(--line2);border-radius:999px;padding:12px 18px;font-family:var(--mono);font-weight:700;font-size:14px;letter-spacing:.06em}
+.caption{padding:12px 16px 4px;min-height:74px;border-top:1px solid var(--line)}
+.caption .no{font-family:var(--mono);font-size:11px;color:var(--gold);letter-spacing:.14em}
+.caption p{margin:5px 0 0;font-size:15.5px;line-height:1.45;transition:opacity .25s}
+.ctrl{display:flex;align-items:center;gap:8px;padding:8px 12px 12px}
+.cb{background:var(--card);border:1px solid var(--line);border-radius:9px;min-width:40px;height:38px;padding:0 10px;font-family:var(--mono);font-size:14px;font-weight:700}
+.cb:hover{border-color:var(--line3)}
+#seek{flex:1;accent-color:var(--down);height:28px;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 12px 14px}
+.chip{background:none;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-family:var(--mono);font-size:11.5px;color:var(--mute)}
+.chip.on{border-color:var(--gold);color:var(--gold)}
+.chip.done{color:var(--text)}
+.info{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-top:16px;max-width:900px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.box h3{margin:0 0 8px;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+.box p,.box li{font-size:14.5px;line-height:1.5;color:var(--soft2);margin:0}
+.box ul{margin:0;padding-left:18px}.box li{margin:3px 0}
+.box.g h3{color:var(--up)}.box.y h3{color:var(--gold)}.box.b h3{color:var(--blue)}.box.r h3{color:var(--down)}
+.pn{display:flex;justify-content:space-between;gap:10px;margin-top:18px;max-width:900px}
+.pn button{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:left;font-size:14px}
+.pn button:last-child{text-align:right}
+.pn small{display:block;color:var(--mute);font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;margin-bottom:3px}
+.pn button:disabled{opacity:.35;cursor:default}
+.home{max-width:900px}
+.qcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;max-width:760px}
+.qbar{height:5px;background:var(--line);border-radius:9px;overflow:hidden;margin-bottom:14px}.qbar i{display:block;height:100%;background:var(--gold)}
+.qq{font-size:18px;font-weight:700;line-height:1.4;margin:0 0 12px}
+.qcv{border-radius:12px;overflow:hidden;border:1px solid var(--line);margin-bottom:12px;background:var(--chart)}
+.opts{display:grid;gap:8px}
+.opt{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px 14px;text-align:left;font-size:15.5px}
+.opt:hover:not(:disabled){border-color:var(--line3)}
+.opt.ok{border-color:var(--up);background:rgba(31,207,143,.12)}
+.opt.bad{border-color:var(--down);background:rgba(240,96,93,.12)}
+.opt:disabled{cursor:default}
+.fb{margin-top:12px;padding:12px 14px;border-radius:12px;background:var(--panel);border:1px solid var(--line);font-size:14.5px;line-height:1.5}
+.fb b{font-family:var(--mono)}
+.qnav{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.qnav button{flex:1;min-width:140px;border-radius:12px;padding:12px;font-weight:700;border:1px solid var(--line);background:var(--panel)}
+.qnav .main{background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
+.score{font-family:var(--mono);font-size:54px;font-weight:800;margin:6px 0}
+.bigtiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px;margin-top:18px}
+.big{position:relative;overflow:hidden;text-align:left;background:linear-gradient(160deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:18px;padding:18px 18px 16px;min-height:168px;display:flex;flex-direction:column;transition:transform .15s,border-color .15s}
+.big:hover{transform:translateY(-2px);border-color:var(--acc)}
+.big::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--acc)}
+.big::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 70%)}
+.big .bi{position:absolute;right:14px;top:16px;opacity:.95}
+.big h2{font-family:var(--mono);font-weight:800;font-size:clamp(17px,1.6vw + 6px,21px);letter-spacing:.03em;text-transform:uppercase;margin:0 70px 8px 0;line-height:1.2;color:var(--acc)}
+.big p{margin:0 0 14px;color:var(--soft);font-size:14.5px;line-height:1.45;max-width:85%}
+.big .ft{margin-top:auto;display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11.5px;color:var(--mute)}
+.big .pb{flex:1;height:5px;background:var(--line);border-radius:9px;overflow:hidden}.big .pb i{display:block;height:100%;background:var(--acc)}
+.big .go{color:var(--acc);font-size:16px;font-weight:800}
+.lcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-top:16px}
+.lc{display:flex;align-items:center;gap:12px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.lc:hover{border-color:var(--acc)}
+.lc canvas.th{width:88px;height:55px;flex:none;border-radius:8px;border:1px solid var(--line);background:var(--chart)}
+.lc small{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--mute)}
+.lc b{display:block;font-size:16px;margin:2px 0}
+.lc span{display:block;font-size:13px;color:var(--mute)}
+.lc .ok{margin-left:auto;color:var(--up);font-size:18px}
+@media (max-width:860px){
+  main{grid-template-columns:1fr}
+  #nav{display:none}
+  #view{padding:14px 12px 50px}
+  .theme button .tl{display:none}
+  .theme button{padding:6px 9px}
+  .brand small{display:none}
+  .brand{font-size:13.5px}
+  header{gap:9px;padding:12px 12px}
+  .prog{margin-left:4px}
+  .bar{width:56px}
+}
+</style>
+</head>
+<body>
+<header>
+  <svg class="logo" viewBox="0 0 34 34"><rect width="34" height="34" rx="8" fill="#0f1620"/><g stroke="#4c9aff" stroke-width="1.4" opacity=".8"><line x1="8" y1="11" x2="17" y2="8"/><line x1="8" y1="11" x2="17" y2="17"/><line x1="8" y1="11" x2="17" y2="26"/><line x1="8" y1="23" x2="17" y2="8"/><line x1="8" y1="23" x2="17" y2="17"/><line x1="8" y1="23" x2="17" y2="26"/><line x1="17" y1="8" x2="26" y2="17"/><line x1="17" y1="17" x2="26" y2="17"/><line x1="17" y1="26" x2="26" y2="17"/></g><g fill="#4c9aff"><circle cx="8" cy="11" r="2.8"/><circle cx="8" cy="23" r="2.8"/><circle cx="17" cy="8" r="2.8"/><circle cx="17" cy="17" r="2.8"/><circle cx="17" cy="26" r="2.8"/></g><circle cx="26" cy="17" r="3.6" fill="#b388ff"/></svg>
+  <div class="brand" style="cursor:pointer" onclick="location.hash=''">KI-SCHULE<small>BAYAZIT · SO FUNKTIONIERT KI</small></div>
+  <div class="theme" role="group" aria-label="Darstellung"><button data-m="dark" title="Dunkel">☾<span class="tl"> Dunkel</span></button><button data-m="light" title="Hell">☀<span class="tl"> Hell</span></button><button data-m="auto" title="Automatisch">◐<span class="tl"> Auto</span></button></div>
+  <div class="prog"><span id="progtxt">0 / 0</span><div class="bar"><i id="progbar"></i></div></div>
+</header>
+<main>
+  <nav id="nav">
+    <input id="search" placeholder="Lektion suchen … z. B. Token" autocomplete="off" aria-label="Lektion suchen">
+    <div id="list"></div>
+  </nav>
+  <section id="view"></section>
+</main>
+<script>
+"use strict";
+/* ============ Farben & Helfer ============ */
+const VW=400,VH=250;
+const THEMES={
+ dark:{bg:'#020407',grid:'#111a24',axis:'#6f7b8c',text:'#e6ecf3',mute:'#7f8b9c',line:'#1b2532',line2:'#2a3647',
+  up:'#1fcf8f',down:'#f0605d',gold:'#f5c542',blue:'#4c9aff',purple:'#b388ff',orange:'#ff9f43',aqua:'#22d3ee',pink:'#ff6fae',lime:'#a3e635',
+  pillBg:'rgba(2,4,7,.9)',metal:'#9aa7b8',metal2:'#6b7889',metal3:'#4a5565',metalHi:'#d5dde8',block:'#121a24',blockLine:'#3a4859',head:'#18222e',
+  hot:'#f0605d',cold:'#4c9aff',feat:'#2a1d05',steel:'#c3ccd8'},
+ light:{bg:'#ffffff',grid:'#eef1f5',axis:'#5d6879',text:'#131a26',mute:'#5d6879',line:'#dde3ec',line2:'#c9d2de',
+  up:'#087f5b',down:'#c62f2c',gold:'#946200',blue:'#1a66c9',purple:'#7445cc',orange:'#b45000',aqua:'#00838f',pink:'#c2185b',lime:'#4d7c0f',
+  pillBg:'rgba(255,255,255,.95)',metal:'#8793a3',metal2:'#5f6b7b',metal3:'#465160',metalHi:'#c4ccd7',block:'#eef2f7',blockLine:'#8a96a8',head:'#e2e8f0',
+  hot:'#c62f2c',cold:'#1a66c9',feat:'#ffffff',steel:'#4a5565'}};
+const C=Object.assign({},THEMES.dark);
+function setCanvasTheme(t){Object.assign(C,THEMES[t]||THEMES.dark);}
+const MONO="'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace";
+const SANS="'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif";
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const ease=x=>{x=clamp(x);return x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;};
+const lerp=(a,b,f)=>a+(b-a)*f;
+const TAU=Math.PI*2;
+const deN=(x,d=0)=>x.toLocaleString('de-DE',{minimumFractionDigits:d,maximumFractionDigits:d});
+function hexA(hex,a){if(hex[0]!=='#')return hex;const n=parseInt(hex.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;}
+const G={nolabel:false};
+function ap(st,k,f=3){if(st.s>k)return 1;if(st.s<k)return 0;return clamp(st.p*f);}
+function rr(g,x,y,w,h,r){r=Math.min(r,w/2,h/2);g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
+function box(g,x,y,w,h,fill,stroke,r=6,lw=1.4){if(w<=0||h<=0)return;rr(g,x,y,w,h,r);if(fill){g.fillStyle=fill;g.fill();}if(stroke){g.strokeStyle=stroke;g.lineWidth=lw;g.stroke();}}
+function circ(g,x,y,r,fill,stroke,lw=1.4){g.beginPath();g.arc(x,y,Math.max(0,r),0,TAU);if(fill){g.fillStyle=fill;g.fill();}if(stroke){g.strokeStyle=stroke;g.lineWidth=lw;g.stroke();}}
+function line(g,x1,y1,x2,y2,col,lw=1.5,dash){g.save();g.strokeStyle=col;g.lineWidth=lw;if(dash)g.setLineDash(dash);g.beginPath();g.moveTo(x1,y1);g.lineTo(x2,y2);g.stroke();g.restore();}
+function poly(g,pts,fill,stroke,lw=1.4,close=true){g.beginPath();pts.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));if(close)g.closePath();if(fill){g.fillStyle=fill;g.fill();}if(stroke){g.strokeStyle=stroke;g.lineWidth=lw;g.stroke();}}
+function txt(g,x,y,s,col,size=11,align='center',weight=700,font=MONO){g.font=`${weight} ${size}px ${font}`;g.fillStyle=col;g.textAlign=align;g.textBaseline='middle';g.fillText(s,x,y);}
+function tA(g,a,x,y,s,col,size=9,align='center',w=600){if(a<=0||G.nolabel)return;g.save();g.globalAlpha*=a;txt(g,x,y,s,col,size,align,w);g.restore();}
+function arrowHead(g,x1,y1,x2,y2,col,s=7){const a=Math.atan2(y2-y1,x2-x1);g.fillStyle=col;g.beginPath();g.moveTo(x2,y2);g.lineTo(x2-s*Math.cos(a-.45),y2-s*Math.sin(a-.45));g.lineTo(x2-s*Math.cos(a+.45),y2-s*Math.sin(a+.45));g.closePath();g.fill();}
+function arrow(g,x1,y1,x2,y2,col,lw=2,a=1,both=false){if(a<=0)return;g.save();g.globalAlpha*=a;g.strokeStyle=col;g.lineWidth=lw;g.beginPath();const ang=Math.atan2(y2-y1,x2-x1),k=lw*2;g.moveTo(x1+(both?Math.cos(ang)*k:0),y1+(both?Math.sin(ang)*k:0));g.lineTo(x2-Math.cos(ang)*k,y2-Math.sin(ang)*k);g.stroke();arrowHead(g,x1,y1,x2,y2,col,5+lw*1.5);if(both)arrowHead(g,x2,y2,x1,y1,col,5+lw*1.5);g.restore();}
+function pill(g,x,y,text,col,a=1,align='center',size=11){
+ if(a<=0||G.nolabel)return;g.save();g.globalAlpha*=a;g.font=`700 ${size}px ${MONO}`;
+ const w=g.measureText(text).width+12,h=size+8;let x0=align==='center'?x-w/2:align==='left'?x:x-w;
+ x0=Math.max(2,Math.min(VW-w-2,x0));const y0=y-h/2;
+ g.fillStyle=C.pillBg;rr(g,x0,y0,w,h,5);g.fill();g.strokeStyle=col;g.lineWidth=1.2;g.stroke();
+ g.fillStyle=col;g.textBaseline='middle';g.textAlign='left';g.fillText(text,x0+6,y+.5);g.restore();
+}
+function tag(g,px,py,x,y,text,col,a=1,align='center'){if(a<=0||G.nolabel)return;g.save();g.globalAlpha*=a;g.strokeStyle=col;g.lineWidth=1;g.setLineDash([3,3]);g.beginPath();g.moveTo(px,py);g.lineTo(x,y);g.stroke();g.setLineDash([]);circ(g,px,py,2.6,col);g.restore();pill(g,x,y,text,col,a,align);}
+function pathLen(pts){let L=[0];for(let i=1;i<pts.length;i++)L.push(L[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]));return L;}
+function pathAt(pts,L,d){const tot=L[L.length-1];d=((d%tot)+tot)%tot;let i=1;while(i<L.length-1&&L[i]<d)i++;const f=(d-L[i-1])/((L[i]-L[i-1])||1);return[lerp(pts[i-1][0],pts[i][0],f),lerp(pts[i-1][1],pts[i][1],f)];}
+function flow(g,pts,t,col,o={}){const L=pathLen(pts),tot=L[L.length-1],gap=o.gap||16,sp=o.speed||.05,r=o.r||2.4;g.save();g.globalAlpha*=(o.a==null?1:o.a);g.fillStyle=col;
+ for(let d=0;d<tot;d+=gap){const dd=d+t*sp;const p=pathAt(pts,L,dd);g.beginPath();g.arc(p[0],p[1],r,0,TAU);g.fill();}g.restore();}
+function pipe(g,pts,col,w=8,a=1){g.save();g.globalAlpha*=a;g.strokeStyle=col;g.lineWidth=w;g.lineJoin='round';g.lineCap='round';g.beginPath();pts.forEach((p,i)=>i?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]));g.stroke();g.restore();}
+/* ---- Computer-Bausteine ---- */
+function chipIC(g,x,y,w,h,col,label,a=1,pins=6){if(a<=0)return;g.save();g.globalAlpha*=a;
+ for(let i=0;i<pins;i++){const px=x+(i+.5)*w/pins,py=y+(i+.5)*h/pins;line(g,px,y-6,px,y,C.metal,2);line(g,px,y+h,px,y+h+6,C.metal,2);line(g,x-6,py,x,py,C.metal,2);line(g,x+w,py,x+w+6,py,C.metal,2);}
+ box(g,x,y,w,h,C.block,col,4,1.8);if(label&&!G.nolabel)txt(g,x+w/2,y+h/2+1,label,col,Math.min(14,w/4));g.restore();}
+function fbox(g,a,x,y,w,h,col,big,sub){if(a<=0)return;g.save();g.globalAlpha*=a;box(g,x,y,w,h,hexA(col,.14),col,10,1.8);
+ if(sub){txt(g,x+w/2,y+h/2-9,big,col,26,'center',800);if(!G.nolabel)txt(g,x+w/2,y+h/2+18,sub,col,9);}else if(!G.nolabel)txt(g,x+w/2,y+h/2+1,big,col,11);g.restore();}
+function fan(g,cx,cy,r,ang,col,a=1){if(a<=0||r<=0)return;g.save();g.globalAlpha*=a;circ(g,cx,cy,r+3,C.block,col,1.6);g.fillStyle=hexA(col,.55);
+ for(let k=0;k<5;k++){const a0=ang+k*TAU/5;g.beginPath();g.moveTo(cx,cy);g.arc(cx,cy,r,a0,a0+.8);g.closePath();g.fill();}circ(g,cx,cy,r*.25,C.head,col,1.2);g.restore();}
+function tower(g,x,y,w,h,col){box(g,x,y,w,h,C.block,col,6,1.8);circ(g,x+w/2,y+16,5,null,col,1.6);line(g,x+w/2,y+9,x+w/2,y+14,col,1.6);for(let i=0;i<3;i++)line(g,x+10,y+36+i*8,x+w-10,y+36+i*8,C.line2,2);}
+function monitor(g,x,y,w,h,col){box(g,x,y,w,h,C.block,col,8,2);box(g,x+6,y+6,w-12,h-12,C.bg,null,4);line(g,x+w/2,y+h,x+w/2,y+h+14,col,4);line(g,x+w/2-28,y+h+15,x+w/2+28,y+h+15,col,4);}
+function fileIcon(g,cx,cy,col){poly(g,[[cx-28,cy-36],[cx+12,cy-36],[cx+28,cy-20],[cx+28,cy+36],[cx-28,cy+36]],hexA(col,.14),col,1.8);poly(g,[[cx+12,cy-36],[cx+12,cy-20],[cx+28,cy-20]],null,col,1.4,false);
+ for(let i=0;i<3;i++)line(g,cx-18,cy-12+i*9,cx+18,cy-12+i*9,hexA(col,.5),2);}
+function folder(g,x,y,col,on){poly(g,[[x,y],[x+6,y],[x+8,y+2],[x+16,y+2],[x+16,y+12],[x,y+12]],on?hexA(col,.4):hexA(col,.15),col,1.3);}
+function cloud(g,cx,cy,col,label){g.save();g.fillStyle=hexA(col,.16);g.strokeStyle=col;g.lineWidth=1.6;g.beginPath();g.arc(cx-20,cy+6,16,Math.PI*.5,Math.PI*1.5);g.arc(cx,cy-6,20,Math.PI,0);g.arc(cx+20,cy+6,16,Math.PI*1.5,Math.PI*.5);g.closePath();g.fill();g.stroke();g.restore();if(label&&!G.nolabel)txt(g,cx,cy+8,label,col,8.5);}
+function routerIcon(g,cx,cy,col,label='ROUTER'){line(g,cx-22,cy-14,cx-26,cy-30,col,2.4);line(g,cx+22,cy-14,cx+26,cy-30,col,2.4);box(g,cx-34,cy-14,68,28,C.block,col,6,1.8);
+ for(let i=0;i<4;i++)circ(g,cx-24+i*7,cy+7,1.8,C.up);if(!G.nolabel)txt(g,cx+10,cy-2,label,col,8);}
+function sbars(g,x,y,n,col){for(let i=0;i<4;i++){const h=5+i*4;box(g,x+i*6,y-h,4,h,i<n?col:C.line2,null,1);}}
+function ballView(g,x,y,w,h,fps,t,col){box(g,x,y,w,h,C.block,C.line2,8,1.4);const tt=Math.floor(t/1000*fps)/fps;const f=(Math.sin(tt*2.6)+1)/2;const r=Math.min(14,h*.16);circ(g,x+r+6+f*(w-2*r-12),y+h/2,r,col);}
+function pixelCircle(g,cx,cy,r,cell,col){g.fillStyle=col;for(let x=cx-r;x<cx+r;x+=cell)for(let y=cy-r;y<cy+r;y+=cell){const dx=x+cell/2-cx,dy=y+cell/2-cy;if(dx*dx+dy*dy<=r*r)g.fillRect(x,y,cell-(cell>6?1:.4),cell-(cell>6?1:.4));}}
+function rgbOf(hex){const n=parseInt(hex.slice(1),16);return[n>>16&255,n>>8&255,n&255];}
+
+/* ---- KI-Bausteine ---- */
+function catPic(g,cx,cy,s,col,a=1){if(a<=0)return;g.save();g.globalAlpha*=a;
+ poly(g,[[cx-s*.8,cy-s*.3],[cx-s*.6,cy-s*1.05],[cx-s*.15,cy-s*.72]],hexA(col,.25),col,1.4);
+ poly(g,[[cx+s*.8,cy-s*.3],[cx+s*.6,cy-s*1.05],[cx+s*.15,cy-s*.72]],hexA(col,.25),col,1.4);
+ circ(g,cx,cy,s*.85,hexA(col,.18),col,1.5);
+ circ(g,cx-s*.32,cy-s*.12,s*.11,col);circ(g,cx+s*.32,cy-s*.12,s*.11,col);
+ poly(g,[[cx-s*.1,cy+s*.14],[cx+s*.1,cy+s*.14],[cx,cy+s*.27]],col);
+ if(s>9){[-1,1].forEach(k=>{line(g,cx+k*s*.25,cy+s*.3,cx+k*s*.95,cy+s*.2,col,1);line(g,cx+k*s*.25,cy+s*.38,cx+k*s*.95,cy+s*.48,col,1);});}
+ g.restore();}
+function dogPic(g,cx,cy,s,col,a=1){if(a<=0)return;g.save();g.globalAlpha*=a;
+ circ(g,cx,cy,s*.8,hexA(col,.18),col,1.5);
+ g.fillStyle=hexA(col,.5);g.strokeStyle=col;g.lineWidth=1.4;
+ [-1,1].forEach(k=>{g.beginPath();g.ellipse(cx+k*s*.78,cy-s*.02,s*.22,s*.5,k*.35,0,TAU);g.fill();g.stroke();});
+ circ(g,cx-s*.3,cy-s*.15,s*.1,col);circ(g,cx+s*.3,cy-s*.15,s*.1,col);
+ g.beginPath();g.ellipse(cx,cy+s*.27,s*.3,s*.2,0,0,TAU);g.fillStyle=hexA(col,.3);g.fill();g.stroke();
+ circ(g,cx,cy+s*.2,s*.09,col);g.restore();}
+function netPos(layers,x0,x1,cy,gap){return layers.map((n,i)=>{const x=layers.length>1?lerp(x0,x1,i/(layers.length-1)):x0;const c=[];for(let j=0;j<n;j++)c.push([x,cy+(j-(n-1)/2)*gap]);return c;});}
+const WT=(i,j,k)=>Math.sin(i*12.9+j*78.2+k*37.7+1.3);
+function netDraw(g,P,o={}){const a=o.a==null?1:o.a;if(a<=0)return;g.save();g.globalAlpha*=a;
+ for(let i=0;i<P.length-1;i++)P[i].forEach((p,j)=>P[i+1].forEach((q,k)=>{const w=o.w?o.w(i,j,k):.5;const col=w>=0?(o.pos||C.blue):(o.neg||C.down);
+  g.save();g.globalAlpha*=(o.la==null?.45:o.la)*(.35+Math.min(1,Math.abs(w))*.65);line(g,p[0],p[1],q[0],q[1],col,.5+Math.abs(w)*(o.lw||1.4));g.restore();}));
+ P.forEach((L,i)=>L.forEach((p,j)=>{const act=o.act?o.act(i,j):0;const col=(o.cols&&o.cols[i])||C.blue;circ(g,p[0],p[1],o.r||7,act>0?hexA(col,.2+.7*Math.min(1,act)):C.block,col,1.6);}));
+ g.restore();}
+function netPulse(g,P,t,col,dir=1,a=1,speed=.0011){if(a<=0)return;const n=P.length-1;const ph=(t*speed)%1;const f=dir>0?ph:1-ph;const seg=f*n;const i=Math.min(n-1,Math.floor(seg)),u=seg-i;
+ g.save();g.globalAlpha*=a;P[i].forEach((p,j)=>P[i+1].forEach((q,k)=>{if((j+k)%2)return;circ(g,lerp(p[0],q[0],u),lerp(p[1],q[1],u),2.2,col);}));g.restore();}
+function tw(g,s,sz=11){g.font=`700 ${sz}px ${MONO}`;return g.measureText(s).width+12;}
+function chipT(g,x,y,s,col,a=1,sz=11,fillA=.16){const w=tw(g,s,sz);if(a<=0)return w;g.save();g.globalAlpha*=a;box(g,x,y-sz*.9,w,sz*1.8,hexA(col,fillA),col,5,1.3);txt(g,x+w/2,y+.5,s,col,sz);g.restore();return w;}
+function hbars(g,x,y,items,maxW,a=1,hi=-1,gap=22){if(a<=0)return;items.forEach(([lab,v,col],i)=>{const yy=y+i*gap;g.save();g.globalAlpha*=a;txt(g,x-8,yy,lab,i===hi?col:C.text,10.5,'right',700);
+ box(g,x,yy-7,maxW,14,C.block,C.line2,4,1);if(v>0)box(g,x,yy-7,Math.max(2,maxW*v),14,hexA(col,i===hi?.85:.45),col,4,1.2);txt(g,x+maxW+6,yy,deN(v*100)+' %',col,10,'left',700);g.restore();});}
+function axes(g,x0,y0,x1,y1,xl,yl){line(g,x0,y1,x1,y1,C.axis,1.4);line(g,x0,y1,x0,y0,C.axis,1.4);arrowHead(g,x0,y1,x1+4,y1,C.axis,6);arrowHead(g,x0,y1,x0,y0-4,C.axis,6);
+ if(xl)tA(g,1,x1-2,y1+12,xl,C.mute,9,'right');if(yl)tA(g,1,x0+6,y0-2,yl,C.mute,9,'left');}
+function plotFn(g,f,x0,x1,X,Y,col,lw=2.2,a=1,upto=1){if(a<=0)return;g.save();g.globalAlpha*=a;g.strokeStyle=col;g.lineWidth=lw;g.beginPath();const xe=lerp(x0,x1,upto);for(let x=x0;x<=xe;x+=(x1-x0)/120){const px=X(x),py=Y(f(x));x===x0?g.moveTo(px,py):g.lineTo(px,py);}g.stroke();g.restore();}
+
+const CATS={grundlagen:'Grundlagen',netz:'Neuronale Netze',training:'Training',sprache:'Sprachmodelle',praxis:'Vom Training zum Chat'};
+const LESSONS=[];function les(o){LESSONS.push(o);}
+function S(a){return a.map(([d,text])=>({d,text}));}
+
+/* ---------- GRUNDLAGEN ---------- */
+les({id:'ki',cat:'grundlagen',title:'Was ist KI?',sub:'Ein Modell, das aus Beispielen lernt',
+ steps:S([[4800,'KI heißt Künstliche Intelligenz: Ein Computer löst Aufgaben, für die man sonst menschliches Denken braucht – zum Beispiel Bilder erkennen oder Texte schreiben.'],
+ [5200,'Ein KI-Modell ist wie eine riesige Rechenformel mit Millionen bis Milliarden einstellbarer Zahlen. Man nennt sie Gewichte oder Parameter.'],
+ [4800,'Vorne kommt eine Eingabe hinein – ein Foto, ein Text oder deine Stimme. Alles wird zuerst in Zahlen umgewandelt.'],
+ [5000,'Das Modell rechnet diese Zahlen mit seinen Gewichten durch und gibt eine Antwort aus: „Das ist eine Katze – 94 %“.'],
+ [5600,'Das Besondere: Niemand hat diese Gewichte von Hand eingetragen. Das Modell hat sie selbst aus Tausenden Beispielen gelernt.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  box(g,140,50,120,120,hexA(C.purple,.1),C.purple,12,2);
+  for(let r=0;r<7;r++)for(let c=0;c<7;c++){const v=a1?Math.sin(r*3.1+c*1.7+(s===3?t*.006:0)):-1;circ(g,155+c*15,65+r*15,2.6,v>0?hexA(C.purple,.35+.6*v):C.line2);}
+  pill(g,200,36,'KI-MODELL',C.purple,1);
+  pill(g,200,186,'MILLIARDEN ZAHLEN (GEWICHTE)',C.purple,s<4?a1:1-a4);
+  box(g,22,72,84,76,C.block,a2?C.blue:C.line2,8,1.6);catPic(g,64,114,24,C.blue,Math.max(.25,a2));
+  pill(g,64,58,'EINGABE',C.blue,a2);arrow(g,108,110,138,110,C.blue,2,a2);
+  if(s===2||s===3)flow(g,[[108,110],[138,110]],t,C.blue,{gap:9,speed:.05,a:a2});
+  arrow(g,262,110,290,110,C.up,2,a3);
+  if(a3){g.save();g.globalAlpha*=a3;box(g,292,84,96,52,hexA(C.up,.12),C.up,8,1.6);txt(g,340,102,'KATZE',C.up,13,'center',800);txt(g,340,121,'94 %',C.up,11);g.restore();}
+  pill(g,340,70,'AUSGABE',C.up,a3);
+  if(a4){g.save();g.globalAlpha*=a4;for(let i=0;i<6;i++){const x=20+i*30;box(g,x,206,26,26,C.block,C.gold,5,1.2);(i%2?dogPic:catPic)(g,x+13,220,7,C.gold);}g.restore();
+   arrow(g,200,212,200,174,C.gold,2,a4);pill(g,312,219,'AUS BEISPIELEN GELERNT',C.gold,a4);}
+ },
+ box:{was:'Ein KI-Modell ist ein Computerprogramm, das aus vielen Beispielen gelernt hat, Eingaben (Bilder, Texte, Töne) in sinnvolle Ausgaben umzuwandeln.',h2:'So erkennst du es',
+ erkennen:['<b>Eingabe:</b> Foto, Text, Sprache – als Zahlen','<b>Modell:</b> sehr viele einstellbare Zahlen (Gewichte)','<b>Ausgabe:</b> Antwort, Wahrscheinlichkeit, Text','<b>Lernen:</b> Gewichte stammen aus Beispielen, nicht von Hand'],
+ bedeutung:'Eine KI „denkt“ nicht wie ein Mensch. Sie hat aus Beispielen Muster gelernt und wendet diese Muster auf neue Eingaben an.',
+ tipp:'Merksatz: KI = Muster aus Daten lernen und auf Neues anwenden. Mit diesem Satz verstehst du jede KI-Anwendung.'}});
+
+les({id:'regeln',cat:'grundlagen',title:'Regeln oder Lernen?',sub:'Klassisch programmieren vs. maschinelles Lernen',
+ steps:S([[5000,'Klassisch schreibt ein Mensch Regeln ins Programm: „Wenn spitze Ohren und Schnurrhaare, dann Katze.“'],
+ [5000,'Das Problem: Die Welt ist zu vielfältig. Katze von hinten, im Dunkeln, nur halb im Bild – es gibt unendlich viele Ausnahmen.'],
+ [5000,'Maschinelles Lernen dreht es um: Wir geben dem Computer Beispiele zusammen mit der richtigen Antwort.'],
+ [5000,'Der Computer findet die Regeln selbst. Sie stecken danach versteckt in seinen Gewichten.'],
+ [5600,'Kurz gesagt – klassisch: Regeln + Daten → Antworten. Maschinelles Lernen: Daten + Antworten → Regeln.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  const top=s<2?1:.45+.55*a4;
+  g.save();g.globalAlpha*=top;tA(g,1,14,22,'KLASSISCH',C.blue,10,'left',800);
+  fbox(g,1,14,34,96,56,C.blue,'REGELN');fbox(g,1,14,96,96,30,C.aqua,'DATEN');
+  arrow(g,114,80,150,80,C.text,2,1);fbox(g,1,152,52,90,56,C.up,'ANTWORT');g.restore();
+  if(s<2){g.save();g.globalAlpha*=ap(st,0);txt(g,256,46,'WENN Ohren spitz',C.mute,9.5,'left',600);txt(g,256,62,'UND Schnurrhaare',C.mute,9.5,'left',600);txt(g,256,78,'DANN Katze',C.mute,9.5,'left',600);g.restore();}
+  if(a1&&s<2){[[260,104],[300,104],[340,104],[380,104]].forEach((q,i)=>{const b=clamp(a1*4-i);if(b>0){g.save();g.globalAlpha*=b;box(g,q[0]-16,q[1]-12,32,32,C.block,C.down,6,1.4);catPic(g,q[0],q[1]+4,9,C.mute);txt(g,q[0]+12,q[1]-10,'?',C.down,13,'center',800);g.restore();}});
+   pill(g,320,152,'ZU VIELE AUSNAHMEN',C.down,a1);}
+  if(a2){const b=s===4?.45+.55*a4:1;g.save();g.globalAlpha*=a2*b;tA(g,1,14,150,'MASCHINELLES LERNEN',C.gold,10,'left',800);
+   box(g,14,162,96,34,hexA(C.aqua,.14),C.aqua,8,1.6);for(let i=0;i<4;i++)(i%2?dogPic:catPic)(g,30+i*22,179,7,C.aqua);
+   fbox(g,1,14,202,96,34,C.up,'ANTWORTEN');
+   arrow(g,114,200,150,200,C.text,2,1);g.restore();
+   if(s===2)flow(g,[[114,200],[150,200]],t,C.gold,{gap:9,speed:.05});}
+  if(a3){const b=s===4?.45+.55*a4:1;g.save();g.globalAlpha*=a3*b;box(g,152,172,90,56,hexA(C.gold,.14),C.gold,10,1.8);txt(g,197,190,'REGELN',C.gold,11,'center',800);
+   for(let i=0;i<5;i++)circ(g,170+i*13,210,2.6,hexA(C.gold,.4+.5*Math.abs(Math.sin(t*.004+i))));g.restore();
+   pill(g,320,200,'SELBST GEFUNDEN',C.gold,a3);}
+  if(a4){pill(g,300,140,'MENSCH SCHREIBT REGELN',C.blue,a4);}
+ },
+ box:{was:'Beim klassischen Programmieren legt ein Mensch jede Regel fest. Beim maschinellen Lernen findet der Computer die Regeln selbst aus Beispielen.',h2:'So erkennst du es',
+ erkennen:['<b>Klassisch:</b> Taschenrechner, Excel-Formeln, Ampelsteuerung','<b>Gelernt:</b> Gesichtserkennung, Übersetzer, Chatbots','Klassisch ist exakt und nachvollziehbar','Gelernt ist flexibel, aber nicht immer erklärbar'],
+ bedeutung:'Maschinelles Lernen lohnt sich, wo Regeln zu kompliziert zum Aufschreiben sind – bei Bildern, Sprache und Mustern.',
+ tipp:'Für Dinge mit festen Regeln (Rechnen, Steuern) ist ein klassisches Programm meist besser und sicherer als eine KI.'}});
+
+les({id:'daten',cat:'grundlagen',title:'Daten sind der Treibstoff',sub:'Beispiele, Labels, Training und Test',
+ steps:S([[4600,'Eine KI lernt aus Daten. Je mehr gute und abwechslungsreiche Beispiele, desto besser wird sie.'],
+ [5000,'Jedes Beispiel bekommt eine Beschriftung, das sogenannte Label: „Katze“ oder „Hund“. Diese Arbeit machen oft Menschen.'],
+ [5200,'Die Daten werden aufgeteilt: etwa 80 % zum Lernen (Trainingsdaten) und 20 % zum Prüfen (Testdaten).'],
+ [5000,'Die Testdaten sind wie eine Prüfung mit Aufgaben, die das Modell noch nie gesehen hat. Nur so sieht man, ob es wirklich etwas verstanden hat.'],
+ [5600,'Schlechte Daten ergeben eine schlechte KI: Falsche Labels und Vorurteile in den Daten lernt das Modell einfach mit.']]),
+ draw(g,st){const{s}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  for(let i=0;i<20;i++){const r=Math.floor(i/5),c=i%5,x=60+c*58,y=28+r*46;const dog=(i*7)%3===0;const test=i>=16;
+   const bad=a4&&(i===3||i===9);
+   let col=C.blue;if(a2)col=test?C.gold:C.up;if(bad)col=C.down;
+   const ab=clamp(ap(st,0)*20-i);if(ab<=0)continue;
+   g.save();g.globalAlpha*=ab*(s===3&&!test?.35:1);box(g,x,y,46,40,C.block,col,6,1.4);(dog?dogPic:catPic)(g,x+23,y+(a1?17:21),9,col);
+   if(a1){g.globalAlpha*=a1;txt(g,x+23,y+34,bad?(dog?'KATZE':'HUND'):(dog?'HUND':'KATZE'),bad?C.down:C.mute,7.5,'center',700);}
+   g.restore();}
+  if(a2){g.save();g.globalAlpha*=a2;box(g,60,216,280*0.8-6,12,hexA(C.up,.5),C.up,4,1);box(g,60+280*.8,216,280*.2-6+4,12,hexA(C.gold,.5),C.gold,4,1);g.restore();
+   tA(g,a2,60+111,240,'80 % TRAINING',C.up,9.5);tA(g,a2,60+252,240,'20 % TEST',C.gold,9.5);}
+  if(s===3)pill(g,200,13,'TEST: NOCH NIE GESEHEN',C.gold,a3);
+  if(s===4)pill(g,200,13,'FALSCHES LABEL = FALSCH GELERNT',C.down,a4);
+ },thumb:2,
+ box:{was:'Trainingsdaten sind die Beispiele, aus denen ein Modell lernt. Ein Label ist die richtige Antwort, die zu einem Beispiel gehört.',h2:'So erkennst du es',
+ erkennen:['<b>Trainingsdaten:</b> damit lernt das Modell','<b>Testdaten:</b> damit wird es geprüft','<b>Label:</b> die richtige Antwort zum Beispiel','Typische Aufteilung: 80 % zu 20 %'],
+ bedeutung:'Die Qualität einer KI hängt vor allem von den Daten ab. Fehlen z. B. Bilder bei Nacht, erkennt sie nachts schlecht.',
+ tipp:'Bei Prüfaufgaben (z. B. Gussfehler im CT) braucht eine KI viele Beispiele für jeden Fehlertyp – auch für seltene Fehler.'}});
+
+les({id:'lernarten',cat:'grundlagen',title:'Drei Arten zu lernen',sub:'Überwacht, unüberwacht, bestärkend',
+ steps:S([[4400,'Es gibt drei große Arten, wie eine KI lernen kann.'],
+ [5200,'Überwachtes Lernen: Jedes Beispiel hat eine richtige Antwort. Wie ein Lehrer, der jede Aufgabe korrigiert.'],
+ [5200,'Unüberwachtes Lernen: Es gibt keine Antworten. Die KI sucht selbst nach Gruppen und Mustern in den Daten.'],
+ [5200,'Bestärkendes Lernen: Ausprobieren und Belohnung. Gute Züge bringen Punkte – wie beim Hundetraining mit Leckerli.'],
+ [5200,'Moderne Sprachmodelle wie Claude nutzen mehrere dieser Arten nacheinander.']]),
+ draw(g,st){const{s,t}=st;const A=[ap(st,1),ap(st,2),ap(st,3)];
+  const px=[14,144,274],W=118,y0=40,H=150,cols=[C.blue,C.purple,C.up],nm=['ÜBERWACHT','UNÜBERWACHT','BESTÄRKEND'];
+  px.forEach((x,i)=>{const a=Math.max(.25,A[i]);const hi=s===i+1;g.save();g.globalAlpha*=a;box(g,x,y0,W,H,hi?hexA(cols[i],.08):C.block,cols[i],10,hi?2.2:1.4);g.restore();pill(g,x+W/2,y0-14,nm[i],cols[i],a);});
+  const pts=[[.2,.25,0],[.3,.4,0],[.15,.55,0],[.35,.2,0],[.25,.7,0],[.7,.3,1],[.8,.55,1],[.65,.7,1],[.85,.8,1],[.6,.5,1]];
+  {const a=Math.max(.25,A[0]);g.save();g.globalAlpha*=a;pts.forEach(p=>{const x=px[0]+10+p[0]*98,y=y0+10+p[1]*130;p[2]?poly(g,[[x,y-5],[x+5,y+4],[x-5,y+4]],hexA(C.gold,.5),C.gold,1.2):circ(g,x,y,4.5,hexA(C.blue,.5),C.blue,1.2);});
+   if(A[0])line(g,px[0]+64,y0+8,px[0]+56,y0+H-8,C.text,1.8,[5,4]);g.restore();}
+  {const a=Math.max(.25,A[1]);const k=ease(A[1]);g.save();g.globalAlpha*=a;
+   const cen=[[.25,.3],[.75,.35],[.5,.78]];const cc=[C.purple,C.aqua,C.pink];
+   for(let i=0;i<15;i++){const g0=i%3;const rx=(Math.sin(i*9.7)*.5+.5),ry=(Math.cos(i*5.3)*.5+.5);const jj=Math.floor(i/3),an=jj*1.26+g0;const tx=cen[g0][0]+Math.cos(an)*.1*(jj?1:0),ty=cen[g0][1]+Math.sin(an)*.08*(jj?1:0);
+    const x=px[1]+10+lerp(rx,tx,k)*98,y=y0+10+lerp(ry,ty,k)*130;circ(g,x,y,4.2,hexA(k>.5?cc[g0]:C.mute,.55),k>.5?cc[g0]:C.mute,1.1);}
+   if(k>.9)cen.forEach((c,i)=>circ(g,px[1]+10+c[0]*98,y0+10+c[1]*130,22,null,hexA(cc[i],.7),1.2));g.restore();}
+  {const a=Math.max(.25,A[2]);g.save();g.globalAlpha*=a;const gx=px[2]+14,gy=y0+20,cs=22;
+   for(let r=0;r<5;r++)for(let c=0;c<4;c++)box(g,gx+c*cs,gy+r*cs,cs-2,cs-2,C.bg,C.line2,3,1);
+   txt(g,gx+3*cs+10,gy+10,'★',C.gold,15,'center',800);
+   const path=[[0,4],[0,3],[1,3],[1,2],[2,2],[2,1],[3,1],[3,0]];const f=s===3?clamp(st.p*1.2):(s>3?1:0);const pos=f*(path.length-1);const i0=Math.floor(pos),u=pos-i0;const p0=path[i0],p1=path[Math.min(path.length-1,i0+1)];
+   const cx=gx+lerp(p0[0],p1[0],u)*cs+10,cy=gy+lerp(p0[1],p1[1],u)*cs+10;circ(g,cx,cy,7,hexA(C.up,.6),C.up,1.5);
+   if(f>=1){txt(g,gx+3*cs+10,gy-8,'+1 PUNKT',C.gold,9);}g.restore();}
+  pill(g,200,222,['DREI WEGE ZUM LERNEN','MIT RICHTIGEN ANTWORTEN','OHNE ANTWORTEN – GRUPPEN FINDEN','BELOHNUNG FÜR GUTE ZÜGE','SPRACHMODELLE NUTZEN ALLE DREI'][s],[C.text,C.blue,C.purple,C.up,C.gold][s],1);
+ },
+ box:{was:'KI kann auf verschiedene Weise lernen: mit Lösungen (überwacht), ohne Lösungen (unüberwacht) oder durch Belohnung (bestärkend).',h2:'So erkennst du es',
+ erkennen:['<b>Überwacht:</b> Spam-Filter, Bilderkennung','<b>Unüberwacht:</b> Kundengruppen, Auffälligkeiten finden','<b>Bestärkend:</b> Schach-KI, Roboter, Feinschliff von Chatbots','Bei Sprachmodellen: alle Arten nacheinander'],
+ bedeutung:'Welche Lernart passt, hängt davon ab, ob es richtige Antworten gibt – und wie teuer es ist, sie zu sammeln.',
+ tipp:'Unüberwachtes Lernen eignet sich gut, um Ausreißer zu finden – etwa ungewöhnliche Messwerte in einer Produktion.'}});
+
+les({id:'anwendungen',cat:'grundlagen',title:'Wo steckt überall KI?',sub:'Bilder, Sprache, Text und Empfehlungen',
+ steps:S([[4400,'KI begegnet dir jeden Tag – oft, ohne dass du es merkst.'],
+ [5000,'Bilder: Das Handy entsperrt mit deinem Gesicht, Kameras in Fabriken finden Fehler an Bauteilen.'],
+ [5000,'Sprache: Sprachassistenten wandeln gesprochene Wörter in Text um und antworten mit einer Stimme.'],
+ [5000,'Text: Übersetzer und Chat-Assistenten wie Claude verstehen und schreiben ganze Texte.'],
+ [5200,'Empfehlungen: Streamingdienste, YouTube und Online-Shops schlagen dir passende Filme, Videos und Produkte vor.']]),
+ draw(g,st){const{s,t}=st;
+  circ(g,200,125,36,hexA(C.purple,.15),C.purple,2.2);txt(g,200,126,'KI',C.purple,22,'center',800);
+  const it=[[90,62,C.blue,'BILDER'],[310,62,C.orange,'SPRACHE'],[90,190,C.up,'TEXT'],[310,190,C.pink,'EMPFEHLUNGEN']];
+  it.forEach(([x,y,col,l],i)=>{const a=ap(st,i+1);if(a<=0)return;line(g,200+(x-200)*.3,125+(y-125)*.3,x+(200-x)*.32,y+(125-y)*.32,hexA(col,.6),1.6,[4,4]);
+   g.save();g.globalAlpha*=a;box(g,x-52,y-34,104,68,C.block,col,10,1.8);g.restore();
+   if(i===0){catPic(g,x-16,y-2,14,col,a);if(a){g.save();g.globalAlpha*=a;box(g,x+4,y-20,36,36,null,col,3,1.4);g.restore();txt(g,x+22,y-2,'✓',col,14);} }
+   if(i===1){g.save();g.globalAlpha*=a;g.strokeStyle=col;g.lineWidth=2;g.beginPath();for(let k=-40;k<=40;k++){const yy=y-2+Math.sin(k*.45+t*.01)*(12*Math.exp(-k*k/500));k===-40?g.moveTo(x+k,yy):g.lineTo(x+k,yy);}g.stroke();g.restore();}
+   if(i===2){g.save();g.globalAlpha*=a;for(let k=0;k<4;k++)line(g,x-36,y-16+k*10,x+36-(k===3?30:0)-(k%2)*10,y-16+k*10,col,3);g.restore();}
+   if(i===3){g.save();g.globalAlpha*=a;for(let k=0;k<3;k++){box(g,x-40+k*28,y-18,22,30,hexA(col,.15),col,3,1.2);txt(g,x-29+k*28,y-3,'▶',col,9);}g.restore();txt(g,x,y+22,'★★★★☆',col,9);}
+   pill(g,x,y+44,l,col,a);});
+  if(s===0)pill(g,200,30,'JEDEN TAG IM EINSATZ',C.text,1);
+ },
+ box:{was:'KI-Modelle stecken in vielen Geräten und Diensten: im Handy, im Auto, in der Fabrik, im Internet und in Chat-Assistenten.',h2:'So erkennst du es',
+ erkennen:['<b>Bilder:</b> Face-ID, Fotosuche, Prüfkameras','<b>Sprache:</b> Sprachassistenten, Diktierfunktion','<b>Text:</b> Übersetzer, Chatbots, Rechtschreibhilfe','<b>Empfehlungen:</b> Netflix, YouTube, Shops'],
+ bedeutung:'Hinter all diesen Anwendungen steckt dasselbe Prinzip: ein Modell, das aus vielen Beispielen Muster gelernt hat.',
+ tipp:'In der Qualitätsprüfung hilft KI, auf Röntgen- und CT-Bildern Poren oder Risse automatisch zu markieren – der Mensch entscheidet am Ende.'}});
+
+/* ---------- NEURONALE NETZE ---------- */
+les({id:'neuron',cat:'netz',title:'Das künstliche Neuron',sub:'Eingänge × Gewichte, dann addieren',
+ steps:S([[5000,'Vorbild ist die Nervenzelle im Gehirn: Sie bekommt Signale von anderen Zellen und „feuert“, wenn genug zusammenkommt.'],
+ [4800,'Ein künstliches Neuron bekommt mehrere Zahlen als Eingang – hier x1 = 1, x2 = 0,5 und x3 = 0.'],
+ [5000,'Jede Zahl wird mit einem Gewicht malgenommen. Wichtige Eingänge haben große Gewichte, unwichtige kleine.'],
+ [5600,'Dann wird alles addiert: 1 × 0,8 + 0,5 × 0,4 + 0 × (−0,6) = 1,0.'],
+ [5200,'Ist die Summe groß genug, feuert das Neuron und gibt sein Signal an die nächsten Neuronen weiter.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  const ins=[[60,70,'1'],[60,125,'0,5'],[60,180,'0']],ws=['× 0,8','× 0,4','× (−0,6)'],wc=[C.up,C.up,C.down];
+  ins.forEach((p,i)=>{line(g,p[0]+16,p[1],222,125,a2?wc[i]:C.line2,a2?1.2+[2.4,1.2,1.6][i]*a2:1.4);
+   circ(g,p[0],p[1],16,a1?hexA(C.blue,.18):C.block,C.blue,1.8);tA(g,a1,p[0],p[1]+1,p[2],C.blue,12,'center',800);tA(g,1,p[0]-30,p[1],'x'+(i+1),C.mute,10);
+   pill(g,lerp(p[0]+16,222,.38),lerp(p[1],125,.38)-13,ws[i],wc[i],a2);
+   if(s===1||s===3)flow(g,[[p[0]+16,p[1]],[222,125]],t,C.blue,{gap:14,speed:.05,a:i===2?.25:1});});
+  const fire=a4;circ(g,250,125,30,fire?hexA(C.gold,.2+.4*fire*(0.6+0.4*Math.sin(t*.012))):C.block,C.gold,2.2);txt(g,250,126,'Σ',C.gold,22,'center',800);
+  pill(g,250,80,s>=3?'SUMME = 1,0':'NEURON',C.gold,1);
+  arrow(g,282,125,360,125,C.gold,2.4,a4);if(s===4)flow(g,[[282,125],[352,125]],t,C.gold,{gap:12,speed:.06});
+  pill(g,330,152,'FEUERT ✓',C.up,a4);
+  if(s===3)pill(g,200,226,'0,8 + 0,2 + 0 = 1,0',C.gold,a3);
+  if(s===0){g.save();g.globalAlpha*=ap(st,0)*.8;g.strokeStyle=C.mute;g.lineWidth=1.4;for(let k=0;k<6;k++){const an=k*1.05;g.beginPath();g.moveTo(250+Math.cos(an)*30,125+Math.sin(an)*30);g.quadraticCurveTo(250+Math.cos(an+.3)*55,125+Math.sin(an+.3)*55,250+Math.cos(an)*70,125+Math.sin(an)*70);g.stroke();}g.restore();pill(g,250,214,'VORBILD: NERVENZELLE',C.mute,1);}
+ },
+ box:{was:'Ein künstliches Neuron ist eine kleine Rechenformel: Eingänge mal Gewichte, alles addieren und dann entscheiden, ob es ein Signal weitergibt.',h2:'So geht’s',
+ erkennen:['Eingänge sind Zahlen (z. B. Pixel-Helligkeit)','Jeder Eingang hat ein eigenes Gewicht','Summe = x1·w1 + x2·w2 + x3·w3','Große Summe → Neuron „feuert“'],
+ bedeutung:'Ein einzelnes Neuron kann nur sehr einfache Entscheidungen treffen. Erst Millionen davon zusammen ergeben eine starke KI.',
+ tipp:'Rechne selbst: Eingänge 1 und 1, Gewichte 0,5 und 0,3 → Summe 0,8. So einfach ist ein Neuron im Kern.'}});
+
+les({id:'gewichte',cat:'netz',title:'Gewichte & Bias',sub:'Die Regler, in denen das Wissen steckt',
+ steps:S([[4800,'Gewichte sind wie Lautstärkeregler an einem Mischpult: Sie bestimmen, wie stark ein Eingang zählt.'],
+ [5200,'Positives Gewicht verstärkt, negatives Gewicht bremst, und ein Gewicht von 0 ignoriert den Eingang ganz.'],
+ [5000,'Dazu kommt der Bias – ein Grundwert, der das Neuron leichter oder schwerer feuern lässt.'],
+ [6000,'Beispiel „Gehe ich joggen?“: Sonne × 2 + Regen × (−3) + freie Zeit × 1 + Bias (−1). Heute: Sonne ja, Regen nein, Zeit ja → 2 + 0 + 1 − 1 = 2. Also: joggen!'],
+ [5400,'Beim Lernen werden genau diese Regler verstellt. Das gesamte „Wissen“ einer KI steckt in ihren Gewichten und Bias-Werten.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  const F=[['SONNE',2,C.gold],['REGEN',-3,C.blue],['ZEIT',1,C.up],['BIAS',-1,C.purple]];
+  F.forEach(([l,v,col],i)=>{const x=50+i*62,yc=110,h=120;if(i===3&&a2<=0&&s<2)return;const aa=i===3?Math.max(a2,s>=2?1:0):1;
+   g.save();g.globalAlpha*=aa;line(g,x,yc-h/2,x,yc+h/2,C.line2,4);line(g,x-8,yc,x+8,yc,C.mute,1.4);
+   let vv=s===0?Math.sin(t*.002+i)*1.5:v;if(s===4)vv=v+Math.sin(t*.004+i*1.7)*.8;
+   const ky=yc-vv/3.5*(h/2);box(g,x-14,ky-8,28,16,hexA(col,.35),col,4,1.6);g.restore();
+   tA(g,aa,x,yc+h/2+14,l,col,9.5);tA(g,aa*(s>=1?1:0),x,yc+h/2+28,(vv>0?'+':'')+deN(vv,s===4||s===0?1:0),col,10);});
+  tA(g,1,24,50,'+',C.mute,12);tA(g,1,24,170,'−',C.mute,12);
+  if(s===1){pill(g,330,60,'+ VERSTÄRKT',C.up,a1);pill(g,330,90,'− BREMST',C.down,a1);pill(g,330,120,'0 = EGAL',C.mute,a1);}
+  if(s===2)pill(g,330,90,'GRUNDWERT',C.purple,a2);
+  if(s===3){const ins=['Sonne: ja (1)','Regen: nein (0)','Zeit: ja (1)'];ins.forEach((x,i)=>tA(g,a3,290,50+i*22,x,C.text,10,'left',600));
+   pill(g,330,130,'2 + 0 + 1 − 1 = 2',C.gold,a3);pill(g,330,165,'JOGGEN ✓',C.up,clamp(a3*2-1));}
+  if(s===4)pill(g,330,40,'LERNEN = REGLER DREHEN',C.gold,a4);
+  pill(g,200,232,'GEWICHT = WIE WICHTIG IST DER EINGANG?',C.text,s===0?1:0);
+ },thumb:3,
+ box:{was:'Gewichte bestimmen, wie stark jeder Eingang zählt. Der Bias ist ein zusätzlicher Grundwert pro Neuron. Zusammen heißen sie Parameter.',h2:'So erkennst du es',
+ erkennen:['<b>Großes positives Gewicht:</b> Eingang ist sehr wichtig','<b>Negatives Gewicht:</b> Eingang spricht dagegen','<b>Bias:</b> verschiebt die Schwelle zum Feuern','Ein großes Sprachmodell hat Milliarden Parameter'],
+ bedeutung:'Ein trainiertes Modell ist im Grunde eine riesige Liste von Zahlen. Wer diese Zahlen hat, hat das Modell.',
+ tipp:'Wenn du von einem „70B-Modell“ liest: Das B steht für Billion (englisch) = Milliarde. Das Modell hat also 70 Milliarden Parameter.'}});
+
+les({id:'schichten',cat:'netz',title:'Schichten im Netz',sub:'Eingabe, versteckte Schichten, Ausgabe',
+ steps:S([[4600,'Ein einzelnes Neuron kann wenig. Viele Neuronen in Schichten hintereinander werden richtig mächtig.'],
+ [4800,'Die Eingabeschicht nimmt die Daten auf – zum Beispiel die Helligkeit jedes Pixels eines Bildes.'],
+ [5200,'Die versteckten Schichten rechnen. Jede Schicht erkennt aus den Ergebnissen der vorherigen etwas Neues.'],
+ [5000,'Die Ausgabeschicht liefert das Ergebnis, zum Beispiel: 92 % Katze, 8 % Hund.'],
+ [5400,'Viele versteckte Schichten übereinander nennt man Deep Learning – „tiefes“ Lernen. Große Modelle haben über 100 Schichten.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  const P=netPos([4,6,6,2],56,300,118,26);
+  netDraw(g,P,{w:WT,la:s>=2?.55:.25,cols:[C.blue,C.purple,C.purple,C.up],act:(i,j)=>i===0?a1*(j%2?.5:1):(i===3?a3*(j===0?1:.1):(a2&&s>=2?.5+.5*Math.sin(t*.006+j+i):0))});
+  if(s>=2)netPulse(g,P,t,C.gold,1,1);
+  pill(g,56,22,'EINGABE',C.blue,a1);pill(g,178,22,'VERSTECKTE SCHICHTEN',C.purple,a2);pill(g,320,22,'AUSGABE',C.up,a3);
+  if(a3){tA(g,a3,314,105,'KATZE 92 %',C.up,10,'left',800);tA(g,a3,314,131,'HUND 8 %',C.mute,10,'left',700);}
+  if(a1){catPic(g,22,118,11,C.blue,a1);}
+  if(s===4){g.save();g.globalAlpha*=a4;box(g,108,36,140,170,null,C.gold,10,1.6);g.restore();pill(g,195,222,'DEEP LEARNING = VIELE SCHICHTEN',C.gold,a4);}
+  else pill(g,195,222,'NEURONEN IN SCHICHTEN',C.text,1);
+ },
+ box:{was:'Ein neuronales Netz besteht aus Schichten von Neuronen. Jedes Neuron einer Schicht ist mit den Neuronen der nächsten Schicht verbunden.',h2:'So erkennst du es',
+ erkennen:['<b>Eingabeschicht:</b> nimmt die Rohdaten auf','<b>Versteckte Schichten:</b> erkennen Merkmale','<b>Ausgabeschicht:</b> gibt das Ergebnis aus','Viele Schichten = Deep Learning'],
+ bedeutung:'Je mehr Schichten und Neuronen, desto kompliziertere Muster kann ein Netz lernen – aber desto mehr Daten und Rechenkraft braucht es.',
+ tipp:'„Versteckt“ heißt nur, dass man diese Schichten von außen nicht direkt sieht – man gibt nichts hinein und liest nichts direkt ab.'}});
+
+les({id:'aktivierung',cat:'netz',title:'Die Aktivierungsfunktion',sub:'Der Knick, der alles möglich macht',
+ steps:S([[4800,'Nach dem Addieren entscheidet die Aktivierungsfunktion, welches Signal das Neuron weitergibt.'],
+ [5000,'ReLU ist die häufigste: Negative Werte werden zu 0, positive Werte bleiben, wie sie sind.'],
+ [5000,'Sigmoid drückt jede Zahl in den Bereich zwischen 0 und 1 – praktisch für Wahrscheinlichkeiten.'],
+ [5400,'Ohne diese Knicke und Kurven wäre das ganze Netz nur eine gerade Linie – egal wie viele Schichten es hat.'],
+ [5400,'Erst durch die Aktivierung kann das Netz Kurven, Formen und komplizierte Muster nachbilden.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  if(s<3){const X=x=>200+x*28,Y=y=>170-y*28;axes(g,60,40,340,170,'Summe','Signal');line(g,200,40,200,172,C.line2,1,[3,3]);
+   tA(g,1,200,182,'0',C.mute,9);
+   if(s===0){pill(g,200,206,'SUMME → FUNKTION → SIGNAL',C.text,1);fbox(g,ap(st,0),150,70,100,50,C.gold,'f( Summe )');}
+   if(s===1){plotFn(g,x=>Math.max(0,x),-4.8,4.8,X,Y,C.up,2.6,1,ease(a1));const x=Math.sin(t*.0016)*4;circ(g,X(x),Y(Math.max(0,x)),5,C.gold);pill(g,X(x),Y(Math.max(0,x))-18,deN(x,1)+' → '+deN(Math.max(0,x),1),C.gold,1);pill(g,300,206,'ReLU',C.up,a1);}
+   if(s===2){const sg=x=>1/(1+Math.exp(-x*1.4));const Y2=y=>170-y*110;plotFn(g,sg,-4.8,4.8,X,Y2,C.purple,2.6,1,ease(a2));line(g,62,Y2(1),340,Y2(1),C.line2,1,[3,3]);tA(g,1,52,Y2(1),'1',C.mute,9);
+    const x=Math.sin(t*.0016)*4;circ(g,X(x),Y2(sg(x)),5,C.gold);pill(g,300,206,'SIGMOID: 0 BIS 1',C.purple,a2);}}
+  else{const X=x=>40+x*320,Y=y=>200-y*150;axes(g,30,40,370,200);
+   const pts=[[.05,.15],[.15,.45],[.25,.7],[.35,.78],[.45,.62],[.55,.38],[.65,.3],[.75,.45],[.85,.72],[.95,.85]];
+   pts.forEach(p=>circ(g,X(p[0]),Y(p[1]),4.5,hexA(C.blue,.5),C.blue,1.2));
+   if(s===3){plotFn(g,x=>.3+.4*x,0,1,X,Y,C.down,2.4,a3);pill(g,280,40,'OHNE KNICK: NUR EINE GERADE',C.down,a3);}
+   if(s===4){const f=x=>.5+.3*Math.sin(x*7.2-1.5)+.15*x;plotFn(g,f,0,1,X,Y,C.up,2.6,1,ease(a4));pill(g,280,40,'MIT AKTIVIERUNG: KURVEN',C.up,a4);}}
+ },thumb:1,
+ box:{was:'Die Aktivierungsfunktion verarbeitet die Summe eines Neurons weiter. Bekannte Beispiele sind ReLU und Sigmoid.',h2:'So erkennst du es',
+ erkennen:['<b>ReLU:</b> negativ → 0, positiv bleibt','<b>Sigmoid:</b> S-Kurve zwischen 0 und 1','<b>Softmax:</b> macht aus Zahlen Prozentwerte (Summe 100 %)','Sitzt hinter jedem Neuron'],
+ bedeutung:'Ohne Aktivierungsfunktion könnte ein Netz nur einfache gerade Zusammenhänge lernen – kein Gesicht, keine Sprache.',
+ tipp:'Rechne ReLU selbst: Aus −3 wird 0, aus 2,5 wird 2,5. Einfacher geht es nicht – und genau deshalb ist ReLU so beliebt.'}});
+
+const CATPX=['..X....X..','.XX....XX.','.XXXXXXXX.','XX.XXXX.XX','XXXXXXXXXX','XXXX..XXXX','.XXXXXXXX.','..XXXXXX..'];
+les({id:'bilder',cat:'netz',title:'Wie KI Bilder erkennt',sub:'Pixel → Kanten → Formen → Ergebnis',
+ steps:S([[4800,'Für eine KI ist ein Bild nur ein Raster aus Zahlen. Jedes Pixel hat einen Helligkeitswert, z. B. von 0 bis 255.'],
+ [5000,'Die ersten Schichten erkennen ganz einfache Dinge: Kanten, Linien und Ecken.'],
+ [5000,'Die mittleren Schichten setzen daraus Formen zusammen: Augen, Ohren, Nase.'],
+ [5000,'Die letzten Schichten erkennen das Ganze: „Das ist eine Katze – 94 %“.'],
+ [5600,'Solche Bild-Netze (CNN) prüfen auch Bauteile: Sie markieren Poren, Lunker und Risse in Röntgen- und CT-Bildern.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  if(s<4){const cs=9,ox=18,oy=88;CATPX.forEach((row,r)=>row.split('').forEach((ch,c)=>{const v=ch==='X'?(r===3&&(c===2||c===7)?40:200):20;const gc=v/255;g.fillStyle=`rgba(${C.bg==='#ffffff'?'20,26,38':'220,230,240'},${.12+gc*.8})`;g.fillRect(ox+c*cs,oy+r*cs,cs-1,cs-1);}));
+   if(s===0){pill(g,63,66,'PIXEL = ZAHLEN',C.blue,1);const sx=ox+4*cs,sy=oy+4*cs;box(g,sx-1,sy-1,cs*2+1,cs*2+1,null,C.gold,2,1.6);line(g,sx+cs*2,sy+cs,140,sy+cs,C.gold,1.2,[3,3]);pill(g,170,sy+cs,'WERT 200',C.gold,1);}
+   tA(g,1,63,170,'BILD',C.mute,9);
+   arrow(g,112,124,132,124,C.text,1.8,a1);
+   if(a1){g.save();g.globalAlpha*=a1;for(let i=0;i<4;i++){const x=138,y=52+i*40;box(g,x,y,34,34,C.block,C.blue,5,1.2);
+     if(i===0)line(g,x+6,y+17,x+28,y+17,C.blue,2.4);if(i===1)line(g,x+17,y+6,x+17,y+28,C.blue,2.4);if(i===2)line(g,x+6,y+28,x+28,y+6,C.blue,2.4);if(i===3){line(g,x+8,y+26,x+17,y+8,C.blue,2.4);line(g,x+17,y+8,x+26,y+26,C.blue,2.4);}}g.restore();pill(g,155,36,'KANTEN',C.blue,a1);}
+   arrow(g,176,124,196,124,C.text,1.8,a2);
+   if(a2){g.save();g.globalAlpha*=a2;const sh=[['OHR',()=>poly(g,[[214,92],[224,70],[234,92]],null,C.purple,2)],['AUGE',()=>{circ(g,224,134,9,null,C.purple,2);circ(g,224,134,3,C.purple);}],['NASE',()=>poly(g,[[216,178],[232,178],[224,190]],null,C.purple,2)]];
+    sh.forEach((q,i)=>{box(g,202,62+i*48,44,40,C.block,C.purple,5,1.2);q[1]();});g.restore();pill(g,224,46,'FORMEN',C.purple,a2);}
+   arrow(g,250,124,270,124,C.text,1.8,a3);
+   if(a3){catPic(g,300,96,18,C.up,a3);hbars(g,316,150,[['KATZE',.94,C.up],['HUND',.05,C.mute],['AUTO',.01,C.mute]],46,a3,0,20);}
+  }else{
+   box(g,30,30,200,190,C.block,C.line2,10,1.4);
+   g.save();rr(g,30,30,200,190,10);g.clip();const gr=g.createRadialGradient(130,125,10,130,125,95);gr.addColorStop(0,hexA(C.metal,.55));gr.addColorStop(1,hexA(C.metal3,.25));g.fillStyle=gr;
+   g.beginPath();g.moveTo(60,70);g.lineTo(200,60);g.lineTo(210,190);g.lineTo(70,195);g.closePath();g.fill();g.restore();
+   const holes=[[100,100,6],[160,140,4],[120,165,5]];holes.forEach(h=>circ(g,h[0],h[1],h[2],C.bg));
+   holes.forEach((h,i)=>{const b=clamp(a4*3-i);if(b>0){g.save();g.globalAlpha*=b;box(g,h[0]-h[2]-6,h[1]-h[2]-6,2*h[2]+12,2*h[2]+12,null,C.down,3,1.8);g.restore();}});
+   pill(g,130,18,'RÖNTGEN-/CT-BILD',C.mute,1);
+   pill(g,316,90,'3 PORENFUNDE',C.down,a4);pill(g,316,124,'KI MARKIERT',C.gold,a4);pill(g,316,158,'MENSCH PRÜFT',C.up,a4);}
+ },thumb:3,
+ box:{was:'Bilderkennende Netze (CNN = Convolutional Neural Network) suchen mit kleinen Filtern Stück für Stück nach Mustern im Bild.',h2:'So erkennst du es',
+ erkennen:['<b>Frühe Schichten:</b> Kanten, Linien, Ecken','<b>Mittlere Schichten:</b> Formen wie Augen oder Räder','<b>Späte Schichten:</b> ganze Objekte','Am Ende: Wahrscheinlichkeit pro Klasse'],
+ bedeutung:'Die KI „sieht“ nicht wie wir. Sie erkennt Muster in Zahlenrastern – darum kann sie auch auf Röntgenbildern Dinge finden, die man leicht übersieht.',
+ tipp:'Ein Farbbild hat pro Pixel drei Zahlen (Rot, Grün, Blau). Ein Graustufen-CT-Schnitt nur eine – dafür oft mit 16 Bit statt 8 Bit Tiefe.'}});
+
+/* ---------- TRAINING ---------- */
+les({id:'verlust',cat:'training',title:'Fehler messen',sub:'Der Verlust (Loss) zeigt, wie falsch das Modell liegt',
+ steps:S([[4800,'Am Anfang sind alle Gewichte zufällige Zahlen. Das Modell weiß noch nichts und rät nur.'],
+ [5200,'Wir zeigen ihm ein Katzenbild. Das Modell sagt: 30 % Katze, 70 % Hund. Leider falsch!'],
+ [5200,'Die richtige Antwort wäre 100 % Katze. Der Abstand zwischen Antwort und Ziel ist der Fehler.'],
+ [5000,'Daraus wird eine einzige Zahl berechnet: der Verlust (englisch Loss). Großer Fehler = großer Verlust.'],
+ [5600,'Das Ziel des ganzen Trainings: den Verlust so klein wie möglich machen. Mit jedem Schritt sinkt die Kurve.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  if(s<4){box(g,20,60,80,80,C.block,C.blue,8,1.6);catPic(g,60,104,24,C.blue);pill(g,60,46,'BILD',C.blue,1);
+   if(s===0){for(let i=0;i<12;i++)tA(g,1,140+(i%4)*60,70+Math.floor(i/4)*36,(Math.sin(i*7.7+Math.floor(t/600))*0.9).toFixed(2).replace('.',','),C.mute,10);pill(g,230,190,'ZUFÄLLIGE GEWICHTE',C.mute,1);}
+   if(a1){const bx=170,base=190,H=130;
+    [['KATZE',.3,1],['HUND',.7,0]].forEach(([l,v,tgt],i)=>{const x=bx+i*110;box(g,x,base-H*v*ease(a1),40,H*v*ease(a1),hexA(i?C.down:C.blue,.5),i?C.down:C.blue,4,1.4);tA(g,a1,x+20,base-H*v-10,deN(v*100)+' %',i?C.down:C.blue,11,'center',800);tA(g,1,x+20,base+12,l,C.text,10);
+     if(a2){g.save();g.globalAlpha*=a2;box(g,x-4,base-H*tgt,48,H*tgt+.01,null,C.up,4,1.6);g.setLineDash([]);g.restore();if(tgt)tA(g,a2,x+20,base-H-10,'ZIEL 100 %',C.up,9.5);else tA(g,a2,x+20,base+26,'ZIEL 0 %',C.up,9);}
+     if(a2&&s>=2){const y1=base-H*v,y2=base-H*tgt;arrow(g,x+52,y1,x+52,y2,C.gold,2,a2,true);}});
+    line(g,150,base,380,base,C.axis,1.4);tA(g,a1,330,40,'MODELL SAGT',C.mute,9);}
+   if(s===3){pill(g,280,224,'VERLUST = 1,20 (GROSS)',C.gold,a3);}
+  }else{const X=x=>50+x*320,Y=y=>200-y*150;axes(g,40,40,375,200,'Trainingsschritte','Verlust');
+   const f=x=>.95*Math.exp(-x*3.4)+.06+.02*Math.sin(x*40);plotFn(g,f,0,1,X,Y,C.gold,2.4,1,ease(a4));
+   const xe=ease(a4);circ(g,X(xe),Y(f(xe)),5,C.gold);pill(g,X(xe),Y(f(xe))-18,deN(f(xe)*1.26,2),C.gold,1);pill(g,250,70,'ZIEL: VERLUST RUNTER',C.up,a4);}
+ },
+ box:{was:'Der Verlust (Loss) ist eine Zahl, die angibt, wie weit die Antwort des Modells von der richtigen Antwort entfernt ist.',h2:'So erkennst du es',
+ erkennen:['Hoher Verlust = Modell liegt weit daneben','Niedriger Verlust = Modell liegt fast richtig','Wird nach jedem Beispiel oder Paket berechnet','Die Verlustkurve sinkt während des Trainings'],
+ bedeutung:'Ohne messbaren Fehler könnte das Modell nicht lernen. Der Verlust sagt ihm, ob eine Änderung besser oder schlechter war.',
+ tipp:'Wie beim Dartspielen: Der Abstand zur Mitte ist dein Fehler. Training heißt, diesen Abstand Wurf für Wurf zu verkleinern.'}});
+
+les({id:'gradient',cat:'training',title:'Gradientenabstieg',sub:'Im Nebel Schritt für Schritt ins Tal',
+ steps:S([[4800,'Stell dir den Verlust als Berglandschaft vor. Hoch oben ist der Fehler groß – ganz unten im Tal ist er am kleinsten.'],
+ [5000,'Es ist neblig: Man sieht nicht das ganze Gebirge, nur die Steigung direkt unter den Füßen. Diese Steigung heißt Gradient.'],
+ [5000,'Also macht man einen Schritt bergab – genau dorthin, wo es am steilsten nach unten geht.'],
+ [5200,'Schritt für Schritt nähert man sich dem Tal. Jeder Schritt ist eine kleine Änderung aller Gewichte.'],
+ [5800,'Die Schrittgröße heißt Lernrate. Ist sie zu groß, springt man über das Tal hinweg. Ist sie zu klein, dauert es ewig.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  const f=x=>.12+.75*Math.pow((x-.55)/.5,2)+.05*Math.sin(x*12);const df=x=>(f(x+.001)-f(x-.001))/.002;
+  const X=x=>40+x*320,Y=y=>215-y*170;
+  g.save();g.fillStyle=hexA(C.up,.08);g.beginPath();g.moveTo(X(0),Y(0));for(let x=0;x<=1;x+=.01)g.lineTo(X(x),Y(f(x)));g.lineTo(X(1),Y(0));g.closePath();g.fill();g.restore();
+  plotFn(g,f,0,1,X,Y,C.up,2.4);
+  tA(g,1,X(.55),Y(0)+10,'TAL = KLEINSTER FEHLER',C.up,9);
+  if(s===0){g.save();g.globalAlpha=.25;g.fillStyle=C.bg;g.fillRect(0,0,400,250);g.restore();circ(g,X(.08),Y(f(.08))-7,7,C.gold);pill(g,X(.08)+40,Y(f(.08))-28,'START',C.gold,1);}
+  let x=.08;if(s>=2){const n=s===2?Math.floor(st.p*3):(s===3?3+Math.floor(st.p*6):9);for(let i=0;i<n&&s<4;i++){const nx=x-.06*df(x);line(g,X(x),Y(f(x))-7,X(nx),Y(f(nx))-7,hexA(C.gold,.6),1.4,[3,3]);x=nx;}}
+  if(s<4){circ(g,X(x),Y(f(x))-7,7,C.gold,C.bg,1.5);
+   if(s>=1){const sl=df(x);const dx=.08;line(g,X(x-dx),Y(f(x)-sl*dx)-7,X(x+dx),Y(f(x)+sl*dx)-7,C.down,2.2);pill(g,X(x)+16,Y(f(x))-34,'STEIGUNG',C.down,a1,'left');}
+   if(s===1){g.save();g.globalAlpha=.55;const gr=g.createRadialGradient(X(x),Y(f(x)),30,X(x),Y(f(x)),160);gr.addColorStop(0,'rgba(0,0,0,0)');gr.addColorStop(1,C.bg);g.fillStyle=gr;g.fillRect(0,0,400,250);g.restore();}
+   if(s===3)pill(g,330,40,'FEHLER SINKT',C.up,a3);}
+  else{let xb=.1;const pts=[];for(let i=0;i<5;i++){pts.push(xb);xb=xb-.55*df(xb)*.4;xb=clamp(xb,.02,.98);}
+   const k=Math.min(4,Math.floor(st.p*5));for(let i=0;i<k;i++){const a=pts[i],b=pts[i+1];g.save();g.strokeStyle=C.down;g.lineWidth=1.6;g.setLineDash([4,3]);g.beginPath();g.moveTo(X(a),Y(f(a))-7);g.quadraticCurveTo((X(a)+X(b))/2,Y(.95),X(b),Y(f(b))-7);g.stroke();g.restore();}
+   circ(g,X(pts[k]),Y(f(pts[k]))-7,7,C.down);pill(g,200,26,'LERNRATE ZU GROSS: SPRINGT HIN UND HER',C.down,a4);}
+ },thumb:3,
+ box:{was:'Der Gradientenabstieg ist das Verfahren, mit dem ein Modell seine Gewichte Schritt für Schritt so verändert, dass der Fehler kleiner wird.',h2:'So geht’s',
+ erkennen:['Steigung (Gradient) an der aktuellen Stelle berechnen','Einen kleinen Schritt bergab gehen','Wiederholen, bis der Fehler kaum noch sinkt','Schrittgröße = Lernrate'],
+ bedeutung:'Mit Milliarden Gewichten ist die „Landschaft“ unvorstellbar groß. Trotzdem findet der Gradientenabstieg gute Täler – darauf beruht fast jede KI.',
+ tipp:'Typische Lernraten sind winzig, z. B. 0,0001. Lieber viele kleine Schritte als wenige zu große.'}});
+
+les({id:'backprop',cat:'training',title:'Backpropagation',sub:'Den Fehler rückwärts verteilen',
+ steps:S([[4800,'Zuerst rechnet das Netz von vorne nach hinten: Eingabe rein, Ergebnis raus. Das ist der Vorwärtsdurchlauf.'],
+ [4600,'Am Ende wird das Ergebnis mit der richtigen Antwort verglichen und der Fehler gemessen.'],
+ [5400,'Dann läuft der Fehler rückwärts durch das Netz. Für jedes Gewicht wird berechnet: Wie viel Schuld hatte es am Fehler?'],
+ [5200,'Jedes Gewicht wird ein winziges Stück in die richtige Richtung verstellt – dicke Linien werden dünner oder umgekehrt.'],
+ [5400,'Das wiederholt sich Millionen Mal mit immer neuen Beispielen. So wird das Netz Schritt für Schritt besser.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  const P=netPos([3,5,5,2],50,300,122,30);const wf=(i,j,k)=>WT(i,j,k)+(s>=3?Math.sin(i+j*2+k)*.5*a3*(s===4?Math.sin(t*.003):1):0);
+  netDraw(g,P,{w:wf,la:.5,cols:[C.blue,C.purple,C.purple,C.up],act:(i,j)=>s===0?.5:.3});
+  if(s===0||s===4)netPulse(g,P,t,C.blue,1,1);
+  if(s===2||s===4)netPulse(g,P,t+400,C.down,-1,1);
+  pill(g,175,24,s>=2?'← FEHLER LÄUFT RÜCKWÄRTS':'VORWÄRTS →',s>=2?C.down:C.blue,1);
+  if(a1){g.save();g.globalAlpha*=a1;box(g,322,92,70,60,hexA(C.down,.12),C.down,8,1.6);txt(g,357,110,'FEHLER',C.down,10,'center',800);txt(g,357,130,'0,7',C.down,14,'center',800);g.restore();}
+  if(s===3)pill(g,175,222,'GEWICHTE WERDEN VERSTELLT',C.gold,a3);
+  if(s===4){const n=Math.floor(t/900)%1000;pill(g,175,222,'DURCHLAUF NR. '+deN(1000+n*137),C.gold,a4);}
+ },
+ box:{was:'Backpropagation (Fehlerrückführung) berechnet, wie stark jedes einzelne Gewicht zum Fehler beigetragen hat – vom Ende des Netzes zurück zum Anfang.',h2:'So geht’s',
+ erkennen:['<b>1. Vorwärts:</b> Ergebnis berechnen','<b>2. Fehler:</b> mit richtiger Antwort vergleichen','<b>3. Rückwärts:</b> Schuld jedes Gewichts berechnen','<b>4. Anpassen:</b> Gewichte ein Stück verstellen'],
+ bedeutung:'Backpropagation und Gradientenabstieg arbeiten zusammen: Das eine findet die Richtung, das andere macht den Schritt.',
+ tipp:'Diese Rechnung braucht sehr viele Multiplikationen gleichzeitig – genau dafür sind Grafikkarten (GPUs) so gut geeignet.'}});
+
+les({id:'epochen',cat:'training',title:'Batches & Epochen',sub:'Wie das Training organisiert ist',
+ steps:S([[4800,'Die Trainingsdaten sind riesig. Darum werden sie in kleine Pakete aufgeteilt – sogenannte Batches.'],
+ [5000,'Ein Batch geht durch das Netz, der Fehler wird gemessen und die Gewichte werden einmal angepasst.'],
+ [4800,'Sind alle Batches einmal durch, ist eine Epoche geschafft – das Modell hat jedes Beispiel einmal gesehen.'],
+ [5200,'Das Training läuft über viele Epochen. Die Genauigkeit steigt erst schnell, dann immer langsamer.'],
+ [5600,'Rechenbeispiel: 10.000 Bilder ÷ 100 Bilder pro Batch = 100 Anpassungen pro Epoche. Bei 20 Epochen sind das 2.000 Anpassungen.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  if(s<3){for(let i=0;i<10;i++){const x=20+(i%5)*26,y=60+Math.floor(i/5)*60;const done=s===2?(i<Math.floor(st.p*14)):(s===1&&i===0&&st.p>.5);
+    if(s===1&&i===0){const k=ease(clamp(st.p*2));box(g,lerp(x,190,k),lerp(y,104,k),22,48,hexA(C.blue,.4),C.blue,4,1.4);continue;}
+    if(done)continue;box(g,x,y,22,48,hexA(C.blue,.25),C.blue,4,1.3);for(let k=0;k<4;k++)line(g,x+5,y+10+k*9,x+17,y+10+k*9,hexA(C.blue,.6),2);}
+   tA(g,1,85,200,'DATEN IN BATCHES',C.blue,9.5);
+   box(g,230,80,90,90,hexA(C.purple,.1),C.purple,10,1.8);txt(g,275,125,'MODELL',C.purple,11,'center',800);
+   if(s>=1){arrow(g,326,125,360,125,C.gold,2,a1);tA(g,a1,372,112,'Gewichte',C.gold,9);tA(g,a1,372,140,'anpassen',C.gold,9);}
+   if(s===2){const k=Math.min(10,Math.floor(st.p*14));pill(g,275,206,`BATCH ${k} / 10`,C.gold,1);if(k>=10)pill(g,275,40,'EPOCHE 1 GESCHAFFT ✓',C.up,1);}
+   if(s===0)pill(g,275,206,'1 BATCH = Z. B. 100 BILDER',C.blue,1);}
+  else if(s===3){const X=x=>50+x*320,Y=y=>205-y*160;axes(g,40,40,375,205,'Epochen','Genauigkeit');
+   const f=x=>.95-.85*Math.exp(-x*4.5);plotFn(g,f,0,1,X,Y,C.up,2.6,1,ease(a3));const xe=ease(a3);circ(g,X(xe),Y(f(xe)),5,C.up);
+   pill(g,X(xe),Y(f(xe))+20,deN(f(xe)*100)+' %',C.up,1);pill(g,300,60,'EPOCHE '+Math.max(1,Math.round(xe*20)),C.gold,1);}
+  else{const L=[['10.000 BILDER',C.blue],['÷ 100 PRO BATCH',C.purple],['= 100 PRO EPOCHE',C.gold],['× 20 EPOCHEN = 2.000',C.up]];
+   L.forEach(([x,col],i)=>pill(g,200,50+i*44,x,col,clamp(a4*5-i),'center',13));}
+ },thumb:3,
+ box:{was:'Ein Batch ist ein kleines Datenpaket. Eine Epoche ist ein kompletter Durchlauf durch alle Trainingsdaten.',h2:'So erkennst du es',
+ erkennen:['<b>Batch:</b> z. B. 32, 64 oder 100 Beispiele','<b>Schritt:</b> eine Gewichtsanpassung pro Batch','<b>Epoche:</b> alle Daten einmal gesehen','Große Sprachmodelle sehen ihre Daten oft nur ein- bis zweimal'],
+ bedeutung:'Batches sparen Speicher und machen das Lernen ruhiger. Mehrere Epochen helfen kleinen Modellen, bei zu vielen droht Auswendiglernen.',
+ tipp:'Formel zum Merken: Schritte pro Epoche = Anzahl Beispiele ÷ Batchgröße.'}});
+
+les({id:'overfit',cat:'training',title:'Auswendiglernen',sub:'Unteranpassung, gute Anpassung, Überanpassung',
+ steps:S([[4800,'Ein guter Schüler versteht den Stoff. Ein schlechter lernt nur die Antworten auswendig – bei neuen Fragen versagt er.'],
+ [4800,'Unteranpassung: Das Modell ist zu einfach. Die gerade Linie trifft die Punkte kaum.'],
+ [4800,'Gute Anpassung: Die Kurve folgt dem Verlauf der Daten, ohne jeden Ausreißer mitzunehmen.'],
+ [5000,'Überanpassung: Die Kurve schlängelt sich durch jeden einzelnen Punkt – auch durch Messfehler.'],
+ [5600,'Bei neuen Testdaten (gelb) liegt die überangepasste Kurve weit daneben. Deshalb prüft man immer mit Daten, die das Modell nicht kennt.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  const X=x=>40+x*330,Y=y=>205-y*160;axes(g,30,40,380,205);
+  const base=x=>.2+.6*Math.sin(x*2.6);const pts=[];for(let i=0;i<9;i++){const x=.06+i*.11;pts.push([x,base(x)+Math.sin(i*5.1)*.17]);}
+  pts.forEach(p=>circ(g,X(p[0]),Y(p[1]),4.5,hexA(C.blue,.5),C.blue,1.2));
+  const lag=x=>{let y=0;for(let i=0;i<pts.length;i++){let l=1;for(let j=0;j<pts.length;j++)if(j!==i)l*=(x-pts[j][0])/(pts[i][0]-pts[j][0]);y+=pts[i][1]*l;}return y;};
+  if(s===0){pill(g,200,26,'VERSTEHEN STATT AUSWENDIG LERNEN',C.text,1);}
+  if(s===1){plotFn(g,x=>.35+.25*x,0,1,X,Y,C.down,2.4,1,ease(a1));pill(g,290,26,'ZU EINFACH',C.down,a1);}
+  if(s===2){plotFn(g,base,0,1,X,Y,C.up,2.6,1,ease(a2));pill(g,290,26,'GUT ✓',C.up,a2);}
+  if(s>=3){g.save();rr(g,30,30,350,180,0);g.clip();plotFn(g,x=>clamp(lag(x),-.3,1.3),.04,.98,X,Y,C.purple,2.4,1,s===3?ease(a3):1);g.restore();pill(g,290,26,'AUSWENDIG GELERNT',C.purple,s===3?a3:1);}
+  if(s===4){plotFn(g,base,0,1,X,Y,hexA(C.up,.6),2,a4);[.11,.39,.83,.94].forEach((x,i)=>{const y=base(x)+Math.sin(i*2.2)*.04;const b=clamp(a4*4-i);if(b>0){g.save();g.globalAlpha*=b;poly(g,[[X(x),Y(y)-6],[X(x)+6,Y(y)+5],[X(x)-6,Y(y)+5]],hexA(C.gold,.6),C.gold,1.2);g.restore();}});
+   pill(g,120,26,'NEUE TESTDATEN',C.gold,a4);}
+ },thumb:3,
+ box:{was:'Überanpassung (Overfitting) heißt: Das Modell hat die Trainingsdaten auswendig gelernt, statt die allgemeinen Muster zu verstehen.',h2:'So erkennst du es',
+ erkennen:['Training super, Test schlecht → Überanpassung','Training und Test schlecht → Unteranpassung','Training und Test gut → gute Anpassung','Testdaten dürfen nie zum Lernen benutzt werden'],
+ bedeutung:'Eine KI ist nur nützlich, wenn sie auch bei neuen, unbekannten Fällen richtig liegt. Genau das prüft der Test.',
+ tipp:'Gegenmittel: mehr und vielfältigere Daten, ein kleineres Modell oder das Training früher stoppen, wenn der Testfehler wieder steigt.'}});
+
+/* ---------- SPRACHMODELLE ---------- */
+const TOKS=[['Die',412],['ĠKatze',8834],['Ġschl',5521],['äft',2210],['Ġgern',17402],['.',13]];
+les({id:'tokens',cat:'sprache',title:'Tokens',sub:'Text wird in Wortstücke und Zahlen zerlegt',
+ steps:S([[4800,'Ein Sprachmodell liest keine Buchstaben und keine ganzen Wörter, sondern Tokens – das sind Wortstücke.'],
+ [5200,'Der Satz „Die Katze schläft gern.“ wird zum Beispiel in sechs Tokens zerlegt. Häufige Wörter bleiben ganz, seltene werden geteilt.'],
+ [5000,'Jedes Token hat eine feste Nummer aus einem Wörterbuch mit rund 100.000 Einträgen.'],
+ [4800,'Aus dem Satz wird also eine Zahlenfolge. Mit Zahlen kann das neuronale Netz rechnen.'],
+ [5600,'Faustregel für Deutsch: Ein Token sind etwa 3 bis 4 Buchstaben. 1.000 Wörter sind ungefähr 1.500 bis 2.000 Tokens.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  const sent='Die Katze schläft gern.';
+  if(s===0){const n=Math.floor(ap(st,0)*sent.length*1.4);txt(g,200,90,sent.slice(0,n),C.text,20,'center',700,SANS);pill(g,200,150,'TEXT',C.blue,1);}
+  else{const parts=['Die',' Katze',' schl','äft',' gern','.'];const cols=[C.blue,C.purple,C.orange,C.pink,C.up,C.aqua];
+   let tot=0;const ws=parts.map(p=>{const w=tw(g,p.trim()||'·',13);tot+=w+6;return w;});let x=200-tot/2;
+   parts.forEach((p,i)=>{const b=s===1?clamp(a1*6-i):1;const y=s>=3?60:70;chipT(g,x,y,p.trim(),cols[i],b,13);
+    if(a2){tA(g,s===2?clamp(a2*6-i):1,x+ws[i]/2,y+26,String(TOKS[i][1]),cols[i],11,'center',800);}
+    if(s>=3){const k=ease(a3);line(g,x+ws[i]/2,y+38,lerp(x+ws[i]/2,70+i*52,k),150,hexA(cols[i],.5*k),1.2,[3,3]);}
+    x+=ws[i]+6;});
+   if(s>=3){g.save();g.globalAlpha*=a3;box(g,40,152,320,34,C.block,C.gold,8,1.6);g.restore();
+    TOKS.forEach((tk,i)=>tA(g,a3,70+i*52,169,String(tk[1]),C.gold,12,'center',800));tA(g,a3,30,169,'[',C.gold,16);tA(g,a3,370,169,']',C.gold,16);}
+   if(s===2)pill(g,200,170,'WÖRTERBUCH: ≈ 100.000 TOKENS',C.mute,a2);
+   if(s===4)pill(g,200,222,'1 TOKEN ≈ 3–4 BUCHSTABEN',C.gold,a4);}
+ },thumb:3,
+ box:{was:'Ein Token ist ein Stück Text – ein ganzes Wort, ein Wortteil oder ein Satzzeichen. Jedes Token hat eine feste Nummer.',h2:'So erkennst du es',
+ erkennen:['Häufige Wörter = 1 Token (z. B. „Die“)','Seltene oder lange Wörter = mehrere Tokens','Leerzeichen gehören oft zum Token dazu','Deutsch braucht mehr Tokens als Englisch'],
+ bedeutung:'Alles bei Sprachmodellen wird in Tokens gemessen: wie viel Text sie lesen können, wie schnell sie schreiben und was sie kosten.',
+ tipp:'Die Zahlen im Beispiel sind nur zur Veranschaulichung – jedes Modell hat sein eigenes Wörterbuch mit eigenen Nummern.'}});
+
+const EMB=[['Katze',.22,.3,'t'],['Hund',.3,.2,'t'],['Maus',.14,.22,'t'],['Pferd',.32,.36,'t'],['Auto',.75,.25,'f'],['Bus',.84,.33,'f'],['Fahrrad',.7,.38,'f'],['König',.3,.74,'m'],['Königin',.58,.8,'m'],['Mann',.22,.6,'m'],['Frau',.5,.66,'m']];
+les({id:'embedding',cat:'sprache',title:'Wortvektoren',sub:'Ähnliche Wörter liegen nah beieinander',
+ steps:S([[5000,'Eine Token-Nummer allein sagt nichts über die Bedeutung. Darum wird jedes Token in eine lange Liste von Zahlen übersetzt – einen Vektor.'],
+ [5000,'Man kann sich jeden Vektor als Punkt in einem Raum vorstellen. Die Lage des Punktes steht für die Bedeutung.'],
+ [5200,'Ähnliche Wörter landen nah beieinander: Katze, Hund und Maus in einer Ecke – Auto, Bus und Fahrrad in einer anderen.'],
+ [5600,'Sogar Beziehungen werden zu Richtungen: König − Mann + Frau ergibt ungefähr Königin.'],
+ [5200,'Echte Modelle nutzen nicht 2, sondern Tausende Dimensionen. Diese Positionen hat das Modell beim Training selbst gelernt.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  if(s===0){chipT(g,40,70,'Katze',C.purple,1,13);arrow(g,110,70,140,70,C.text,2,1);tA(g,1,190,70,'8834',C.gold,13,'center',800);arrow(g,226,70,256,70,C.text,2,ap(st,0));
+   const v=['0,21','−0,83','0,47','0,05','…'];v.forEach((x,i)=>tA(g,ap(st,0),300,46+i*14,x,C.aqua,10));tA(g,ap(st,0),300,130,'VEKTOR',C.aqua,9);
+   pill(g,200,200,'WORT → NUMMER → ZAHLENLISTE',C.text,1);return;}
+  const X=x=>30+x*340,Y=y=>220-y*190;
+  box(g,24,22,352,206,C.block,C.line2,10,1.2);
+  const cc={t:C.purple,f:C.orange,m:C.aqua};
+  EMB.forEach(([w,x,y,k],i)=>{const sp=s===1?ease(a1):1;const rx=.5+Math.sin(i*4.3)*.4,ry=.5+Math.cos(i*2.9)*.4;const px=lerp(rx,x,s>=2?ease(a2):0),py=lerp(ry,y,s>=2?ease(a2):0);
+   g.save();g.globalAlpha*=sp;circ(g,X(px),Y(py),4.5,cc[k]);g.restore();if(s>=2)tA(g,a2,X(px),Y(py)-11,w,cc[k],9.5);});
+  if(s>=2&&s<3){circ(g,X(.24),Y(.27),44,null,hexA(C.purple,.6*a2),1.4);circ(g,X(.77),Y(.32),40,null,hexA(C.orange,.6*a2),1.4);pill(g,X(.24),Y(.27)+50,'TIERE',C.purple,a2);pill(g,X(.77),Y(.32)+54,'FAHRZEUGE',C.orange,a2);}
+  if(s===3){const K=[.3,.74],M=[.22,.6],F=[.5,.66],Q=[.58,.8];arrow(g,X(M[0]),Y(M[1]),X(F[0]),Y(F[1]),C.gold,2,a3);arrow(g,X(K[0]),Y(K[1]),X(Q[0])-4,Y(Q[1])+1,C.gold,2,clamp(a3*2-1));
+   pill(g,200,40,'KÖNIG − MANN + FRAU ≈ KÖNIGIN',C.gold,a3);}
+  if(s===4)pill(g,200,40,'IN WAHRHEIT: TAUSENDE DIMENSIONEN',C.aqua,a4);
+ },thumb:2,
+ box:{was:'Ein Wortvektor (Embedding) ist eine Liste von Zahlen, die die Bedeutung eines Tokens beschreibt. Ähnliche Bedeutung = ähnliche Zahlen.',h2:'So erkennst du es',
+ erkennen:['Jedes Token hat einen eigenen Vektor','Nähe im Raum = ähnliche Bedeutung','Richtungen stehen für Beziehungen','Große Modelle: mehrere Tausend Zahlen pro Token'],
+ bedeutung:'Durch Wortvektoren „weiß“ das Modell, dass Hund und Katze verwandt sind, obwohl die Wörter ganz unterschiedlich geschrieben werden.',
+ tipp:'Dieselbe Technik steckt hinter guten Suchfunktionen: Sie finden Texte mit ähnlicher Bedeutung, auch wenn andere Wörter benutzt werden.'}});
+
+les({id:'vorhersage',cat:'sprache',title:'Das nächste Wort',sub:'Die Grundaufgabe jedes Sprachmodells',
+ steps:S([[4800,'Im Kern kann ein Sprachmodell nur eines: Es sagt voraus, welches Token als Nächstes kommt.'],
+ [4400,'Eingabe: „Der Himmel ist …“'],
+ [5400,'Das Modell berechnet für jedes mögliche Token eine Wahrscheinlichkeit: blau 62 %, grau 18 %, klar 9 % und so weiter.'],
+ [4800,'Ein Token wird ausgewählt und an den Text angehängt: „Der Himmel ist blau“.'],
+ [5600,'Dann beginnt alles von vorne – mit dem verlängerten Text. Token für Token entsteht so eine ganze Antwort.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  const words=['Der','Himmel','ist'];const add=['blau','und','heute','wolkenlos','.'];
+  let txtS=words.join(' ');if(s>=3)txtS+=' blau';if(s===4){const n=Math.floor(st.p*5);txtS+=' '+add.slice(1,1+n).join(' ');}
+  box(g,20,26,360,46,C.block,C.line2,10,1.4);
+  if(s===0){txt(g,200,49,'TEXT → MODELL → NÄCHSTES TOKEN',C.mute,11);}
+  else{txt(g,32,50,txtS,C.text,15,'left',700,SANS);g.font=`700 15px ${SANS}`;const w=g.measureText(txtS).width;if(Math.floor(t/450)%2)line(g,36+w,38,36+w,62,C.gold,2);}
+  if(s===0){box(g,140,100,120,80,hexA(C.purple,.1),C.purple,12,2);txt(g,200,140,'SPRACHMODELL',C.purple,11,'center',800);arrow(g,200,74,200,98,C.text,2,1);}
+  if(s>=2&&s<4){const it=[['blau',.62,C.blue],['grau',.18,C.mute],['klar',.09,C.mute],['dunkel',.06,C.mute],['…',.05,C.mute]];hbars(g,120,104,it.map((x,i)=>[x[0],x[1]*(s===2?ease(a2):1),x[2]]),190,1,s===3?0:-1,24);}
+  if(s===3)pill(g,200,232,'„BLAU“ AUSGEWÄHLT ✓',C.up,a3);
+  if(s===4){pill(g,200,130,'TOKEN FÜR TOKEN …',C.gold,a4);const k=Math.floor(t/300)%6;for(let i=0;i<6;i++)box(g,110+i*32,170,24,24,i===k?hexA(C.gold,.5):C.block,C.gold,5,1.2);}
+  if(s===1)pill(g,200,130,'„DER HIMMEL IST …“',C.blue,a1);
+ },thumb:2,
+ box:{was:'Ein Sprachmodell berechnet für jedes mögliche nächste Token eine Wahrscheinlichkeit. Dann wird eines ausgewählt und angehängt.',h2:'So geht’s',
+ erkennen:['Text einlesen (in Tokens)','Wahrscheinlichkeit für jedes nächste Token berechnen','Ein Token auswählen und anhängen','Wiederholen, bis die Antwort fertig ist'],
+ bedeutung:'Auch lange, kluge Antworten entstehen so – Token für Token. Das „Wissen“ steckt darin, welche Fortsetzung das Modell für passend hält.',
+ tipp:'Darum siehst du die Antwort im Chat Wort für Wort erscheinen: Das Modell schreibt wirklich Stück für Stück.'}});
+
+les({id:'attention',cat:'sprache',title:'Aufmerksamkeit',sub:'Attention und der Transformer',
+ steps:S([[5200,'Wörter hängen voneinander ab. Im Satz „Die Katze jagt die Maus, weil sie hungrig ist“ – wer ist mit „sie“ gemeint?'],
+ [5000,'Der Aufmerksamkeits-Mechanismus (Attention) lässt jedes Wort auf alle anderen Wörter im Text schauen.'],
+ [5200,'„sie“ schaut besonders stark auf „Katze“ – je dicker die Linie, desto mehr Aufmerksamkeit. Hungrig ist die Katze, nicht die Maus.'],
+ [5000,'So versteht das Modell Zusammenhänge im Satz – auch über lange Texte mit vielen Seiten hinweg.'],
+ [5600,'Viele solcher Attention-Schichten übereinander ergeben einen Transformer. Das ist das „T“ in GPT – und die Grundlage auch von Claude.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  if(s<4){const W=['Die','Katze','jagt','die','Maus,','weil','sie','hungrig','ist'];g.font=`700 12px ${SANS}`;
+   const ws=W.map(w=>g.measureText(w).width);const tot=ws.reduce((a,b)=>a+b,0)+8*(W.length-1);let x=200-tot/2;const cx=[];
+   W.forEach((w,i)=>{cx.push(x+ws[i]/2);const hi=i===6&&s>=1;txt(g,x,170,w,hi?C.gold:(i===1&&s>=2?C.up:C.text),12,'left',700,SANS);x+=ws[i]+8;});
+   if(s===0){pill(g,cx[6],198,'WER IST „SIE“?',C.gold,1);}
+   if(s>=1){const wts=[.05,.7,.08,.03,.25,.06,0,.15,.04];wts.forEach((w,i)=>{if(i===6)return;const a=s===1?a1:1;const ww=s===1?.3:w;const col=i===1&&s>=2?C.up:(i===4&&s>=2?C.down:C.purple);
+     const x1=cx[6],x2=cx[i],h=26+Math.abs(x1-x2)*.45;g.save();g.globalAlpha*=a*(.25+ww);g.strokeStyle=col;g.lineWidth=1+ww*9;g.beginPath();g.moveTo(x1,156);g.quadraticCurveTo((x1+x2)/2,156-h*1.4,x2,156);g.stroke();g.restore();});}
+   if(s>=2){pill(g,cx[1],70,'KATZE 70 %',C.up,a2);pill(g,cx[4]+30,100,'MAUS 25 %',C.down,a2);}
+   if(s===3){for(let i=0;i<9;i++)for(let j=i+1;j<9;j++){g.save();g.globalAlpha=.12*a3;g.strokeStyle=C.aqua;g.lineWidth=1;g.beginPath();g.moveTo(cx[i],182);g.quadraticCurveTo((cx[i]+cx[j])/2,182+Math.abs(cx[i]-cx[j])*.25,cx[j],182);g.stroke();g.restore();}
+    pill(g,200,232,'JEDES WORT SCHAUT AUF JEDES',C.aqua,a3);}}
+  else{for(let i=0;i<5;i++){const y=200-i*34;const b=clamp(a4*6-i);g.save();g.globalAlpha*=b;box(g,110,y-14,180,26,hexA(i%2?C.purple:C.blue,.14),i%2?C.purple:C.blue,6,1.4);txt(g,200,y,i%2?'NEURONALES NETZ':'ATTENTION',i%2?C.purple:C.blue,9.5);g.restore();}
+   arrow(g,200,236,200,218,C.text,2,a4);arrow(g,200,52,200,34,C.up,2,clamp(a4*2-1));tA(g,a4,200,244,'TOKENS',C.mute,9);
+   pill(g,330,120,'TRANSFORMER',C.gold,a4);pill(g,200,22,'NÄCHSTES TOKEN',C.up,clamp(a4*2-1));
+   const k=Math.floor(t/350)%5;g.save();g.globalAlpha=.6*a4;box(g,108,200-k*34-16,184,30,null,C.gold,7,2);g.restore();}
+ },thumb:2,
+ box:{was:'Attention (Aufmerksamkeit) berechnet, wie stark jedes Wort bei der Verarbeitung auf jedes andere Wort achten soll. Ein Transformer stapelt viele solcher Schichten.',h2:'So erkennst du es',
+ erkennen:['Jedes Token „fragt“ alle anderen Tokens','Wichtige Bezüge bekommen hohes Gewicht','Viele Attention-Köpfe achten auf Verschiedenes','GPT = Generative Pre-trained Transformer'],
+ bedeutung:'Der Transformer (vorgestellt 2017) war der Durchbruch für moderne Sprach-KI. Fast alle großen Sprachmodelle bauen darauf auf.',
+ tipp:'Weil jedes Wort auf jedes schaut, steigt der Rechenaufwand mit der Textlänge stark an – darum ist ein großes Kontextfenster teuer.'}});
+
+les({id:'temperatur',cat:'sprache',title:'Temperatur & Zufall',sub:'Warum dieselbe Frage verschiedene Antworten gibt',
+ steps:S([[4600,'Das Modell hat für jedes mögliche nächste Wort eine Wahrscheinlichkeit berechnet. Jetzt muss es eines auswählen.'],
+ [5000,'Niedrige Temperatur: Fast immer wird das wahrscheinlichste Wort genommen. Die Antworten sind sicher, aber eintönig.'],
+ [5200,'Hohe Temperatur: Auch seltene Wörter haben eine Chance. Das macht Texte kreativer – aber auch fehleranfälliger.'],
+ [4800,'Darum bekommst du auf dieselbe Frage nicht immer genau dieselbe Antwort: Bei der Auswahl ist etwas Zufall im Spiel.'],
+ [5200,'Für Fakten und Berechnungen ist eine niedrige Temperatur gut, für Gedichte und Ideen eine höhere.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  const base=[2.2,1.4,1,.6,.2];const lab=['sonnig','schön','warm','stürmisch','lila'];
+  let T=1;if(s===1)T=lerp(1,.35,ease(a1));if(s===2)T=lerp(.35,1.9,ease(a2));if(s===3)T=1;if(s===4)T=.6+.6*Math.sin(t*.0015)+.6;
+  const e=base.map(z=>Math.exp(z/T));const sum=e.reduce((a,b)=>a+b,0);const pr=e.map(x=>x/sum);
+  tA(g,1,40,30,'Das Wetter ist heute …',C.text,12,'left',700);
+  const cols=[C.blue,C.blue,C.blue,C.purple,C.pink];
+  pr.forEach((p,i)=>{const x=40+i*58,base0=200,H=140;box(g,x,base0-H*p,40,H*p+.01,hexA(cols[i],.5),cols[i],4,1.3);tA(g,1,x+20,base0-H*p-10,deN(p*100)+' %',cols[i],10,'center',800);tA(g,1,x+20,base0+12,lab[i],C.text,9.5);});
+  line(g,30,200,330,200,C.axis,1.4);
+  const gx=362,gy=50,gh=140;box(g,gx-8,gy,16,gh,C.block,C.line2,8,1.2);const lvl=clamp((T-.3)/1.7);box(g,gx-8,gy+gh*(1-lvl),16,gh*lvl,hexA(lvl>.5?C.down:C.blue,.6),lvl>.5?C.down:C.blue,8,1.2);
+  circ(g,gx,gy+gh+10,11,hexA(lvl>.5?C.down:C.blue,.6),lvl>.5?C.down:C.blue,1.2);tA(g,1,gx,gy-12,'TEMP.',C.mute,9);tA(g,1,gx,gy+gh+28,deN(T,1),lvl>.5?C.down:C.blue,10);
+  if(s===1)pill(g,190,60,'NIEDRIG: SICHER',C.blue,a1);if(s===2)pill(g,190,60,'HOCH: KREATIV',C.down,a2);
+  if(s===3){const ans=['sonnig','schön','sonnig','warm'];const k=Math.floor(t/900)%4;pill(g,190,60,'ANTWORT '+(k+1)+': „'+ans[k]+'“',C.gold,a3);}
+  if(s===4)pill(g,190,60,'FAKTEN: NIEDRIG · IDEEN: HOCH',C.gold,a4);
+ },thumb:2,
+ box:{was:'Die Temperatur ist eine Einstellung, die bestimmt, wie viel Zufall bei der Auswahl des nächsten Tokens im Spiel ist.',h2:'So erkennst du es',
+ erkennen:['<b>Niedrig (z. B. 0,2):</b> vorhersehbar, sachlich','<b>Mittel (ca. 0,7–1):</b> natürlich, abwechslungsreich','<b>Hoch (über 1):</b> kreativ, manchmal wirr','Im Chat stellt der Anbieter das meist für dich ein'],
+ bedeutung:'Etwas Zufall macht Antworten natürlicher. Zu viel Zufall führt zu Unsinn, zu wenig zu Wiederholungen.',
+ tipp:'Gefällt dir eine Antwort nicht, lass sie einfach neu erzeugen – durch den Zufall bekommst du eine andere Formulierung.'}});
+
+les({id:'kontext',cat:'sprache',title:'Das Kontextfenster',sub:'Was das Modell gerade „vor Augen“ hat',
+ steps:S([[4800,'Ein Sprachmodell sieht immer nur einen bestimmten Ausschnitt an Text gleichzeitig: das Kontextfenster.'],
+ [5000,'Im Fenster stehen: Anweisungen des Anbieters, deine Frage, die bisherigen Nachrichten und angehängte Dokumente.'],
+ [5000,'Moderne Modelle schaffen Hunderttausende Tokens – das sind mehrere dicke Bücher auf einmal.'],
+ [5000,'Was nicht im Fenster steht, kennt das Modell in diesem Moment nicht. Ein sehr altes Gespräch fällt irgendwann heraus.'],
+ [5600,'Wichtig: Das Modell lernt im Gespräch nicht dauerhaft dazu. Seine Gewichte bleiben gleich – nur der Inhalt im Fenster ändert sich.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  const n=31,cw=14;const off=s===3?ease(a3)*5*cw:(s===4?5*cw:0);
+  for(let i=0;i<n;i++){const x=36+i*cw-off;const cat=i<4?0:(i<10?1:(i<20?2:(i<26?3:1)));const cols=[C.mute,C.blue,C.aqua,C.purple];
+   if(x<-12||x>360)continue;box(g,x,104,cw-3,40,hexA(cols[cat],.3),cols[cat],3,1);}
+  const wx=30,ww=340;box(g,wx,94,ww,60,null,C.gold,8,2.4);pill(g,wx+ww/2,80,'KONTEXTFENSTER',C.gold,1);
+  if(s===1){pill(g,40,180,'ANWEISUNG',C.mute,a1);pill(g,120,206,'ALTE NACHRICHTEN',C.blue,a1);pill(g,230,180,'DOKUMENT',C.aqua,a1);pill(g,330,206,'DEINE FRAGE',C.purple,a1);}
+  if(s===2){[0,1,2].forEach(i=>{const b=clamp(a2*3-i);g.save();g.globalAlpha*=b;box(g,140+i*44,176,36,50,hexA(C.orange,.2),C.orange,4,1.4);line(g,146+i*44,176,146+i*44,226,C.orange,1.4);g.restore();});pill(g,200,236,'≈ HUNDERTTAUSENDE TOKENS',C.orange,a2);}
+  if(s>=3){g.save();g.globalAlpha=.6;g.fillStyle=C.bg;g.fillRect(0,96,wx-1,56);g.restore();pill(g,10,180,'← VERGESSEN',C.down,s===3?a3:1,'left');pill(g,390,180,'NEU →',C.blue,s===3?a3:1,'right');}
+  if(s===4){box(g,150,184,120,46,hexA(C.purple,.1),C.purple,10,1.6);txt(g,210,200,'GEWICHTE',C.purple,10,'center',800);txt(g,210,218,'🔒 UNVERÄNDERT',C.purple,9);}
+  if(s===0)pill(g,200,200,'NUR DAS IM FENSTER ZÄHLT',C.text,1);
+ },thumb:1,
+ box:{was:'Das Kontextfenster ist die maximale Textmenge (in Tokens), die ein Modell bei einer Antwort gleichzeitig berücksichtigen kann.',h2:'So erkennst du es',
+ erkennen:['Enthält Anweisungen, Verlauf, Dateien und Frage','Größe wird in Tokens angegeben','Sehr lange Gespräche: Ältestes kann herausfallen','Gewichte ändern sich im Chat nicht'],
+ bedeutung:'Alles, was das Modell für eine gute Antwort braucht, muss im Kontextfenster stehen – oder es muss im Training gelernt worden sein.',
+ tipp:'Bei langen Projekten lohnt sich ein neuer Chat mit einer kurzen Zusammenfassung – dann ist das Fenster wieder frei für das Wichtige.'}});
+
+/* ---------- VOM TRAINING ZUM CHAT ---------- */
+les({id:'pretraining',cat:'praxis',title:'Das Vortraining',sub:'Riesige Textmengen lesen und Lücken füllen',
+ steps:S([[4800,'Zuerst liest das Modell riesige Mengen Text: Bücher, Webseiten, Fachartikel und Programmcode.'],
+ [5200,'Die Aufgabe ist immer dieselbe: Ein Stück Text wird gezeigt, und das Modell soll das nächste Token raten.'],
+ [5000,'Bei jedem falschen Tipp werden die Gewichte ein wenig angepasst – unvorstellbar oft, Billionen Mal.'],
+ [5200,'Nebenbei lernt es Grammatik, Fakten, Zusammenhänge und sogar logisches Denken – ohne dass es ihm jemand erklärt.'],
+ [5600,'Das Ergebnis heißt Basismodell. Es kann Texte gut fortsetzen, ist aber noch kein hilfreicher Gesprächspartner.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  const src=[['BÜCHER',C.blue],['WEB',C.aqua],['ARTIKEL',C.orange],['CODE',C.up]];
+  src.forEach(([l,col],i)=>{const y=40+i*46;g.save();g.globalAlpha*=Math.max(.3,ap(st,0));box(g,16,y,70,34,hexA(col,.14),col,6,1.4);g.restore();tA(g,1,51,y+17,l,col,9.5);
+   if(s===0||s===2)flow(g,[[88,y+17],[150,125]],t,col,{gap:12,speed:.05});});
+  box(g,152,80,96,90,hexA(C.purple,.1),C.purple,12,2);txt(g,200,125,'MODELL',C.purple,11,'center',800);
+  if(s===1){box(g,100,200,290,32,C.block,C.line2,8,1.2);txt(g,112,216,'Der Rhein fließt in die ___',C.text,12,'left',700,SANS);
+   const guesses=['Donau ✗','Nordsee ✓'];const k=st.p<.5?0:1;pill(g,340,216,guesses[k],k?C.up:C.down,a1);}
+  if(s===2){const n=Math.floor(t/60);pill(g,200,206,'ANPASSUNG NR. '+deN(1e9+n*7919),C.gold,a2);}
+  if(s>=3){const L=[['GRAMMATIK',C.blue],['FAKTEN',C.orange],['LOGIK',C.up]];L.forEach(([l,col],i)=>pill(g,330,70+i*40,l,col,s===3?clamp(a3*3-i):1));}
+  if(s===4){g.save();g.globalAlpha*=a4;box(g,140,190,120,40,hexA(C.gold,.14),C.gold,10,1.8);txt(g,200,210,'BASISMODELL',C.gold,11,'center',800);g.restore();arrow(g,200,172,200,188,C.gold,2,a4);}
+ },thumb:3,
+ box:{was:'Beim Vortraining (Pre-Training) lernt ein Sprachmodell aus riesigen Textmengen, das jeweils nächste Token vorherzusagen.',h2:'So erkennst du es',
+ erkennen:['Datenmenge: Billionen Tokens','Dauer: Wochen bis Monate','Tausende Grafikkarten gleichzeitig','Ergebnis: Basismodell'],
+ bedeutung:'Im Vortraining entsteht das breite Wissen des Modells. Es hat einen Wissensstand bis zu einem bestimmten Datum – dem Trainingsstichtag.',
+ tipp:'Was nach dem Stichtag passiert ist, weiß das Modell nicht von selbst. Dafür nutzt es z. B. eine Websuche.'}});
+
+les({id:'rlhf',cat:'praxis',title:'Der Feinschliff',sub:'Vom Basismodell zum hilfreichen Assistenten',
+ steps:S([[4800,'Ein Basismodell setzt nur Texte fort. Auf „Wie koche ich Nudeln?“ schreibt es vielleicht einfach weitere Fragen.'],
+ [5200,'Deshalb folgt der Feinschliff (Fine-Tuning): Menschen schreiben viele Beispiel-Gespräche mit guten Antworten vor.'],
+ [5200,'Danach erzeugt das Modell mehrere Antworten auf dieselbe Frage, und Menschen bewerten: Welche ist besser?'],
+ [5400,'Aus diesen Bewertungen lernt das Modell durch Belohnung (RLHF), hilfreiche, ehrliche und sichere Antworten zu geben.'],
+ [5200,'Das Ergebnis ist ein Assistent wie Claude: Er beantwortet Fragen, statt nur Text fortzusetzen.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  if(s===0){box(g,40,50,320,40,C.block,C.line2,8,1.2);txt(g,52,70,'Wie koche ich Nudeln?',C.text,12,'left',700,SANS);
+   box(g,40,110,320,70,hexA(C.down,.08),C.down,8,1.2);['Wie koche ich Reis?','Wie koche ich Kartoffeln?','Wie koche ich …'].forEach((x,i)=>tA(g,ap(st,0),52,128+i*20,x,C.mute,11,'left',600));pill(g,200,206,'BASISMODELL: SETZT NUR FORT',C.down,1);}
+  if(s===1){[0,1,2].forEach(i=>{const b=clamp(a1*3-i);g.save();g.globalAlpha*=b;box(g,40+i*112,60,96,110,C.block,C.blue,8,1.4);line(g,50+i*112,80,120+i*112,80,C.blue,3);for(let k=0;k<4;k++)line(g,50+i*112,100+k*14,126+i*112-(k%2)*16,100+k*14,hexA(C.up,.7),2.4);g.restore();});
+   pill(g,200,200,'BEISPIEL-GESPRÄCHE VON MENSCHEN',C.blue,a1);}
+  if(s===2){[['ANTWORT A',C.mute,'👎'],['ANTWORT B',C.up,'👍']].forEach(([l,col,ic],i)=>{const x=50+i*160;box(g,x,60,140,100,C.block,col,10,1.6);txt(g,x+70,80,l,col,10,'center',800);for(let k=0;k<3;k++)line(g,x+14,104+k*14,x+126-(k%2)*20,104+k*14,hexA(col,.6),2.4);
+    if(a2>.4)txt(g,x+70,180,ic,col,22);});pill(g,200,222,'MENSCHEN BEWERTEN',C.gold,a2);}
+  if(s===3){box(g,140,80,120,80,hexA(C.purple,.1),C.purple,12,2);txt(g,200,120,'MODELL',C.purple,11,'center',800);
+   const k=(t*.002)%1;['+1','+1','−1'].forEach((r,i)=>{const yy=lerp(40,90,(k+i*.33)%1);tA(g,a3,90+i*110,yy,r,r==='+1'?C.up:C.down,13,'center',800);});
+   pill(g,90,200,'HILFREICH',C.up,a3);pill(g,200,200,'EHRLICH',C.blue,a3);pill(g,310,200,'SICHER',C.gold,a3);}
+  if(s===4){box(g,40,50,320,40,C.block,C.line2,8,1.2);txt(g,52,70,'Wie koche ich Nudeln?',C.text,12,'left',700,SANS);
+   box(g,40,110,320,80,hexA(C.up,.08),C.up,8,1.4);['1. Viel Wasser mit Salz aufkochen.','2. Nudeln hineingeben, umrühren.','3. Nach Packungszeit abgießen.'].forEach((x,i)=>tA(g,clamp(a4*3-i),52,128+i*22,x,C.text,11,'left',600,SANS));pill(g,200,214,'ASSISTENT: BEANTWORTET DIE FRAGE ✓',C.up,a4);}
+ },
+ box:{was:'Beim Feinschliff wird ein Basismodell mit Beispiel-Gesprächen und menschlichen Bewertungen zu einem hilfreichen Assistenten weitertrainiert.',h2:'So erkennst du es',
+ erkennen:['<b>Fine-Tuning:</b> Lernen an vorbildlichen Antworten','<b>RLHF:</b> Lernen durch menschliche Bewertungen','Ziel: hilfreich, ehrlich, sicher','Anthropic nutzt dafür auch Leitlinien (eine „Verfassung“)'],
+ bedeutung:'Der Feinschliff bestimmt den Charakter eines Assistenten: wie höflich er ist, wann er nachfragt und was er ablehnt.',
+ tipp:'RLHF steht für „Reinforcement Learning from Human Feedback“ – auf Deutsch: bestärkendes Lernen durch menschliche Rückmeldung.'}});
+
+les({id:'gpu',cat:'praxis',title:'Parameter & Rechenkraft',sub:'Warum KI so viele Grafikkarten braucht',
+ steps:S([[4800,'Die Gewichte eines Modells heißen Parameter. Große Sprachmodelle haben Hunderte Milliarden davon.'],
+ [4600,'Jeder Parameter ist eine Kommazahl. Meist wird sie mit 2 Byte gespeichert.'],
+ [5400,'Rechnung: 70 Milliarden Parameter × 2 Byte = 140 Milliarden Byte = 140 GB. Das passt auf keine normale Grafikkarte.'],
+ [5200,'Für das Training rechnen Tausende spezielle Grafikkarten (GPUs) wochenlang gleichzeitig in großen Rechenzentren.'],
+ [5600,'Auch jede Antwort kostet Rechenkraft: Für jedes neue Token wird das ganze Netz einmal komplett durchgerechnet.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  if(s<=2){const n=s===0?Math.floor(ap(st,0)*240):240;for(let i=0;i<n;i++){const x=22+(i%24)*15,y=24+Math.floor(i/24)*15;circ(g,x,y,3,hexA(C.purple,.35+.5*Math.abs(Math.sin(i*1.3+t*.002))));}
+   pill(g,200,184,'JEDER PUNKT = 300 MILLIONEN PARAMETER',C.purple,s===0?ap(st,0):1-a1*0);
+   if(s>=1){pill(g,90,214,'1 PARAMETER = 2 BYTE',C.blue,a1);}
+   if(s===2){pill(g,290,214,'70 MRD. × 2 B = 140 GB',C.gold,a2);}}
+  else if(s===3){for(let r=0;r<3;r++)for(let c=0;c<6;c++){const x=26+c*60,y=34+r*58;const on=Math.sin(t*.01+r*2+c)>.0;box(g,x,y,50,44,C.block,C.purple,5,1.3);for(let k=0;k<3;k++)circ(g,x+12+k*13,y+22,4,on&&k===1?C.up:hexA(C.purple,.4));}
+   pill(g,200,222,'TAUSENDE GPUs · WOCHENLANG',C.purple,a3);}
+  else{const P=netPos([4,5,5,4],60,340,110,24);netDraw(g,P,{w:WT,la:.35,cols:[C.blue,C.purple,C.purple,C.up]});netPulse(g,P,t,C.gold,1,1,.0028);
+   const k=Math.floor(t/357)%12;const word=['Hallo','!',' Wie',' kann',' ich',' dir',' helfen','?','','','',''];pill(g,200,222,'TOKEN '+(k+1)+(word[k]?': „'+word[k].trim()+'“':''),C.gold,a4);pill(g,200,22,'1 TOKEN = 1 GANZER DURCHLAUF',C.up,a4);}
+ },thumb:2,
+ box:{was:'Parameter sind alle Gewichte und Bias-Werte eines Modells. Ihre Anzahl ist ein grobes Maß für die Größe eines Modells.',h2:'So erkennst du es',
+ erkennen:['<b>Kleines Modell:</b> wenige Milliarden Parameter','<b>Großes Modell:</b> Hunderte Milliarden','Speicher ≈ Parameter × 2 Byte','Training: Tausende GPUs, enormer Stromverbrauch'],
+ bedeutung:'Große Modelle können mehr, brauchen aber viel Speicher, Strom und teure Hardware – deshalb laufen sie meist in Rechenzentren.',
+ tipp:'Kleine Modelle mit wenigen Milliarden Parametern laufen auch auf einem guten PC oder Handy – ganz ohne Internet.'}});
+
+les({id:'halluzination',cat:'praxis',title:'Halluzinationen',sub:'Wenn die KI überzeugend danebenliegt',
+ steps:S([[4800,'Ein Sprachmodell erzeugt wahrscheinliche Texte – das heißt nicht automatisch, dass sie wahr sind.'],
+ [5200,'Fehlt ihm Wissen, kann es trotzdem flüssig und selbstsicher antworten. Der Text klingt gut, auch wenn er falsch ist.'],
+ [5000,'Das nennt man Halluzination: erfundene Fakten, Zahlen, Zitate oder Quellen.'],
+ [5200,'Dagegen hilft: Websuche einschalten, Dokumente mitgeben und nach Quellen fragen. Dann stützt sich das Modell auf echte Texte.'],
+ [5400,'Bei wichtigen Themen wie Gesundheit, Geld und Recht: Antworten immer selbst prüfen oder Fachleute fragen.']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  if(s<3){box(g,30,36,340,36,C.block,C.line2,8,1.2);txt(g,42,54,'Wie hoch ist der Turm in Ergoldsbach?',C.text,12,'left',700,SANS);
+   box(g,30,88,340,76,s>=2?hexA(C.down,.08):C.block,s>=2?C.down:C.purple,8,1.4);
+   const ans='Der Turm ist genau 87,4 Meter hoch und wurde 1693 erbaut.';const n=s===0?Math.floor(ap(st,0)*ans.length):ans.length;
+   g.save();g.font=`600 12px ${SANS}`;g.fillStyle=C.text;g.textAlign='left';g.textBaseline='middle';const cut=35;const l1=ans.slice(0,Math.min(n,cut)),l2=n>cut?ans.slice(cut,n):'';g.fillText(l1,42,112);g.fillText(l2,42,134);const m1=g.measureText('Der Turm ist genau ').width,w1=g.measureText('87,4 Meter').width,m2=g.measureText('und wurde ').width,w2=g.measureText('1693').width;g.restore();
+   if(s>=1)pill(g,300,180,'KLINGT SICHER …',C.purple,a1);
+   if(s>=2){pill(g,100,180,'ERFUNDEN!',C.down,a2);[[42+m1,112,w1],[42+m2,134,w2]].forEach(q=>{g.save();g.globalAlpha*=a2;g.strokeStyle=C.down;g.lineWidth=2;g.beginPath();g.moveTo(q[0],q[1]+9);g.lineTo(q[0]+q[2],q[1]+9);g.stroke();g.restore();});
+    pill(g,200,222,'HALLUZINATION',C.down,a2);}}
+  else if(s===3){const L=[['🔎 WEBSUCHE',C.blue],['📄 DOKUMENT MITGEBEN',C.aqua],['🔗 NACH QUELLEN FRAGEN',C.up]];L.forEach(([l,col],i)=>pill(g,200,70+i*46,l,col,clamp(a3*3-i),'center',13));}
+  else{const L=[['GESUNDHEIT',C.down],['GELD',C.gold],['RECHT',C.blue]];L.forEach(([l,col],i)=>{const x=80+i*120;g.save();g.globalAlpha*=clamp(a4*3-i);box(g,x-50,70,100,70,hexA(col,.12),col,10,1.6);g.restore();tA(g,clamp(a4*3-i),x,105,l,col,11,'center',800);});
+   pill(g,200,190,'IMMER SELBST NACHPRÜFEN ✓',C.up,a4);}
+ },thumb:2,
+ box:{was:'Eine Halluzination ist eine falsche Aussage, die ein KI-Modell mit voller Überzeugung macht – etwa eine erfundene Zahl oder Quelle.',h2:'So erkennst du es',
+ erkennen:['Sehr genaue Zahlen ohne Quelle','Zitate oder Studien, die es nicht gibt','Links, die ins Leere führen','Fragen zu sehr seltenen oder neuen Themen'],
+ bedeutung:'Das Modell „lügt“ nicht absichtlich. Es erzeugt die wahrscheinlichste Fortsetzung – und die kann falsch sein, wenn Wissen fehlt.',
+ tipp:'Frag ruhig nach: „Wie sicher bist du?“ oder „Welche Quelle hast du dafür?“ Gute Modelle sagen dann ehrlich, wenn sie etwas nicht wissen.'}});
+
+les({id:'prompt',cat:'praxis',title:'Gut fragen',sub:'So holst du mehr aus einer KI heraus',
+ steps:S([[4800,'Deine Eingabe an eine KI heißt Prompt. Je klarer der Prompt, desto besser die Antwort.'],
+ [5200,'Sag, was du brauchst: Ziel, für wen es ist und wie lang es sein soll. Zum Beispiel: „Erkläre es für ein Kind in 5 Sätzen.“'],
+ [5000,'Gib Material mit: Beispiele, Texte oder Dateien. Das Modell nutzt alles, was im Kontextfenster steht.'],
+ [5000,'Teile große Aufgaben in Schritte auf und frag nach, wenn dir etwas unklar ist.'],
+ [5400,'Prüfe das Ergebnis und verbessere es gemeinsam mit der KI: „Kürzer, bitte“ oder „Mach Punkt 2 genauer.“']]),
+ draw(g,st){const{s,t}=st;const a1=ap(st,1),a2=ap(st,2),a3=ap(st,3),a4=ap(st,4);
+  if(s===0){box(g,40,50,320,40,hexA(C.down,.08),C.down,8,1.4);txt(g,52,70,'Schreib was über Autos.',C.text,12,'left',700,SANS);pill(g,330,104,'UNKLAR',C.down,1);
+   box(g,40,130,320,56,hexA(C.up,.08),C.up,8,1.4);txt(g,52,148,'Erkläre einem 10-Jährigen in 5 Sätzen,',C.text,11.5,'left',600,SANS);txt(g,52,168,'wie ein Elektroauto fährt.',C.text,11.5,'left',600,SANS);pill(g,330,200,'KLAR ✓',C.up,ap(st,0));}
+  if(s===1){const L=[['🎯 ZIEL','Elektroauto erklären',C.blue],['👤 FÜR WEN','10-Jähriger',C.purple],['📏 LÄNGE','5 Sätze',C.gold]];L.forEach(([k,v,col],i)=>{const b=clamp(a1*3-i);pill(g,110,70+i*48,k,col,b,'center',12);tA(g,b,190,70+i*48,v,C.text,12,'left',600);});}
+  if(s===2){box(g,150,70,100,90,hexA(C.purple,.1),C.purple,12,2);txt(g,200,115,'KI',C.purple,16,'center',800);
+   [['📄 TEXT',40,60,C.aqua],['🖼 BILD',40,130,C.blue],['💡 BEISPIEL',300,95,C.up]].forEach(([l,x,y,col])=>{pill(g,x+30,y+10,l,col,a2);arrow(g,x+(x<200?70:-10),y+10,x<200?148:252,115,col,1.8,a2);});}
+  if(s===3){[1,2,3].forEach((n,i)=>{const b=clamp(a3*3-i);g.save();g.globalAlpha*=b;box(g,40+i*118,80,96,70,hexA(C.gold,.1),C.gold,10,1.6);txt(g,88+i*118,104,'SCHRITT',C.gold,9.5);txt(g,88+i*118,128,String(n),C.gold,22,'center',800);g.restore();if(i<2)arrow(g,138+i*118,115,156+i*118,115,C.text,2,b);});pill(g,200,190,'GROSSE AUFGABE IN SCHRITTEN',C.gold,a3);}
+  if(s===4){const k=Math.min(3,Math.floor(st.p*4.4));const msgs=['Kürzer, bitte.','Hier die kurze Fassung …','Mach Punkt 2 genauer.','Gern: Punkt 2 bedeutet …'];
+   for(let i=0;i<=k;i++){const me=i%2===0;box(g,me?190:30,22+i*46,180,34,hexA(me?C.blue:C.purple,.12),me?C.blue:C.purple,10,1.4);txt(g,me?202:42,39+i*46,msgs[i],C.text,11.5,'left',600,SANS);}
+   pill(g,200,222,'GEMEINSAM VERBESSERN',C.up,a4);}
+ },
+ box:{was:'Ein Prompt ist die Anweisung oder Frage, die du einer KI gibst. Die Qualität des Prompts beeinflusst stark die Qualität der Antwort.',h2:'So geht’s',
+ erkennen:['<b>Ziel:</b> Was genau soll herauskommen?','<b>Zielgruppe:</b> Für wen ist es?','<b>Format:</b> Länge, Liste, Tabelle?','<b>Material:</b> Beispiele und Dateien mitgeben'],
+ bedeutung:'Die KI kann deine Gedanken nicht lesen. Je mehr Zusammenhang du gibst, desto genauer passt die Antwort zu dir.',
+ tipp:'Bitte die KI, dir Rückfragen zu stellen: „Frag mich erst, was du noch wissen musst.“ So entstehen oft die besten Ergebnisse.'}});
+
+/* ============ Reihenfolge nach Bereichen ============ */
+{const ord=Object.keys(CATS);LESSONS.sort((a,b)=>ord.indexOf(a.cat)-ord.indexOf(b.cat));}
+/* ============ Player ============ */
+const P={L:null,t:0,playing:false,speed:1,cv:null,ctx:null,W:0,H:0,dirty:true,last:0,stepIdx:-1,tl:null};
+function buildTL(L){let t=0;const steps=L.steps.map(s=>{const o={t,d:s.d,text:s.text};t+=s.d;return o;});return{steps,total:t};}
+function stAt(tl,t){let s=0;tl.steps.forEach((x,i)=>{if(t>=x.t)s=i;});const S=tl.steps[s];const T=Math.min(t-S.t,S.d);return{s,p:clamp(T/S.d),T,t,d:S.d};}
+function render(ctx,W,H,L,st){const dpr=ctx._dpr||1;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,W,H);ctx.fillStyle=C.bg;ctx.fillRect(0,0,W,H);
+ const sc=Math.min(W/VW,H/VH);ctx.translate((W-VW*sc)/2,(H-VH*sc)/2);ctx.scale(sc,sc);ctx.lineCap='butt';ctx.lineJoin='miter';
+ try{L.draw(ctx,st);}catch(e){console.error(L.id,e);}
+}
+function staticFrame(cv,L,s,p,w,h,nolabel){const dpr=window.devicePixelRatio||1;cv.width=w*dpr;cv.height=h*dpr;cv.style.width=w+'px';cv.style.height=h+'px';const ctx=cv.getContext('2d');ctx._dpr=dpr;
+ const tl=buildTL(L);s=Math.min(s,tl.steps.length-1);const S=tl.steps[s];const t=S.t+S.d*p;G.nolabel=!!nolabel;render(ctx,w,h,L,stAt(tl,t));G.nolabel=false;}
+
+/* ============ Fortschritt ============ */
+const KEY='bks';let seen={},best=0;try{seen=JSON.parse(localStorage.getItem(KEY+'-seen')||'{}');best=+(localStorage.getItem(KEY+'-best')||0)}catch(e){}
+function markSeen(id){if(seen[id])return;seen[id]=1;try{localStorage.setItem(KEY+'-seen',JSON.stringify(seen))}catch(e){}renderList();updProg();}
+function updProg(){const n=LESSONS.filter(l=>seen[l.id]).length;document.getElementById('progtxt').textContent=`${n} / ${LESSONS.length}`;document.getElementById('progbar').style.width=(n/LESSONS.length*100)+'%';}
+
+const CATINFO={
+ grundlagen:{d:'Was KI ist, Regeln oder Lernen, Daten, Lernarten und wo KI überall steckt.',acc:'var(--blue)',hex:'#4c9aff'},
+ netz:{d:'Neuron, Gewichte und Bias, Schichten, Aktivierung und wie KI Bilder erkennt.',acc:'var(--orange)',hex:'#ff9f43'},
+ training:{d:'Fehler messen, Gradientenabstieg, Backpropagation, Epochen und Auswendiglernen.',acc:'var(--up)',hex:'#1fcf8f'},
+ sprache:{d:'Tokens, Wortvektoren, das nächste Wort, Attention, Temperatur und Kontextfenster.',acc:'var(--purple)',hex:'#b388ff'},
+ praxis:{d:'Vortraining, Feinschliff, Rechenkraft, Halluzinationen und gut fragen.',acc:'var(--aqua)',hex:'#22d3ee'}};
+const SVGI={
+ grundlagen:'<rect x="12" y="12" width="40" height="40" rx="10" fill="none" stroke="currentColor" stroke-width="3"/><text x="32" y="40" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="20" font-weight="800" text-anchor="middle" fill="currentColor">KI</text><g stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="24" y1="4" x2="24" y2="10"/><line x1="40" y1="4" x2="40" y2="10"/><line x1="24" y1="54" x2="24" y2="60"/><line x1="40" y1="54" x2="40" y2="60"/></g>',
+ netz:'<g stroke="currentColor" stroke-width="2" opacity=".7"><line x1="12" y1="18" x2="32" y2="14"/><line x1="12" y1="18" x2="32" y2="32"/><line x1="12" y1="18" x2="32" y2="50"/><line x1="12" y1="46" x2="32" y2="14"/><line x1="12" y1="46" x2="32" y2="32"/><line x1="12" y1="46" x2="32" y2="50"/><line x1="32" y1="14" x2="52" y2="32"/><line x1="32" y1="32" x2="52" y2="32"/><line x1="32" y1="50" x2="52" y2="32"/></g><g fill="currentColor"><circle cx="12" cy="18" r="5"/><circle cx="12" cy="46" r="5"/><circle cx="32" cy="14" r="5"/><circle cx="32" cy="32" r="5"/><circle cx="32" cy="50" r="5"/><circle cx="52" cy="32" r="6"/></g>',
+ training:'<polyline points="8,14 8,54 58,54" fill="none" stroke="currentColor" stroke-width="3"/><path d="M12 18 C 20 40, 30 46, 54 48" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/><circle cx="30" cy="42" r="5" fill="currentColor"/>',
+ sprache:'<path d="M8 12 H56 V42 H30 L18 54 V42 H8 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><rect x="15" y="21" width="10" height="9" rx="2" fill="currentColor"/><rect x="28" y="21" width="8" height="9" rx="2" fill="currentColor" opacity=".7"/><rect x="39" y="21" width="10" height="9" rx="2" fill="currentColor" opacity=".45"/>',
+ praxis:'<rect x="6" y="10" width="52" height="38" rx="6" fill="none" stroke="currentColor" stroke-width="3"/><rect x="13" y="18" width="24" height="7" rx="3" fill="currentColor" opacity=".55"/><rect x="27" y="31" width="24" height="7" rx="3" fill="currentColor"/><line x1="24" y1="56" x2="40" y2="56" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>'};
+const catIcon=(ck,s=58)=>`<svg width="${s}" height="${s}" viewBox="0 0 64 64" style="color:${CATINFO[ck].acc}">${SVGI[ck]}</svg>`;
+
+/* ============ Liste (Seitenleiste) ============ */
+const listEl=document.getElementById('list'),searchEl=document.getElementById('search'),view=document.getElementById('view');
+let current=null;
+function renderList(){
+ const q=searchEl.value.trim().toLowerCase();let h='';
+ for(const ck in CATS){const ls=LESSONS.filter(l=>l.cat===ck&&(!q||(l.title+' '+l.sub+' '+CATS[ck]).toLowerCase().includes(q)));if(!ls.length)continue;
+  h+=`<div class="cat" style="color:${CATINFO[ck].acc}">${CATS[ck]}</div>`;
+  h+=ls.map(l=>`<button class="item ${current===l?'on':''} ${seen[l.id]?'seen':''}" data-id="${l.id}"><div class="ic" style="color:${CATINFO[ck].acc}">${catIcon(ck,22)}</div><div><b>${l.title}</b><span>${l.sub}</span></div><div class="ok">✓</div></button>`).join('');}
+ if(!h)h='<p style="color:var(--mute);padding:10px">Nichts gefunden.</p>';
+ h+=`<div class="cat">Quiz</div><button class="item" data-id="quiz"><div class="ic">🎯</div><div><b>Quiz starten</b><span>${best?`Bestwert ${best}/10`:'10 zufällige Fragen'}</span></div></button>`;
+ listEl.innerHTML=h;listEl.querySelectorAll('.item').forEach(b=>b.onclick=()=>{location.hash=b.dataset.id;});
+}
+searchEl.addEventListener('input',renderList);
+
+/* ============ Lektion ============ */
+function openLesson(id){
+ const L=LESSONS.find(l=>l.id===id);if(!L){showHome();return;}
+ current=L;const ls=LESSONS.filter(l=>l.cat===L.cat),idx=LESSONS.indexOf(L),ci=ls.indexOf(L),prev=LESSONS[idx-1],next=LESSONS[idx+1],b=L.box,acc=CATINFO[L.cat].acc;
+ view.innerHTML=`
+ <button class="back" id="back">‹ ${CATS[L.cat]}</button>
+ <div class="kicker" style="color:${acc}">${CATS[L.cat]} · Lektion ${ci+1} von ${ls.length}</div>
+ <h1>${L.title}</h1>
+ <p class="lead">${L.sub}</p>
+ <div class="player">
+  <div class="cwrap" id="cwrap"><canvas id="cv"></canvas><div class="overlay" id="ovl"><div id="ovltxt">▶ ABSPIELEN</div></div></div>
+  <div class="caption"><div class="no" id="stepno"></div><p id="captxt"></p></div>
+  <div class="ctrl"><button class="cb" id="play" title="Abspielen/Pause" aria-label="Abspielen oder Pause">❚❚</button><input type="range" id="seek" min="0" step="10" value="0" aria-label="Spulen"><button class="cb" id="speed" title="Geschwindigkeit">1×</button><button class="cb" id="restart" title="Von vorne" aria-label="Von vorne">⟲</button></div>
+  <div class="chips" id="chips"></div>
+ </div>
+ <div class="info">
+  <div class="box b"><h3>Was ist das?</h3><p>${b.was}</p></div>
+  <div class="box g"><h3>${b.h2||'So erkennst du es'}</h3><ul>${b.erkennen.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+  <div class="box y"><h3>Was bedeutet es?</h3><p>${b.bedeutung}</p></div>
+  <div class="box r"><h3>Tipp</h3><p>${b.tipp}</p></div>
+ </div>
+ <div class="pn"><button id="prev" ${prev?'':'disabled'}><small>‹ ZURÜCK</small>${prev?prev.title:'–'}</button><button id="next" ${next?'':'disabled'}><small>WEITER ›</small>${next?next.title:'–'}</button></div>`;
+ document.getElementById('back').onclick=()=>{location.hash='kat-'+L.cat;};
+ if(prev)document.getElementById('prev').onclick=()=>location.hash=prev.id;
+ if(next)document.getElementById('next').onclick=()=>location.hash=next.id;
+ P.L=L;P.tl=buildTL(L);P.t=0;P.playing=true;P.stepIdx=-1;P.cv=document.getElementById('cv');P.ctx=P.cv.getContext('2d');
+ const seek=document.getElementById('seek');seek.max=P.tl.total;
+ seek.oninput=()=>{P.t=+seek.value;P.dirty=true;updBtn();};
+ document.getElementById('play').onclick=togglePlay;document.getElementById('cwrap').onclick=togglePlay;
+ document.getElementById('restart').onclick=()=>{P.t=0;P.playing=true;P.dirty=true;updBtn();};
+ const sp=document.getElementById('speed');sp.textContent=(P.speed===.5?'½':P.speed)+'×';
+ sp.onclick=e=>{P.speed=P.speed===1?2:P.speed===2?.5:1;e.currentTarget.textContent=(P.speed===.5?'½':P.speed)+'×';};
+ document.getElementById('chips').innerHTML=P.tl.steps.map((s,i)=>`<button class="chip" data-i="${i}">${i+1}</button>`).join('');
+ document.getElementById('chips').onclick=e=>{const c=e.target.closest('.chip');if(!c)return;P.t=P.tl.steps[+c.dataset.i].t+1;P.playing=true;P.dirty=true;updBtn();};
+ resize();updBtn();renderList();window.scrollTo(0,0);
+}
+function togglePlay(){if(!P.L)return;if(P.t>=P.tl.total){P.t=0;P.playing=true;}else P.playing=!P.playing;P.dirty=true;updBtn();}
+function updBtn(){const b=document.getElementById('play');if(!b)return;b.textContent=P.playing?'❚❚':(P.t>=P.tl.total?'⟲':'▶');
+ const o=document.getElementById('ovl');const end=P.t>=P.tl.total;o.classList.toggle('show',!P.playing);document.getElementById('ovltxt').textContent=end?'⟲ NOCHMAL ANSEHEN':'▶ WEITER';}
+function resize(){if(!P.cv)return;const w=P.cv.parentElement.clientWidth;const h=Math.round(clamp(w*.625,210,520));
+ const dpr=window.devicePixelRatio||1;P.cv.width=w*dpr;P.cv.height=h*dpr;P.cv.style.height=h+'px';P.ctx._dpr=dpr;P.W=w;P.H=h;P.dirty=true;}
+window.addEventListener('resize',()=>{resize();if(document.getElementById('qcv')&&Q&&Q.list[Q.i])drawQuizPic();});
+
+/* ============ Startseite & Bereich ============ */
+function showHome(){
+ current=null;P.L=null;P.cv=null;
+ const tiles=Object.keys(CATS).map(ck=>{const ls=LESSONS.filter(l=>l.cat===ck),n=ls.length,sn=ls.filter(l=>seen[l.id]).length,ci=CATINFO[ck];
+  return `<button class="big" data-h="kat-${ck}" style="--acc:${ci.acc};--glow:${hexA(ci.hex,.16)}"><div class="bi">${catIcon(ck)}</div><h2>${CATS[ck]}</h2><p>${ci.d}</p><div class="ft"><span>${n} LEKTIONEN</span><div class="pb"><i style="width:${sn/n*100}%"></i></div><span>${sn}/${n}</span><span class="go">›</span></div></button>`;}).join('');
+ const quiz=`<button class="big" data-h="quiz" style="--acc:var(--gold);--glow:rgba(245,197,66,.14)"><div class="bi" style="font-size:46px;line-height:1">🎯</div><h2>Quiz</h2><p>Teste dein Wissen: 10 zufällige Fragen mit Bildern und Rechenaufgaben.</p><div class="ft"><span>${best?`BESTWERT ${best}/10`:'NOCH NICHT GESPIELT'}</span><span style="flex:1"></span><span class="go">›</span></div></button>`;
+ view.innerHTML=`<div class="home"><div class="kicker">Willkommen</div><h1>So funktioniert ein KI-Modell</h1>
+ <p class="lead">Jede Lektion ist ein kleines Video: Neuronen, Netze, Training, Tokens und Transformer bauen sich Schritt für Schritt auf und werden erklärt – vom ersten Neuron bis zum Chat-Assistenten.</p>
+ <div class="bigtiles">${tiles}${quiz}</div></div>`;
+ view.querySelectorAll('.big').forEach(t=>t.onclick=()=>location.hash=t.dataset.h);
+ renderList();window.scrollTo(0,0);
+}
+function showCat(ck){
+ if(!CATS[ck]){showHome();return;}current=null;P.L=null;P.cv=null;
+ const ls=LESSONS.filter(l=>l.cat===ck),ci=CATINFO[ck];
+ view.innerHTML=`<div class="home" style="--acc:${ci.acc}"><button class="back" id="back">‹ Startseite</button>
+ <div class="kicker">${ls.length} Lektionen · ${ls.filter(l=>seen[l.id]).length} gesehen</div><h1 style="color:${ci.acc}">${CATS[ck]}</h1><p class="lead">${ci.d}</p>
+ <div class="lcards">${ls.map((l,i)=>`<button class="lc" data-id="${l.id}"><canvas class="th" data-id="${l.id}"></canvas><div><small>LEKTION ${i+1}</small><b>${l.title}</b><span>${l.sub}</span></div>${seen[l.id]?'<div class="ok">✓</div>':''}</button>`).join('')}</div></div>`;
+ document.getElementById('back').onclick=()=>{location.hash='';};
+ view.querySelectorAll('.lc').forEach(b=>b.onclick=()=>location.hash=b.dataset.id);
+ drawThumbs();renderList();window.scrollTo(0,0);
+}
+function drawThumbs(){view.querySelectorAll('canvas.th').forEach(cv=>{const L=LESSONS.find(l=>l.id===cv.dataset.id);staticFrame(cv,L,L.thumb!=null?L.thumb:L.steps.length-1,.7,88,55,true);});}
+
+/* ============ Quiz ============ */
+const TQ=[
+ {q:'Was bedeutet KI?',a:['Künstliche Intelligenz','Kontrollierte Information','Kabellose Internetverbindung','Kurze Instruktion'],e:'KI = Künstliche Intelligenz: Computer lösen Aufgaben, die sonst menschliches Denken brauchen.',l:'ki'},
+ {q:'Woher hat ein KI-Modell seine Gewichte?',a:['Es hat sie aus Beispielen gelernt','Ein Programmierer tippt jede Zahl ein','Sie sind zufällig und bleiben so','Sie kommen aus dem Internet-Router'],e:'Die Gewichte entstehen beim Training aus vielen Beispielen.',l:'ki'},
+ {q:'Was ist beim maschinellen Lernen anders als beim klassischen Programmieren?',a:['Der Computer findet die Regeln selbst aus Beispielen','Es gibt gar keine Daten','Der Mensch schreibt mehr Regeln','Es funktioniert nur ohne Strom'],e:'Daten + Antworten → Regeln, statt Regeln + Daten → Antworten.',l:'regeln'},
+ {q:'Wofür ist ein klassisches Programm meist besser als eine KI?',a:['Für Aufgaben mit festen, klaren Regeln','Für Gesichtserkennung','Für Übersetzungen','Für das Erkennen von Sprache'],e:'Feste Regeln (Rechnen, Steuern) lassen sich exakt programmieren.',l:'regeln'},
+ {q:'Was ist ein Label?',a:['Die richtige Antwort zu einem Beispiel','Ein Aufkleber auf der Grafikkarte','Der Name des Modells','Eine Art Virus'],e:'Zum Bild einer Katze gehört das Label „Katze“.',l:'daten'},
+ {q:'Wozu dienen Testdaten?',a:['Um zu prüfen, ob das Modell auch Neues richtig erkennt','Um schneller zu trainieren','Um Strom zu sparen','Um das Modell zu löschen'],e:'Testdaten hat das Modell nie gesehen – wie eine echte Prüfung.',l:'daten'},
+ {q:'Was passiert, wenn viele Labels in den Trainingsdaten falsch sind?',a:['Das Modell lernt die Fehler mit','Das Modell korrigiert sie automatisch','Nichts','Das Modell wird schneller'],e:'Schlechte Daten ergeben eine schlechte KI.',l:'daten'},
+ {q:'Welche Lernart arbeitet mit Belohnung?',a:['Bestärkendes Lernen','Überwachtes Lernen','Unüberwachtes Lernen','Auswendiglernen'],e:'Gute Züge bringen Punkte – wie Leckerli beim Hundetraining.',l:'lernarten'},
+ {q:'Was macht unüberwachtes Lernen?',a:['Es findet selbst Gruppen und Muster ohne Antworten','Es braucht zu jedem Beispiel die Lösung','Es lernt nur durch Belohnung','Es kopiert Texte'],e:'Ohne Labels sucht die KI nach Ähnlichkeiten in den Daten.',l:'lernarten'},
+ {q:'Wo steckt KI-Bilderkennung im Alltag?',a:['Beim Entsperren des Handys mit dem Gesicht','Im Lichtschalter','Im Wasserkocher','In einer Glühbirne'],e:'Face-ID erkennt dein Gesicht mit einem neuronalen Netz.',l:'anwendungen'},
+ {q:'Was macht ein künstliches Neuron mit seinen Eingängen?',a:['Mal Gewicht nehmen und addieren','Sie löschen','Sie sortieren','Sie ausdrucken'],e:'Summe = x1·w1 + x2·w2 + … – dann folgt die Aktivierung.',l:'neuron'},
+ {q:'Was war das Vorbild für das künstliche Neuron?',a:['Die Nervenzelle im Gehirn','Der Transistor','Die Glühbirne','Das Zahnrad'],e:'Nervenzellen feuern, wenn genug Signale zusammenkommen.',l:'neuron'},
+ {q:'Was bewirkt ein negatives Gewicht?',a:['Der Eingang bremst das Neuron','Der Eingang zählt doppelt','Der Eingang wird ignoriert','Das Neuron schaltet sich ab'],e:'Negativ = spricht dagegen, positiv = spricht dafür, 0 = egal.',l:'gewichte'},
+ {q:'Was ist der Bias?',a:['Ein Grundwert, der die Schwelle zum Feuern verschiebt','Ein Fehler im Programm','Die Anzahl der Schichten','Der Name des Trainingsdatensatzes'],e:'Der Bias macht das Feuern leichter oder schwerer.',l:'gewichte'},
+ {q:'Was bedeutet „70B“ bei einem Sprachmodell?',a:['70 Milliarden Parameter','70 Bücher gelesen','70 Byte groß','Version 70 Beta'],e:'B = Billion (englisch) = Milliarde.',l:'gewichte'},
+ {q:'Wie heißen die Schichten zwischen Eingabe und Ausgabe?',a:['Versteckte Schichten','Geheime Schichten','Leere Schichten','Feste Schichten'],e:'Englisch „hidden layers“ – dort werden Merkmale erkannt.',l:'schichten'},
+ {q:'Was bedeutet Deep Learning?',a:['Lernen mit vielen Schichten','Lernen unter Wasser','Besonders langsames Lernen','Lernen ohne Daten'],e:'„Tief“ bezieht sich auf die vielen Schichten übereinander.',l:'schichten'},
+ {q:'Was macht die Aktivierungsfunktion ReLU mit dem Wert −3?',a:['Sie macht 0 daraus','Sie macht 3 daraus','Sie macht −6 daraus','Sie lässt ihn bei −3'],e:'ReLU: negativ → 0, positiv bleibt.',l:'aktivierung'},
+ {q:'Warum braucht ein Netz Aktivierungsfunktionen?',a:['Ohne sie könnte es nur gerade Zusammenhänge lernen','Damit es weniger Strom braucht','Damit es schneller startet','Damit es Farben anzeigt'],e:'Erst die Knicke und Kurven erlauben komplizierte Muster.',l:'aktivierung'},
+ {q:'Was erkennen die ersten Schichten eines Bildnetzes?',a:['Kanten und Linien','Ganze Gesichter','Namen von Personen','Farben von Autos'],e:'Einfache Merkmale zuerst, komplexe Formen später.',l:'bilder'},
+ {q:'Was ist ein Bild für eine KI?',a:['Ein Raster aus Zahlen','Ein Gemälde','Ein Text','Ein Ton'],e:'Jedes Pixel hat einen Helligkeits- oder Farbwert.',l:'bilder'},
+ {q:'Was misst der Verlust (Loss)?',a:['Wie weit die Antwort von der richtigen entfernt ist','Wie viel Strom das Modell braucht','Wie viele Daten verloren gingen','Wie alt das Modell ist'],e:'Großer Fehler = großer Verlust.',l:'verlust'},
+ {q:'Was ist das Ziel des Trainings?',a:['Den Verlust so klein wie möglich machen','Den Verlust möglichst groß machen','Möglichst viele Schichten löschen','Die Daten verstecken'],e:'Mit jedem Schritt soll der Fehler sinken.',l:'verlust'},
+ {q:'Was passiert beim Gradientenabstieg?',a:['Man macht kleine Schritte bergab zum kleinsten Fehler','Man springt zufällig hin und her','Man steigt zum größten Fehler auf','Man löscht alle Gewichte'],e:'Wie im Nebel immer der Steigung nach unten folgen.',l:'gradient'},
+ {q:'Was passiert, wenn die Lernrate zu groß ist?',a:['Man springt über das Tal hinweg','Das Training wird perfekt','Das Modell wird kleiner','Gar nichts'],e:'Zu große Schritte schießen über das Ziel hinaus.',l:'gradient'},
+ {q:'In welche Richtung läuft bei Backpropagation der Fehler?',a:['Rückwärts – vom Ausgang zum Eingang','Vorwärts – vom Eingang zum Ausgang','Seitwärts','Gar nicht'],e:'Backpropagation = Fehlerrückführung.',l:'backprop'},
+ {q:'Was wird bei Backpropagation für jedes Gewicht berechnet?',a:['Wie viel Schuld es am Fehler hatte','Wie alt es ist','Wie schwer es in Gramm ist','Welche Farbe es hat'],e:'Danach wird jedes Gewicht passend verstellt.',l:'backprop'},
+ {q:'Was ist eine Epoche?',a:['Ein Durchlauf durch alle Trainingsdaten','Ein einzelnes Bild','Eine Grafikkarte','Ein Zeitalter der Dinosaurier'],e:'Nach einer Epoche hat das Modell jedes Beispiel einmal gesehen.',l:'epochen'},
+ {q:'Was ist ein Batch?',a:['Ein kleines Paket von Trainingsbeispielen','Ein Fehler im Modell','Eine Art Speicherchip','Das fertige Modell'],e:'Nach jedem Batch werden die Gewichte einmal angepasst.',l:'epochen'},
+ {q:'Woran erkennt man Überanpassung?',a:['Training super, Test schlecht','Training und Test gut','Training schlecht, Test super','Das Modell ist ausgeschaltet'],e:'Das Modell hat auswendig gelernt statt verstanden.',l:'overfit'},
+ {q:'Was hilft gegen Überanpassung?',a:['Mehr und vielfältigere Daten','Testdaten zum Lernen benutzen','Viel länger trainieren','Weniger Daten'],e:'Auch ein kleineres Modell oder früheres Stoppen hilft.',l:'overfit'},
+ {q:'Was ist ein Token?',a:['Ein Stück Text, z. B. ein Wort oder Wortteil','Eine Münze','Ein Passwort','Ein Bildpunkt'],e:'Sprachmodelle rechnen mit Tokens statt mit Buchstaben.',l:'tokens'},
+ {q:'Ungefähr wie viele Buchstaben hat ein Token im Deutschen?',a:['3 bis 4','1','20','100'],e:'Faustregel: 1 Token ≈ 3–4 Buchstaben.',l:'tokens'},
+ {q:'Was ist ein Wortvektor (Embedding)?',a:['Eine Zahlenliste, die die Bedeutung eines Wortes beschreibt','Ein Pfeil auf dem Bildschirm','Ein Wörterbuch aus Papier','Eine Schriftart'],e:'Ähnliche Bedeutung = ähnliche Zahlen = nah beieinander.',l:'embedding'},
+ {q:'Was ergibt ungefähr „König − Mann + Frau“?',a:['Königin','Prinz','Krone','Schloss'],e:'Beziehungen werden im Vektorraum zu Richtungen.',l:'embedding'},
+ {q:'Was macht ein Sprachmodell im Kern?',a:['Es sagt das nächste Token voraus','Es sucht in einer Datenbank nach fertigen Antworten','Es kopiert Wikipedia','Es würfelt ganze Sätze'],e:'Token für Token entsteht die Antwort.',l:'vorhersage'},
+ {q:'Warum erscheint eine Chat-Antwort Wort für Wort?',a:['Weil das Modell wirklich Token für Token schreibt','Weil das Internet langsam ist','Weil es Spannung erzeugen soll','Weil der Bildschirm flackert'],e:'Jedes Token wird einzeln berechnet und angehängt.',l:'vorhersage'},
+ {q:'Wofür steht das „T“ in GPT?',a:['Transformer','Text','Training','Tabelle'],e:'GPT = Generative Pre-trained Transformer.',l:'attention'},
+ {q:'Was macht der Attention-Mechanismus?',a:['Jedes Wort schaut, welche anderen Wörter wichtig sind','Er macht den Text lauter','Er zählt die Buchstaben','Er übersetzt in Englisch'],e:'So weiß das Modell, worauf sich z. B. „sie“ bezieht.',l:'attention'},
+ {q:'Was bewirkt eine hohe Temperatur?',a:['Kreativere, aber fehleranfälligere Antworten','Immer dieselbe Antwort','Schnellere Antworten','Kürzere Antworten'],e:'Auch seltene Wörter bekommen eine Chance.',l:'temperatur'},
+ {q:'Warum gibt dieselbe Frage nicht immer dieselbe Antwort?',a:['Bei der Wortauswahl ist etwas Zufall im Spiel','Das Modell ist kaputt','Das Modell vergisst alles sofort','Jemand ändert die Antworten'],e:'Die Temperatur steuert diesen Zufall.',l:'temperatur'},
+ {q:'Was ist das Kontextfenster?',a:['Die Textmenge, die das Modell gleichzeitig berücksichtigt','Das Fenster im Rechenzentrum','Die Größe des Bildschirms','Die Liste aller Modelle'],e:'Nur was im Fenster steht, sieht das Modell gerade.',l:'kontext'},
+ {q:'Lernt ein Sprachmodell im Gespräch dauerhaft dazu?',a:['Nein, seine Gewichte bleiben gleich','Ja, nach jeder Nachricht','Ja, aber nur nachts','Nur bei langen Gesprächen'],e:'Nur der Inhalt im Kontextfenster ändert sich.',l:'kontext'},
+ {q:'Was lernt ein Modell im Vortraining?',a:['Das nächste Token in riesigen Textmengen vorherzusagen','Fragen höflich zu beantworten','Bilder zu malen','Musik zu spielen'],e:'Dabei entstehen Grammatik, Fakten und Zusammenhänge.',l:'pretraining'},
+ {q:'Was weiß ein Modell nicht von selbst?',a:['Was nach seinem Trainingsstichtag passiert ist','Wie Grammatik funktioniert','Was ein Hund ist','Wie man rechnet'],e:'Für Aktuelles braucht es z. B. eine Websuche.',l:'pretraining'},
+ {q:'Wofür steht RLHF?',a:['Bestärkendes Lernen durch menschliche Rückmeldung','Rechnen lernen mit hoher Frequenz','Regeln laden, Hardware formatieren','Roboter lernen hüpfen fröhlich'],e:'Reinforcement Learning from Human Feedback.',l:'rlhf'},
+ {q:'Was macht ein Basismodell auf die Frage „Wie koche ich Nudeln?“ oft?',a:['Es setzt den Text einfach fort, z. B. mit weiteren Fragen','Es gibt ein perfektes Rezept','Es schaltet sich ab','Es antwortet nur mit Zahlen'],e:'Erst der Feinschliff macht daraus einen Assistenten.',l:'rlhf'},
+ {q:'Warum braucht KI-Training so viele Grafikkarten?',a:['Weil Milliarden Multiplikationen gleichzeitig nötig sind','Weil die Bilder schön aussehen sollen','Weil Grafikkarten billig sind','Weil sonst der Bildschirm schwarz bleibt'],e:'GPUs haben Tausende Kerne für parallele Rechnungen.',l:'gpu'},
+ {q:'Was ist eine Halluzination bei KI?',a:['Eine überzeugend klingende, aber falsche Aussage','Ein Traum des Computers','Ein Grafikfehler','Ein Stromausfall'],e:'Zum Beispiel erfundene Zahlen oder Quellen.',l:'halluzination'},
+ {q:'Was hilft gegen Halluzinationen?',a:['Websuche, Dokumente mitgeben und nach Quellen fragen','Die Frage schneller tippen','Großbuchstaben benutzen','Den Computer neu starten'],e:'Dann stützt sich das Modell auf echte Texte.',l:'halluzination'},
+ {q:'Welcher Prompt ist besser?',a:['„Erkläre einem 10-Jährigen in 5 Sätzen, wie ein E-Auto fährt.“','„Schreib was über Autos.“','„Auto.“','„Mach mal.“'],e:'Ziel, Zielgruppe und Länge machen die Antwort passend.',l:'prompt'},
+ {q:'Was sollte ein guter Prompt enthalten?',a:['Ziel, Zielgruppe und gewünschtes Format','Möglichst wenige Wörter','Nur Emojis','Ausschließlich Englisch'],e:'Je mehr Zusammenhang, desto besser die Antwort.',l:'prompt'}
+];
+/* Bilderfragen: Lektion, Schritt, Fortschritt */
+const PQ=[
+ {l:'schichten',s:3,p:.9,q:'Was ist hier zu sehen?',a:['Ein neuronales Netz mit Schichten','Ein Stromnetz','Ein Stadtplan','Ein Schachbrett'],e:'Eingabe, versteckte Schichten und Ausgabe – verbunden durch Gewichte.'},
+ {l:'aktivierung',s:1,p:.9,q:'Welche Aktivierungsfunktion zeigt dieses Bild?',a:['ReLU','Sigmoid','Eine Gerade','Eine Sinuskurve'],e:'Links flach bei 0, rechts steigt sie gerade an – typisch ReLU.'},
+ {l:'gradient',s:3,p:.9,q:'Was passiert hier?',a:['Gradientenabstieg: Schritt für Schritt ins Tal','Ein Ball fällt vom Tisch','Ein Berg wird gebaut','Ein Datenpaket wird verschickt'],e:'Der Punkt folgt der Steigung bergab zum kleinsten Fehler.'},
+ {l:'overfit',s:3,p:.9,q:'Was zeigt die lila Kurve?',a:['Überanpassung – auswendig gelernt','Gute Anpassung','Unteranpassung','Eine Temperaturkurve'],e:'Sie schlängelt sich durch jeden Punkt – auch durch Messfehler.'},
+ {l:'embedding',s:2,p:.9,q:'Warum liegen manche Punkte in Gruppen zusammen?',a:['Wörter mit ähnlicher Bedeutung liegen nah beieinander','Die Wörter sind gleich lang','Die Wörter beginnen mit demselben Buchstaben','Reiner Zufall'],e:'Im Vektorraum steht Nähe für ähnliche Bedeutung.'},
+ {l:'verlust',s:4,p:.9,q:'Was zeigt diese Kurve?',a:['Der Verlust sinkt während des Trainings','Der Aktienkurs steigt','Die Temperatur einer GPU','Die Anzahl der Tokens'],e:'Mit jedem Trainingsschritt wird der Fehler kleiner.'},
+ {l:'epochen',s:3,p:.9,q:'Was zeigt diese Kurve?',a:['Die Genauigkeit steigt über die Epochen','Der Verlust steigt','Die Lernrate sinkt auf 0','Der Stromverbrauch'],e:'Erst schneller, dann langsamer Anstieg.'},
+ {l:'neuron',s:4,p:.9,q:'Was ist hier zu sehen?',a:['Ein künstliches Neuron','Eine Ampel','Ein Router','Ein Taschenrechner'],e:'Eingänge mal Gewichte, Summe Σ, dann wird das Signal weitergegeben.'},
+ {l:'backprop',s:2,p:.6,q:'Was läuft hier rückwärts durch das Netz?',a:['Der Fehler (Backpropagation)','Der Strom','Die Eingabedaten','Das fertige Ergebnis'],e:'Rückwärts wird berechnet, welches Gewicht wie viel Schuld hatte.'},
+ {l:'temperatur',s:1,p:.95,q:'Welche Temperatur ist hier eingestellt?',a:['Niedrig – das wahrscheinlichste Wort dominiert','Hoch – alle Wörter fast gleich wahrscheinlich','Gar keine','Über 100 Grad'],e:'Bei niedriger Temperatur gewinnt fast immer die höchste Säule.'},
+ {l:'attention',s:2,p:.9,q:'Worauf schaut das Wort „sie“ am stärksten?',a:['Auf „Katze“','Auf „Maus“','Auf „weil“','Auf „ist“'],e:'Die dickste Linie führt zu „Katze“ – sie ist hungrig.'},
+ {l:'bilder',s:4,p:.9,q:'Was markiert die KI hier?',a:['Poren in einem Röntgen-/CT-Bild','Sterne am Himmel','Tippfehler','Pixel eines Fotos'],e:'Bild-Netze finden Gussfehler wie Poren und Lunker.'}
+];
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
+function genCalc(){const out=[];
+ const x=[1,2,3][Math.floor(Math.random()*3)],w1=rnd([.5,2,3]),w2=rnd([-1,1,.5]),b=rnd([-1,0,1]);const sum=x*w1+2*w2+b;
+ const wr=new Set();[sum+1,sum-1,sum*2,x*w1+2*w2,sum+2].forEach(v=>{if(v!==sum&&wr.size<3)wr.add(v);});
+ out.push({q:`Neuron: Eingänge ${x} und 2, Gewichte ${deN(w1,w1%1?1:0)} und ${deN(w2,w2%1?1:0)}, Bias ${b}. Wie groß ist die Summe?`,opts:shuffle([sum,...wr].map(v=>deN(v,v%1?1:0))),ans:deN(sum,sum%1?1:0),e:`${x} × ${deN(w1,w1%1?1:0)} + 2 × ${deN(w2,w2%1?1:0)} + (${b}) = ${deN(sum,sum%1?1:0)}`,l:'neuron'});
+ const kinds=[
+  ()=>{const n=rnd([5000,10000,20000,50000]),bs=rnd([50,100,250]);const r=n/bs;return{q:`${deN(n)} Bilder, Batchgröße ${bs}. Wie viele Anpassungen gibt es pro Epoche?`,ans:deN(r),w:[deN(r*10),deN(r/2),deN(n*bs)],e:`${deN(n)} ÷ ${bs} = ${deN(r)}`,l:'epochen'};},
+  ()=>{const p=rnd([7,13,70,400]);return{q:`Ein Modell hat ${p} Milliarden Parameter à 2 Byte. Wie viel Speicher braucht es?`,ans:deN(p*2)+' GB',w:[deN(p)+' GB',deN(p*8)+' GB',deN(p/2)+' GB'],e:`${p} Mrd. × 2 Byte = ${deN(p*2)} GB`,l:'gpu'};},
+  ()=>{const wds=rnd([300,600,1000,2000]);return{q:`Ungefähr wie viele Tokens sind ${deN(wds)} deutsche Wörter (Faustregel × 1,5)?`,ans:deN(wds*1.5),w:[deN(wds/2),deN(wds*10),deN(wds)],e:`${deN(wds)} × 1,5 ≈ ${deN(wds*1.5)} Tokens`,l:'tokens'};},
+  ()=>{const v=rnd([-4,-2,-1,1,2,5]);const an=Math.max(0,v);const w=[...new Set([-v,v*2,v+3,10,-1].filter(x=>x!==an))].slice(0,3).map(x=>deN(x));return{q:`ReLU bekommt den Wert ${deN(v)}. Was gibt sie aus?`,ans:deN(an),w,e:`ReLU: negativ → 0, positiv bleibt → ${deN(an)}`,l:'aktivierung'};},
+  ()=>{const n=rnd([1000,2000,5000]);const tr=n*.8;return{q:`Du hast ${deN(n)} Beispiele und teilst 80 % / 20 %. Wie viele sind Trainingsdaten?`,ans:deN(tr),w:[deN(n*.2),deN(n),deN(n*.5)],e:`${deN(n)} × 0,8 = ${deN(tr)}`,l:'daten'};}];
+ const k=rnd(kinds)();out.push({q:k.q,opts:shuffle([k.ans,...k.w]),ans:k.ans,e:k.e,l:k.l});return out;}
+let Q=null;
+function startQuiz(){
+ current=null;P.L=null;P.cv=null;
+ const used=new Set();const pics=shuffle(PQ.slice()).filter(x=>{if(used.has(x.l))return false;used.add(x.l);return true;}).slice(0,3).map(x=>({pic:x,q:x.q,opts:shuffle(x.a.slice()),ans:x.a[0],e:x.e,l:x.l}));
+ const calc=genCalc();
+ const tx=shuffle(TQ.slice()).slice(0,10-pics.length-calc.length).map(x=>({q:x.q,opts:shuffle(x.a.slice()),ans:x.a[0],e:x.e,l:x.l}));
+ Q={list:shuffle([...pics,...calc,...tx]),i:0,score:0,wrong:[]};renderList();renderQ();
+}
+function drawQuizPic(){const it=Q.list[Q.i],cv=document.getElementById('qcv');if(!cv||!it.pic)return;const L=LESSONS.find(l=>l.id===it.pic.l);const w=cv.parentElement.clientWidth,h=Math.round(clamp(w*.625,200,420));staticFrame(cv,L,it.pic.s,it.pic.p,w,h,true);}
+function renderQ(){
+ const it=Q.list[Q.i],n=Q.list.length;
+ view.innerHTML=`<button class="back" id="back">‹ Startseite</button>
+ <div class="kicker">Quiz · Frage ${Q.i+1} von ${n} · ${Q.score} richtig</div><h1>Teste dein Wissen</h1>
+ <div class="qcard"><div class="qbar"><i style="width:${Q.i/n*100}%"></i></div>
+ <p class="qq">${it.q}</p>${it.pic?'<div class="qcv"><canvas id="qcv"></canvas></div>':''}
+ <div class="opts">${it.opts.map((o,k)=>`<button class="opt" data-k="${k}">${String.fromCharCode(65+k)}) ${o}</button>`).join('')}</div>
+ <div id="fb"></div></div>`;
+ document.getElementById('back').onclick=()=>{location.hash='';};
+ if(it.pic)drawQuizPic();
+ view.querySelectorAll('.opt').forEach(b=>b.onclick=()=>answer(+b.dataset.k));window.scrollTo(0,0);
+}
+function answer(k){
+ const it=Q.list[Q.i],ok=it.opts[k]===it.ans;if(ok)Q.score++;else Q.wrong.push(it.l);
+ view.querySelectorAll('.opt').forEach((b,j)=>{b.disabled=true;if(it.opts[j]===it.ans)b.classList.add('ok');else if(j===k)b.classList.add('bad');});
+ const last=Q.i===Q.list.length-1,L=LESSONS.find(x=>x.id===it.l);
+ document.getElementById('fb').innerHTML=`<div class="fb"><b style="color:${ok?'var(--up)':'var(--down)'}">${ok?'✓ RICHTIG!':'✗ LEIDER FALSCH'}</b>${ok?'':` – richtig ist: <b>${it.ans}</b>`}<br>${it.e}</div>
+ <div class="qnav"><button id="tol">📖 Lektion: ${L?L.title:''}</button><button class="main" id="nx">${last?'Ergebnis ansehen':'Weiter ›'}</button></div>`;
+ document.getElementById('tol').onclick=()=>location.hash=it.l;
+ document.getElementById('nx').onclick=()=>{if(last)renderResult();else{Q.i++;renderQ();}};
+ document.getElementById('fb').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function renderResult(){
+ const n=Q.list.length,sc=Q.score;if(sc>best){best=sc;try{localStorage.setItem(KEY+'-best',best)}catch(e){}}renderList();
+ const msg=sc===n?'Perfekt! Du bist ein echter KI-Profi. 🏆':sc>=8?'Sehr stark! Fast alles richtig. 💪':sc>=5?'Gut! Ein paar Lektionen kannst du noch wiederholen.':'Nicht schlimm – schau dir die Lektionen unten nochmal an und versuch es erneut.';
+ const rep=[...new Set(Q.wrong)].map(id=>LESSONS.find(l=>l.id===id)).filter(Boolean);
+ view.innerHTML=`<button class="back" id="back">‹ Startseite</button><div class="kicker">Quiz · Ergebnis</div><h1>Geschafft!</h1>
+ <div class="qcard"><div class="score" style="color:${sc>=8?'var(--up)':sc>=5?'var(--gold)':'var(--down)'}">${sc} / ${n}</div><p style="font-size:16px;margin:0 0 6px">${msg}</p>
+ <p style="color:var(--mute);font-family:var(--mono);font-size:12px;margin:0">BESTWERT: ${best} / ${n}</p>
+ ${rep.length?`<p style="margin:16px 0 6px;font-weight:700">Diese Lektionen solltest du wiederholen:</p><div class="opts">${rep.map(l=>`<button class="opt" data-id="${l.id}">📖 ${l.title}</button>`).join('')}</div>`:''}
+ <div class="qnav"><button id="home">Zur Übersicht</button><button class="main" id="again">🎯 Neues Quiz</button></div></div>`;
+ document.getElementById('back').onclick=()=>{location.hash='';};
+ view.querySelectorAll('.opt[data-id]').forEach(b=>b.onclick=()=>location.hash=b.dataset.id);
+ document.getElementById('home').onclick=()=>{location.hash='';};
+ document.getElementById('again').onclick=()=>{startQuiz();};
+}
+
+/* ---- Schleife ---- */
+function frame(ts){
+ const dt=P.last?Math.min(60,ts-P.last):0;P.last=ts;
+ if(P.L&&P.cv){
+  if(P.playing){P.t+=dt*P.speed;if(P.t>=P.tl.total){P.t=P.tl.total;P.playing=false;updBtn();markSeen(P.L.id);}P.dirty=true;}
+  if(P.dirty){const st=stAt(P.tl,P.t);render(P.ctx,P.W,P.H,P.L,st);
+   const sk=document.getElementById('seek');if(sk)sk.value=P.t;
+   if(st.s!==P.stepIdx){P.stepIdx=st.s;const si=st.s,cp=document.getElementById('captxt');cp.style.opacity=0;setTimeout(()=>{cp.textContent=P.tl.steps[si].text;cp.style.opacity=1;},120);
+    document.getElementById('stepno').textContent=`SCHRITT ${si+1} / ${P.tl.steps.length}`;
+    document.querySelectorAll('.chip').forEach((c,i)=>{c.classList.toggle('on',i===si);c.classList.toggle('done',i<si);});}
+   P.dirty=false;}
+ }
+ requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{P.dirty=true;if(location.hash.startsWith('#kat-'))drawThumbs();});
+
+/* ============ Hell/Dunkel ============ */
+const mqLight=window.matchMedia?matchMedia('(prefers-color-scheme: light)'):null;
+function themeMode(){try{return localStorage.getItem('kompass-theme')||'dark'}catch(e){return 'dark'}}
+function applyTheme(m){const t=m==='auto'?(mqLight&&mqLight.matches?'light':'dark'):m;document.documentElement.setAttribute('data-theme',t);setCanvasTheme(t);
+ document.querySelectorAll('.theme button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.m===m)));
+ const mc=document.querySelector('meta[name=theme-color]');if(mc)mc.setAttribute('content',t==='light'?'#f3f5f9':'#05080d');
+ P.dirty=true;if(document.querySelector('canvas.th'))drawThumbs();if(document.getElementById('qcv'))drawQuizPic();}
+document.querySelectorAll('.theme button').forEach(b=>b.addEventListener('click',()=>{try{localStorage.setItem('kompass-theme',b.dataset.m)}catch(e){}applyTheme(b.dataset.m);}));
+if(mqLight&&mqLight.addEventListener)mqLight.addEventListener('change',()=>{if(themeMode()==='auto')applyTheme('auto');});
+applyTheme(themeMode());
+
+function route(){const id=location.hash.slice(1);if(id==='quiz')startQuiz();else if(id.startsWith('kat-'))showCat(id.slice(4));else if(id)openLesson(id);else showHome();}
+window.addEventListener('hashchange',route);
+updProg();route();
+</script>
+<script>if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});</script>
+</body>
+</html>
